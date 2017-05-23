@@ -36,11 +36,11 @@ export class PlotOptionsComponent implements OnInit {
 
   constructor(private visualizationService: VisualizationService, public dialog: MdDialog) { }
 
-  openDialog() {
+  openDialog(dataset: {variableName: string, siteName:string, visible:boolean}) {
     this.dialog.open(SummaryStatisticsComponent,
       {
         data: {
-          title: "Some datasset",
+          dataset: dataset,
         },
         height: '500px',
         width: '800px',
@@ -50,7 +50,6 @@ export class PlotOptionsComponent implements OnInit {
   ngOnInit() {
     this.visualizationService.setPlotType(this.visualizationService.plotTypes.timeSeries);
     this.plotType = "time-series";
-
     this.xAxisDataset = 0;
   }
 

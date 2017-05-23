@@ -8,6 +8,7 @@
         <td>
           <button md-icon-button
                   [mdTooltip]="dataset.visible ? 'Shown' : 'Hidden'"
+                  [mdTooltipShowDelay]="500"
                   (click)="toggleVisibility(i)">
             <md-icon [style.color]="dataset.visible? 'steelblue' : '#AAA'"
             >
@@ -23,13 +24,21 @@
           </small>
         </th>
         <td>
-          <button md-icon-button mdTooltip="View Summary Statistics" (click)="openDialog()">
+          <button md-icon-button
+                  mdTooltip="View Summary Statistics"
+                  [mdTooltipShowDelay]="500"
+                  (click)="openDialog(dataset)">
             <md-icon style="color:steelblue;">show_chart</md-icon>
           </button>
         </td>
         <td>
-          <button md-icon-button mdTooltip="Select as x-axis" (click)="xAxisDataset=i">
-            <md-icon [color]="'accent'">{{ xAxisDataset == i ? "brightness_1" : "panorama_fish_eye" }}</md-icon>
+          <button md-icon-button
+                  mdTooltip="Select as x-axis"
+                  [mdTooltipShowDelay]="500"
+                  (click)="xAxisDataset=i">
+            <md-icon [color]="'accent'">
+              {{ xAxisDataset == i ? "brightness_1" : "panorama_fish_eye" }}
+            </md-icon>
           </button>
         </td>
       </tr>
@@ -55,7 +64,7 @@
     </md-button-toggle-group>
 
     <br><br>
-     <label>Date Range</label>
+    <label>Date Range</label>
     <br>
     <md-input-container style="margin-left:12px;">
       <input mdInput [mdDatepicker]="beginDate" placeholder="Begin Date">
