@@ -1,0 +1,38 @@
+<md-tab-group>
+  <md-tab>
+    <ng-template md-tab-label>
+      <md-icon>map</md-icon>
+      <span>Map</span>
+    </ng-template>
+
+    <app-map></app-map>
+  </md-tab>
+
+  <md-tab>
+    <ng-template md-tab-label>
+      <md-icon>view_list</md-icon>
+      <span>Results</span>
+    </ng-template>
+    <app-results></app-results>
+  </md-tab>
+
+  <md-tab>
+    <ng-template md-tab-label>
+      <md-icon>assignment</md-icon>
+      <span>Details</span>
+    </ng-template>
+    <div class="col-xs-12">
+      Details here
+    </div>
+  </md-tab>
+
+  <md-tab>
+    <ng-template md-tab-label>
+      <md-icon>assessment</md-icon>
+      <span>Visualization</span>
+    </ng-template>
+    <div class="container-fluid" id="visualizationContainer">
+        <app-visualization></app-visualization>
+    </div>
+  </md-tab>
+</md-tab-group>

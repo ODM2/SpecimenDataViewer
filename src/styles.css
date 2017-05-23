@@ -1,1 +1,98 @@
 /* You can add global styles to this file, and also import other style files */
+body, html {
+  height: 100%;
+}
+
+md-tab-group {
+  height: 100%;
+}
+
+.mat-tab-body-wrapper {
+  height: calc(100% - 49px);
+}
+
+md-icon {
+  vertical-align: middle;
+}
+
+
+.md-shadow-1 {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+/*.md-shadow-1:hover {*/
+  /*box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);*/
+/*}*/
+
+.md-shadow-2 {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.md-shadow-3 {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.md-shadow-4 {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.md-shadow-5{
+  box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+/*md-tab-header {*/
+  /*background-color: #4e5eb9;*/
+  /*color: #FFF;*/
+/*}*/
+
+/*md-tab-header .mat-ink-bar {*/
+    /*background-color: #ffffff;*/
+/*}*/
+
+/*.mat-tab-label-active {*/
+  /*opacity: 1 !important;*/
+  /*background-color: rgba(255,255,255,0.2);*/
+/*}*/
+
+.mat-checkbox-label {
+  font-weight: normal;
+}
+
+/*svg {*/
+  /*background: #DDD;*/
+  /*border: 1px solid #000;*/
+  /*width: 100%;*/
+/*}*/
+
+
+/*LINE CHART STYLES*/
+.line {
+  stroke: steelblue;
+  fill: none;
+  clip-path: url(#clip);
+}
+
+.zoom {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+
+.line path {
+  fill: none;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+
+  transition: stroke-width 250ms linear;
+  -moz-transition: stroke-width 250ms linear;
+  -webkit-transition: stroke-width 250ms linear;
+
+  transition-delay: 250ms;
+  -moz-transition-delay: 250ms;
+  -webkit-transition-delay: 250ms;
+}
+
+.line.hover path {
+  stroke-width: 6px;
+}

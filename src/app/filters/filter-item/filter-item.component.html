@@ -1,0 +1,16 @@
+<md-icon>{{ filter.icon }}</md-icon> <span class="sidenav-filter-name">{{ filter.name }}</span>
+
+<div *ngFor="let item of filter.items">
+  <md-checkbox [(ngModel)]="item.selected">
+    <span>{{ item.name }}</span>
+  </md-checkbox>
+  <span class="badge pull-right">{{ item.count }}</span>
+</div>
+
+<br>
+<a href="#">Show More</a>
+
+<hr>
+
+
+

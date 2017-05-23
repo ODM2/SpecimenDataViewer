@@ -1,0 +1,22 @@
+app-map, app-visualization, app-line-chart {
+  height: 100%;
+  display: block;
+}
+
+#visualizationContainer {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.x-axis-radio-group {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.x-axis-radio-button {
+  margin: 5px;
+}
+
+.example-selected-value {
+  margin: 15px 0;
+}

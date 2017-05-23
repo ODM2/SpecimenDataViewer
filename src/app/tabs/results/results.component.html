@@ -1,0 +1,96 @@
+<div class="col-xs-12" style="margin-bottom: 20px;">
+  <md-card style="margin-top: 20px;">
+    <div class="row">
+      <div class="col-xs-12 col-sm-6">
+        <md-icon>search</md-icon>
+        <md-input-container style="width: calc(100% - 28px);">
+          <input mdInput placeholder="Search">
+        </md-input-container>
+      </div>
+      <div class="col-xs-12 col-sm-6 text-right">
+        <span>Date Range:</span>
+        <md-input-container style="margin-left:12px;">
+          <input mdInput [mdDatepicker]="beginDate" placeholder="Begin Date">
+          <button mdSuffix [mdDatepickerToggle]="beginDate"></button>
+        </md-input-container>
+        <md-datepicker #beginDate></md-datepicker>
+        <md-input-container style="margin-left:12px;">
+          <input mdInput [mdDatepicker]="endDate" placeholder="End Date">
+          <button mdSuffix [mdDatepickerToggle]="endDate"></button>
+        </md-input-container>
+        <md-datepicker #endDate></md-datepicker>
+      </div>
+    </div>
+  </md-card>
+</div>
+
+<div class="col-xs-12">
+  <md-card>
+    <md-card-content>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <md-menu #appMenu="mdMenu" [overlapTrigger]="false">
+            <button md-menu-item (click)="onDisplay('All')">
+              <md-icon>{{ selected == 'All' ? 'check' : ''}}</md-icon>All
+            </button>
+            <button md-menu-item (click)="onDisplay('Selected')">
+              <md-icon>{{ selected == 'Selected' ? 'check' : ''}}</md-icon>Selected
+            </button>
+          </md-menu>
+
+          <label style="margin-right: 8px;">Display:</label>
+          <button id="btnSelectView" md-button md-raised-button [mdMenuTriggerFor]="appMenu">
+            <span>{{ selected }}</span> <span class="caret"></span>
+          </button>
+        </div>
+        <div class="col-xs-12 col-sm-6 text-right">
+          <button md-raised-button color="primary" (click)="onClearSelected()">
+            <md-icon>clear</md-icon>
+            Clear Selected
+          </button>
+
+          <button md-raised-button color="primary">
+            <md-icon>cloud_download</md-icon>
+            Export Selected
+          </button>
+        </div>
+      </div>
+
+      <br>
+
+      <table class="table md-shadow-1 table-hover">
+        <thead>
+        <tr>
+          <th></th>
+          <th>Type</th>
+          <th>Network</th>
+          <th>Site Code</th>
+          <th>Site Name</th>
+          <th>Medium</th>
+          <th>Variable Code</th>
+          <th>Variable Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Number of Values</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let entry of dataseries, let i = index" style="cursor: pointer;">
+          <td><md-checkbox [(ngModel)]="entry.selected"></md-checkbox></td>
+          <td (click)="onToggleSelect(i)">{{ entry.type }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.network }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.siteCode }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.siteName }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.medium }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.variableCode }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.variableName }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.startDate | date }}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.endDate | date}}</td>
+          <td (click)="onToggleSelect(i)">{{ entry.numberOfValues }}</td>
+        </tr>
+
+        </tbody>
+      </table>
+    </md-card-content>
+  </md-card>
+</div>

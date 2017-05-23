@@ -1,0 +1,40 @@
+<agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+  <agm-marker *ngFor="let site of sites" [latitude]="site.latitude" [longitude]="site.longitude" [label]="''">
+    <agm-info-window [disableAutoPan]="true">
+      <div><strong>{{ site.siteName }}</strong></div>
+      <div>{{ site.siteCode }}</div>
+      <hr>
+      <table>
+        <tr>
+          <th>Network:</th>
+          <td>{{ site.network }}</td>
+        </tr>
+        <tr>
+          <th>State:</th>
+          <td>{{ site.state }}</td>
+        </tr>
+        <tr>
+          <th>Site Type:</th>
+          <td>{{ site.siteType }}</td>
+        </tr>
+        <tr>
+          <th>County:</th>
+          <td>{{ site.county }}</td>
+        </tr>
+        <tr>
+          <th>Latitude:</th>
+          <td>{{ site.latitude }}</td>
+        </tr>
+        <tr>
+          <th>Longitude:</th>
+          <td>{{ site.longitude }}</td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <button md-button>View Dataseries</button>
+
+    </agm-info-window>
+  </agm-marker>
+</agm-map>

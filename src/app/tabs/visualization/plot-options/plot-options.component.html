@@ -1,0 +1,61 @@
+<md-card style="margin-bottom: 20px;">
+  <md-card-header>
+    <md-card-title>Plot Optionns</md-card-title>
+  </md-card-header>
+  <md-card-content>
+    <md-button-toggle-group [(ngModel)]="plotType">
+      <md-button-toggle value="time-series">
+        Time Series
+      </md-button-toggle>
+      <md-button-toggle value="location">
+        Location
+      </md-button-toggle>
+      <md-button-toggle value="correlation">
+        Correlation
+      </md-button-toggle>
+    </md-button-toggle-group>
+
+    <br><br>
+     <label>Date Range</label>
+    <br>
+    <md-input-container style="margin-left:12px;">
+      <input mdInput [mdDatepicker]="beginDate" placeholder="Begin Date">
+      <button mdSuffix [mdDatepickerToggle]="beginDate"></button>
+    </md-input-container>
+    <md-datepicker #beginDate></md-datepicker>
+    <md-input-container style="margin-left:12px;">
+      <input mdInput [mdDatepicker]="endDate" placeholder="End Date">
+      <button mdSuffix [mdDatepickerToggle]="endDate"></button>
+    </md-input-container>
+    <md-datepicker #endDate></md-datepicker>
+
+    <br><br>
+
+    <label>Datasets</label>
+    <table class="table">
+      <tr *ngFor="let dataset of datasets; let i = index">
+        <td>
+          <button md-icon-button>
+            <md-icon style="color:steelblue;">visibility</md-icon>
+          </button>
+        </td>
+        <th>
+          <span><md-icon style="color:steelblue;">stop</md-icon>{{ dataset.variableName }}</span>
+          <br>
+          <small class="text-muted">
+
+            {{ dataset.siteName }}
+          </small>
+        </th>
+        <td>
+          <button md-icon-button>
+            <md-icon style="color:steelblue;">show_chart</md-icon>
+          </button>
+          <button md-icon-button>
+            <md-icon style="color:steelblue;">brightness_1</md-icon>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </md-card-content>
+</md-card>

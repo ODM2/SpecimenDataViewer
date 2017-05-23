@@ -1,3 +1,31 @@
-<h1>
-  {{title}}
-</h1>
+<app-header></app-header>
+<div class="container-fluid" id="main-container">
+  <div class="row" style="height: 100%;">
+      <md-sidenav-container>
+        <md-sidenav #sidenav mode="side" opened="true">
+          <div class="sidenav-header">
+            <div class="row">
+              <div class="col-xs-6">
+                <md-icon>filter_list</md-icon>
+              <span>Filters</span>
+              </div>
+              <div class="col-xs-6 text-right">
+                <md-icon mdTooltip="Clear All" mdTooltipPosition="right" style="cursor: pointer;">clear</md-icon>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidenav-body">
+            <app-filters></app-filters>
+          </div>
+
+          <div class="sidenav-footer text-right" (click)="sidenav.toggle()">
+            <i class="material-icons">keyboard_arrow_right</i>
+          </div>
+        </md-sidenav>
+
+        <app-tabs></app-tabs>
+      </md-sidenav-container>
+  </div>
+</div>
+
