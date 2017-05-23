@@ -1,5 +1,44 @@
 <md-card style="margin-bottom: 20px;">
   <md-card-header>
+    <md-card-title>Datasets</md-card-title>
+  </md-card-header>
+  <md-card-content>
+    <table class="table">
+      <tr *ngFor="let dataset of datasets; let i = index">
+        <td>
+          <button md-icon-button
+                  [mdTooltip]="dataset.visible ? 'Shown' : 'Hidden'"
+                  (click)="toggleVisibility(i)">
+            <md-icon [style.color]="dataset.visible? 'steelblue' : '#AAA'"
+            >
+              {{ dataset.visible == true ? "visibility" : "visibility_off" }}
+            </md-icon>
+          </button>
+        </td>
+        <th>
+          <span><md-icon style="color:steelblue;">stop</md-icon>{{ dataset.variableName }}</span>
+          <br>
+          <small class="text-muted">
+            {{ dataset.siteName }}
+          </small>
+        </th>
+        <td>
+          <button md-icon-button mdTooltip="View Summary Statistics" (click)="openDialog()">
+            <md-icon style="color:steelblue;">show_chart</md-icon>
+          </button>
+        </td>
+        <td>
+          <button md-icon-button mdTooltip="Select as x-axis" (click)="xAxisDataset=i">
+            <md-icon [color]="'accent'">{{ xAxisDataset == i ? "brightness_1" : "panorama_fish_eye" }}</md-icon>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </md-card-content>
+</md-card>
+
+<md-card style="margin-bottom: 20px;">
+  <md-card-header>
     <md-card-title>Plot Optionns</md-card-title>
   </md-card-header>
   <md-card-content>
@@ -28,34 +67,5 @@
       <button mdSuffix [mdDatepickerToggle]="endDate"></button>
     </md-input-container>
     <md-datepicker #endDate></md-datepicker>
-
-    <br><br>
-
-    <label>Datasets</label>
-    <table class="table">
-      <tr *ngFor="let dataset of datasets; let i = index">
-        <td>
-          <button md-icon-button>
-            <md-icon style="color:steelblue;">visibility</md-icon>
-          </button>
-        </td>
-        <th>
-          <span><md-icon style="color:steelblue;">stop</md-icon>{{ dataset.variableName }}</span>
-          <br>
-          <small class="text-muted">
-
-            {{ dataset.siteName }}
-          </small>
-        </th>
-        <td>
-          <button md-icon-button>
-            <md-icon style="color:steelblue;">show_chart</md-icon>
-          </button>
-          <button md-icon-button>
-            <md-icon style="color:steelblue;">brightness_1</md-icon>
-          </button>
-        </td>
-      </tr>
-    </table>
   </md-card-content>
 </md-card>

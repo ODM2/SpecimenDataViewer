@@ -4,16 +4,24 @@
       <md-card-header>
         <div class="text-center" style="width: 100%;">
           <md-button-toggle-group [(ngModel)]="selectedChart">
-            <md-button-toggle [value]="visualizationService.charts.scatterPlot">
+            <md-button-toggle
+              [value]="visualizationService.charts.scatterPlot"
+              mdTooltip="Scatterplot">
               <md-icon>bubble_chart</md-icon>
             </md-button-toggle>
-            <md-button-toggle [value]="visualizationService.charts.lineChart">
+            <md-button-toggle
+              [value]="visualizationService.charts.lineChart"
+              mdTooltip="Time Series">
               <md-icon>timeline</md-icon>
             </md-button-toggle>
-            <md-button-toggle [value]="visualizationService.charts.histogram">
+            <md-button-toggle
+              [value]="visualizationService.charts.histogram"
+            mdTooltip="Histogram">
               <md-icon>equalizer</md-icon>
             </md-button-toggle>
-            <md-button-toggle [value]="visualizationService.charts.boxPlot">
+            <md-button-toggle
+              [value]="visualizationService.charts.boxPlot"
+            mdTooltip="Box and Whisker">
               <md-icon>view_week</md-icon>
             </md-button-toggle>
           </md-button-toggle-group>
@@ -39,65 +47,6 @@
     <div class="row">
       <div class="col-xs-12">
         <app-plot-options></app-plot-options>
-      </div>
-      <div class="col-xs-12">
-        <md-card>
-          <md-card-header>Summary Statistics</md-card-header>
-          <div class="row">
-            <div class="col-xs-6">
-              <md-list>
-                <md-list-item>
-                  <h5 md-line class="text-muted">Arithmetic Mean</h5>
-                  <p md-line>-0.01</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>Geometric Mean</h5>
-                  <p md-line>0.08</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>Maximum</h5>
-                  <p md-line>1485</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>Minimum</h5>
-                  <p md-line>790</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>Standard Deviation</h5>
-                  <p md-line>0.02</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>Number of Observations</h5>
-                  <p md-line>120</p>
-                </md-list-item>
-              </md-list>
-            </div>
-            <div class="col-xs-6">
-              <md-list>
-                <md-list-item>
-                  <h5 md-line>10%</h5>
-                  <p md-line>-0.01</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>25%</h5>
-                  <p md-line>0.01</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>Median, 50%</h5>
-                  <p md-line>-0.02</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>75%</h5>
-                  <p md-line>-0.03</p>
-                </md-list-item>
-                <md-list-item>
-                  <h5 md-line>90%</h5>
-                  <p md-line>0.00</p>
-                </md-list-item>
-              </md-list>
-            </div>
-          </div>
-        </md-card>
       </div>
     </div>
   </div>

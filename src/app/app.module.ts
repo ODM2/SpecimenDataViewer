@@ -19,7 +19,8 @@ import {
   MdSelectModule,
   MdButtonToggleModule,
   MdTooltipModule,
-  MdRadioModule
+  MdRadioModule,
+  MdDialogModule
 } from '@angular/material';
 import 'hammerjs';
 
@@ -41,6 +42,7 @@ import { HistogramComponent } from './tabs/visualization/charts/histogram/histog
 import { PlotOptionsComponent } from './tabs/visualization/plot-options/plot-options.component';
 import { ScatterPlotComponent } from './tabs/visualization/charts/scatter-plot/scatter-plot.component';
 import { BoxPlotComponent } from './tabs/visualization/charts/box-plot/box-plot.component';
+import { SummaryStatisticsComponent } from './tabs/visualization/summary-statistics/summary-statistics.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,7 @@ import { BoxPlotComponent } from './tabs/visualization/charts/box-plot/box-plot.
     PlotOptionsComponent,
     ScatterPlotComponent,
     BoxPlotComponent,
+    SummaryStatisticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,7 +87,10 @@ import { BoxPlotComponent } from './tabs/visualization/charts/box-plot/box-plot.
     MdSelectModule,
     MdTooltipModule,
     MdRadioModule,
-
+    MdDialogModule
+  ],
+  entryComponents: [
+    SummaryStatisticsComponent
   ],
   providers: [DataService, AgmMap, GoogleMapsAPIWrapper, VisualizationService],
   bootstrap: [AppComponent]
