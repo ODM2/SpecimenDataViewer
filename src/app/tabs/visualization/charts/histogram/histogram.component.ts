@@ -1,15 +1,114 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
+import * as d3 from "d3";
 
 @Component({
   selector: 'app-histogram',
   templateUrl: './histogram.component.html',
   styleUrls: ['./histogram.component.css']
 })
-export class HistogramComponent implements OnInit {
+export class HistogramComponent implements OnInit, AfterViewInit {
+  @ViewChild("containerHistogram") element: ElementRef;
+  private data = [];
+  private host: d3.Selection;
+  private svg: d3.Selection;
+  private htmlElement: HTMLElement;
+  private parseDate = d3.timeParse("%d-%m-%Y");
+  private chart: any;
+  private y: any;
+  private x: any;
+  private height: any;
+  private width: any;
+  private margin: any;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
+  ngAfterViewInit() {
+    this.htmlElement = this.element.nativeElement;
+    this.host = d3.select(this.htmlElement);
+    this.host.html("");
+
+    // set the dimensions and margins of the graph
+    this.margin = {top: 10, right: 30, bottom: 30, left: 40};
+    this.width = 960 - this.margin.left - this.margin.right;
+    this.height = 500 - this.margin.top - this.margin.bottom;
+
+
+    // set the ranges
+    this.x = d3.scaleTime()
+      .domain([new Date(2010, 6, 3), new Date(2012, 0, 1)])
+      .rangeRound([0, this.width]);
+    this.y = d3.scaleLinear()
+      .range([this.height, 0]);
+
+    // set the parameters for the histogram
+    this.chart = d3.histogram()
+      .value((d) => {
+        return d.date;
+      })
+      .domain(this.x.domain())
+      .thresholds(this.x.ticks(d3.timeMonth));
+
+    this.svg = this.host.append("svg").attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("height", this.height + this.margin.top + this.margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    // get the data
+    d3.csv("assets/histogram-data.csv", this.loadData.bind(this));
+  }
+
+  loadData(error, data) {
+    if (error) throw error;
+
+    // format the data
+    data.forEach((d) => {
+      d.date = this.parseDate(d.dtg);
+    });
+
+    // group the data for the bars
+    let bins = this.chart(data);
+
+    // Scale the range of the data in the y domain
+    this.y.domain([0, d3.max(bins, (d) => {
+      return d.length;
+    })]);
+
+    // append the bar rectangles to the svg element
+
+    this.svg.selectAll("rect")
+      .data(bins)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", 1)
+      .attr("transform", this.rectTransform.bind(this))
+      .attr("width", this.rectWidth.bind(this))
+      .attr("height", this.rectHeight.bind(this));
+
+    // add the x Axis
+    this.svg.append("g")
+      .attr("transform", "translate(0," + this.height + ")")
+      .call(d3.axisBottom(this.x));
+
+    // add the y Axis
+    this.svg.append("g")
+      .call(d3.axisLeft(this.y));
+
+  }
+
+  rectTransform(d) {
+    return "translate(" + this.x(d.x0) + "," + this.y(d.length) + ")";
+  }
+
+  rectWidth(d) {
+    return this.x(d.x1) - this.x(d.x0) - 1;
+  }
+
+  rectHeight(d) {
+    return this.height - this.y(d.length);
+  }
 }

@@ -20,8 +20,18 @@
         </div>
       </md-card-header>
       <md-card-content>
-        <app-line-chart *ngIf="selectedChart==visualizationService.charts.lineChart"></app-line-chart>
-        <app-histogram *ngIf="selectedChart==visualizationService.charts.histogram"></app-histogram>
+        <app-line-chart
+          *ngIf="selectedChart==visualizationService.charts.lineChart">
+        </app-line-chart>
+        <app-histogram
+          *ngIf="selectedChart==visualizationService.charts.histogram">
+        </app-histogram>
+        <app-scatter-plot
+          *ngIf="selectedChart==visualizationService.charts.scatterPlot">
+        </app-scatter-plot>
+        <app-box-plot
+          *ngIf="selectedChart==visualizationService.charts.boxPlot">
+        </app-box-plot>
       </md-card-content>
     </md-card>
   </div>

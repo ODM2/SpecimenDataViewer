@@ -40,6 +40,7 @@ import { LineChartComponent } from './tabs/visualization/charts/line-chart/line-
 import { HistogramComponent } from './tabs/visualization/charts/histogram/histogram.component';
 import { PlotOptionsComponent } from './tabs/visualization/plot-options/plot-options.component';
 import { ScatterPlotComponent } from './tabs/visualization/charts/scatter-plot/scatter-plot.component';
+import { BoxPlotComponent } from './tabs/visualization/charts/box-plot/box-plot.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ScatterPlotComponent } from './tabs/visualization/charts/scatter-plot/s
     HistogramComponent,
     PlotOptionsComponent,
     ScatterPlotComponent,
+    BoxPlotComponent,
   ],
   imports: [
     BrowserModule,

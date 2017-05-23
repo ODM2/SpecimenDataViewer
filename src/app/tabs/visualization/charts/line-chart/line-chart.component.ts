@@ -7,7 +7,7 @@ import {LineChart} from "./line-chart.model";
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.css']
 })
-export class LineChartComponent implements AfterViewInit {
+export class LineChartComponent implements AfterViewInit, OnInit {
   @ViewChild("containerLineChart") element: ElementRef;
 
   private data = [];
@@ -44,11 +44,12 @@ export class LineChartComponent implements AfterViewInit {
 
     this.context.margin = {top: this.focus.dimensions.height + 80, right: 20, bottom: 30, left: 40};
     this.context.dimensions.height = +this.svg.attr("height") - this.context.margin.top - this.context.margin.bottom;
+    this.context.dimensions.width = this.focus.dimensions.width;
 
     this.focus.scale.x = d3.scaleTime().range([0, this.focus.dimensions.width]);
     this.focus.scale.y = d3.scaleLinear().range([this.focus.dimensions.height, 0]);
 
-    this.context.scale.x = d3.scaleTime().range([0, this.focus.dimensions.width]);
+    this.context.scale.x = d3.scaleTime().range([0, this.context.dimensions.width]);
     this.context.scale.y = d3.scaleLinear().range([this.context.dimensions.height, 0]);
 
     this.focus.axis.x = d3.axisBottom(this.focus.scale.x);
@@ -66,16 +67,6 @@ export class LineChartComponent implements AfterViewInit {
       .extent([[0, 0], [this.focus.dimensions.width, this.focus.dimensions.height]])
       .on("zoom", this.zoomed.bind(this));
 
-    // var area = d3.area()
-    //   .curve(d3.curveLinear)
-    //   .x(function (d) {
-    //     return x(d.date);
-    //   })
-    //   .y0(height)
-    //   .y1(function (d) {
-    //     return y(d.price);
-    //   });
-
     this.focus.line = d3.line()
       .x((d) => {
         return this.focus.scale.x(d.date);
@@ -92,16 +83,6 @@ export class LineChartComponent implements AfterViewInit {
         return this.context.scale.y(d.price);
       });
 
-    // var area2 = d3.area()
-    //   .curve(d3.curveLinear)
-    //   .x(function (d) {
-    //     return x2(d.date);
-    //   })
-    //   .y0(height2)
-    //   .y1(function (d) {
-    //     return y2(d.price);
-    //   });
-
     this.svg.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
@@ -117,7 +98,7 @@ export class LineChartComponent implements AfterViewInit {
       .attr("transform", "translate(" + this.context.margin.left + "," + this.context.margin.top + ")");
 
     // Data handling
-    d3.csv("assets/data.csv", this.type.bind(this), this.loadData.bind(this));
+    d3.csv("assets/line-chart-data.csv", this.type.bind(this), this.loadData.bind(this));
   }
 
   loadData(error, data) {

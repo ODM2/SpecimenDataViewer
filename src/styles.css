@@ -67,19 +67,23 @@ md-icon {
 
 
 /*LINE CHART STYLES*/
-.line {
+svg {
+  font: 10px sans-serif;
+}
+
+app-line-chart .line {
   stroke: steelblue;
   fill: none;
   clip-path: url(#clip);
 }
 
-.zoom {
+app-line-chart .zoom {
   cursor: move;
   fill: none;
   pointer-events: all;
 }
 
-.line path {
+app-line-chart .line path {
   fill: none;
   stroke-width: 1.5px;
   stroke-linecap: round;
@@ -93,6 +97,10 @@ md-icon {
   -webkit-transition-delay: 250ms;
 }
 
-.line.hover path {
+app-line-chart .line.hover path {
   stroke-width: 6px;
 }
+
+/*HISTOGRAM STYLING*/
+
+app-histogram rect.bar { fill: steelblue; }
