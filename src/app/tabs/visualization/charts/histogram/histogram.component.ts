@@ -16,8 +16,8 @@ export class HistogramComponent implements OnInit, AfterViewInit {
   private chart: any;
   private y: any;
   private x: any;
-  private height: any;
-  private width: any;
+  private height: number;
+  private width: number;
   private margin: any;
 
   constructor() {
@@ -36,13 +36,12 @@ export class HistogramComponent implements OnInit, AfterViewInit {
     this.width = 960 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
 
-
     // set the ranges
     this.x = d3.scaleTime()
       .domain([new Date(2010, 6, 3), new Date(2012, 0, 1)])
       .rangeRound([0, this.width]);
     this.y = d3.scaleLinear()
-      .range([this.height, 0]);
+      .range([this.height , 0]);
 
     // set the parameters for the histogram
     this.chart = d3.histogram()
@@ -74,20 +73,28 @@ export class HistogramComponent implements OnInit, AfterViewInit {
     let bins = this.chart(data);
 
     // Scale the range of the data in the y domain
-    this.y.domain([0, d3.max(bins, (d) => {
+    let maxY = d3.max(bins, (d) => {
       return d.length;
-    })]);
+    });
+    this.y.domain([0, maxY]);
 
     // append the bar rectangles to the svg element
 
     this.svg.selectAll("rect")
       .data(bins)
       .enter().append("rect")
+      .attr("height", 0)      //setting height 0 for the transition effect
       .attr("class", "bar")
+      .attr("y", this.y(0))
       .attr("x", 1)
-      .attr("transform", this.rectTransform.bind(this))
+      .attr("x", this.rectTransformX.bind(this))
       .attr("width", this.rectWidth.bind(this))
-      .attr("height", this.rectHeight.bind(this));
+      .transition()
+        .ease(d3.easeBack)
+        .duration(600)
+        .attr("y", this.rectTransformY.bind(this))
+        .attr("height", this.rectHeight.bind(this));
+
 
     // add the x Axis
     this.svg.append("g")
@@ -100,8 +107,12 @@ export class HistogramComponent implements OnInit, AfterViewInit {
 
   }
 
-  rectTransform(d) {
-    return "translate(" + this.x(d.x0) + "," + this.y(d.length) + ")";
+  rectTransformX(d) {
+    return this.x(d.x0);
+  }
+
+  rectTransformY(d) {
+    return this.y(d.length);
   }
 
   rectWidth(d) {

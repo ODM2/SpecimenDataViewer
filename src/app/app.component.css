@@ -1,7 +1,3 @@
 #main-container {
   height: calc(100% - 64px);
 }
-
-#main-container, md-sidenav {
-  background-color: #fafafa;
-}

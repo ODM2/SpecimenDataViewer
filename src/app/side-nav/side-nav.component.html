@@ -17,14 +17,20 @@
           <app-filters></app-filters>
         </div>
 
-        <div class="sidenav-footer" (click)="sidenav.close(); onNavBarClose()">
+        <div class="sidenav-footer"
+             (click)="sidenav.close(); onNavBarClose()"
+             mdTooltip="Hide filters" mdTooltipPosition="above"
+        >
           <i class="material-icons">keyboard_arrow_left</i>
         </div>
       </md-sidenav>
 
       <app-tabs></app-tabs>
     </md-sidenav-container>
-    <button id="btnShowFilters" *ngIf="!sideNavVisible" md-mini-fab (click)="sidenav.open(); onNavBarOpen()">
+    <button id="btnShowFilters"
+            mdTooltip="Show filters"
+            mdTooltipPosition="right"
+            *ngIf="!sideNavVisible" md-mini-fab (click)="sidenav.open(); onNavBarOpen()">
       <md-icon>filter_list</md-icon>
     </button>
   </div>

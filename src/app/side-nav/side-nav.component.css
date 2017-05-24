@@ -33,6 +33,10 @@ md-sidenav {
   height: 32px;
 }
 
+.sidenav-footer:hover {
+  background-color: #eaeaea;
+}
+
 #btnToggleSideNav {
   width: 100%;
   text-align: right;
