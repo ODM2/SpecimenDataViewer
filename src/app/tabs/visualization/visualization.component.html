@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-xs-12 col-sm-8">
-    <md-card id="visualization-card" style="margin-bottom: 20px;">
+    <md-card id="visualization-card">
       <md-card-header>
         <div class="row" style="width: 100%;">
           <div class="col-xs-8">
@@ -9,11 +9,14 @@
                 <input mdInput [mdDatepicker]="beginDate" placeholder="Begin Date">
                 <button mdSuffix [mdDatepickerToggle]="beginDate"></button>
               </md-input-container>
+
               <md-datepicker #beginDate></md-datepicker>
+
               <md-input-container style="margin-left:12px;">
                 <input mdInput [mdDatepicker]="endDate" placeholder="End Date">
                 <button mdSuffix [mdDatepickerToggle]="endDate"></button>
               </md-input-container>
+
               <md-datepicker #endDate></md-datepicker>
             </div>
 
@@ -22,13 +25,15 @@
                 [(ngModel)]="selectedLineChartView"
                 (change)="visualizationService.setLineChartView(selectedLineChartView)">
                 <md-button-toggle [value]="visualizationService.lineChartViews.point">
-                  <span>Point</span>
+                  <span>● Point</span>
                 </md-button-toggle>
+
                 <md-button-toggle [value]="visualizationService.lineChartViews.line">
-                  <span>Line</span>
+                  <md-icon>show_chart</md-icon><span> Line</span>
                 </md-button-toggle>
+
                 <md-button-toggle [value]="visualizationService.lineChartViews.both">
-                  <span>Both</span>
+                  <md-icon>timeline</md-icon><span> Both</span>
                 </md-button-toggle>
               </md-button-toggle-group>
             </div>
@@ -47,20 +52,23 @@
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.correlation"
                 [value]="visualizationService.charts.scatterPlot"
                 mdTooltip="Scatter plot" [mdTooltipShowDelay]="500">
-                <md-icon>bubble_chart</md-icon>
+                <md-icon>grain</md-icon>
               </md-button-toggle>
+
               <md-button-toggle
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.timeSeries"
                 [value]="visualizationService.charts.lineChart"
                 mdTooltip="Point and Line" [mdTooltipShowDelay]="500">
-                <md-icon>timeline</md-icon>
+                <md-icon>multiline_chart</md-icon>
               </md-button-toggle>
+
               <md-button-toggle
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.timeSeries"
                 [value]="visualizationService.charts.histogram"
                 mdTooltip="Histogram" [mdTooltipShowDelay]="500">
                 <md-icon>equalizer</md-icon>
               </md-button-toggle>
+
               <md-button-toggle
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.timeSeries || visualizationService.getPlotType() == visualizationService.plotTypes.location"
                 [value]="visualizationService.charts.boxPlot"

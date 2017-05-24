@@ -44,6 +44,7 @@ import { PlotOptionsComponent } from './tabs/visualization/plot-options/plot-opt
 import { ScatterPlotComponent } from './tabs/visualization/charts/scatter-plot/scatter-plot.component';
 import { BoxPlotComponent } from './tabs/visualization/charts/box-plot/box-plot.component';
 import { SummaryStatisticsComponent } from './tabs/visualization/summary-statistics/summary-statistics.component';
+import { SideNavComponent } from './side-nav/side-nav.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { SummaryStatisticsComponent } from './tabs/visualization/summary-statist
     ScatterPlotComponent,
     BoxPlotComponent,
     SummaryStatisticsComponent,
+    SideNavComponent,
   ],
   imports: [
     BrowserModule,

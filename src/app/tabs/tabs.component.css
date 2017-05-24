@@ -20,3 +20,7 @@ app-map, app-visualization, app-line-chart {
 .example-selected-value {
   margin: 15px 0;
 }
+
+md-icon {
+  vertical-align: middle;
+}
