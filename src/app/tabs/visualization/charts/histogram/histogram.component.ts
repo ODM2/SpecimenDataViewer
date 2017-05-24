@@ -90,11 +90,10 @@ export class HistogramComponent implements OnInit, AfterViewInit {
       .attr("x", this.rectTransformX.bind(this))
       .attr("width", this.rectWidth.bind(this))
       .transition()
-        .ease(d3.easeBack)
+        .ease(d3.easeExp)
         .duration(600)
         .attr("y", this.rectTransformY.bind(this))
         .attr("height", this.rectHeight.bind(this));
-
 
     // add the x Axis
     this.svg.append("g")
@@ -104,7 +103,6 @@ export class HistogramComponent implements OnInit, AfterViewInit {
     // add the y Axis
     this.svg.append("g")
       .call(d3.axisLeft(this.y));
-
   }
 
   rectTransformX(d) {
@@ -116,7 +114,7 @@ export class HistogramComponent implements OnInit, AfterViewInit {
   }
 
   rectWidth(d) {
-    return this.x(d.x1) - this.x(d.x0) - 1;
+    return Math.max(0,this.x(d.x1) - this.x(d.x0) - 1);
   }
 
   rectHeight(d) {
