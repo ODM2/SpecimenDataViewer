@@ -99,3 +99,19 @@ app-line-chart .line.hover path {
 /*HISTOGRAM STYLING*/
 
 app-histogram rect.bar { fill: steelblue; }
+
+app-details .node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+app-details .node text {
+  font: 12px sans-serif;
+}
+
+app-details .link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
