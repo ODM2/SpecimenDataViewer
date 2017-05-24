@@ -20,7 +20,8 @@ import {
   MdButtonToggleModule,
   MdTooltipModule,
   MdRadioModule,
-  MdDialogModule
+  MdDialogModule,
+  MdSliderModule
 } from '@angular/material';
 import 'hammerjs';
 
@@ -87,7 +88,8 @@ import { SummaryStatisticsComponent } from './tabs/visualization/summary-statist
     MdSelectModule,
     MdTooltipModule,
     MdRadioModule,
-    MdDialogModule
+    MdDialogModule,
+    MdSliderModule
   ],
   entryComponents: [
     SummaryStatisticsComponent

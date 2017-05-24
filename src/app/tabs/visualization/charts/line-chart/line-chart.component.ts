@@ -36,7 +36,7 @@ export class LineChartComponent implements AfterViewInit, OnInit {
 
     this.svg = this.host.append("svg");
     this.svg.attr("width", document.querySelector(".mat-tab-body-wrapper").clientWidth - 145);
-    this.svg.attr("height", document.querySelector(".mat-tab-body-wrapper").clientHeight - 100);
+    this.svg.attr("height", document.querySelector(".mat-tab-body-wrapper").clientHeight - 175);
 
     this.focus.margin = {top: 20, right: 20, bottom: 160, left: 40};
     this.focus.dimensions.width = +this.svg.attr("width") - this.focus.margin.left - this.focus.margin.right;

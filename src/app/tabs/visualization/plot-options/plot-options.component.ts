@@ -10,7 +10,7 @@ import {MdDialog} from "@angular/material";
 })
 export class PlotOptionsComponent implements OnInit {
   private xAxisDataset: number;
-  plotType: string;
+  plotType: number;
   datasets = [
     {
       variableName:"Blue-green algae (cyanobacteria), phycocyanin",
@@ -49,7 +49,7 @@ export class PlotOptionsComponent implements OnInit {
 
   ngOnInit() {
     this.visualizationService.setPlotType(this.visualizationService.plotTypes.timeSeries);
-    this.plotType = "time-series";
+    this.plotType = this.visualizationService.plotTypes.timeSeries;
     this.xAxisDataset = 0;
   }
 
