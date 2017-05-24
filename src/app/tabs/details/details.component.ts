@@ -130,22 +130,19 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     this.i = 0;
     this.duration = 400;
 
-// declares a tree layout and assigns the size
+    // declares a tree layout and assigns the size
     this.treemap = d3.tree().size([this.height, this.width]);
 
-// Assigns parent, children, height, depth
+    // Assigns parent, children, height, depth
     this.root = d3.hierarchy(treeData, (d) => {
       return d.children;
     });
     this.root.x0 = this.height / 2;
     this.root.y0 = 0;
 
-// Collapse after the second level
-
+    // Collapse after the second level
     this.root.children.forEach(this.collapse.bind(this));
-
     this.update(this.root);
-
   }
 
   // Collapse the node and all it's children
@@ -159,10 +156,10 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
   update(source) {
     // Assigns the x and y position for the nodes
-    var treeData = this.treemap(this.root);
+    let treeData = this.treemap(this.root);
 
     // Compute the new tree layout.
-    var nodes = treeData.descendants(),
+    let nodes = treeData.descendants(),
       links = treeData.descendants().slice(1);
 
     // Normalize for fixed-depth.
@@ -173,18 +170,18 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     // ****************** Nodes section ***************************
 
     // Update the nodes...
-    var node = this.svg.selectAll('g.node')
+    let node = this.svg.selectAll('g.node')
       .data(nodes, (d) => {
         return d.id || (d.id = ++this.i);
       });
 
     // Enter any new modes at the parent's previous position.
-    var nodeEnter = node.enter().append('g')
+    let nodeEnter = node.enter().append('g')
       .attr('class', 'node')
       .attr("transform", (d) => {
         return "translate(" + source.y0 + "," + source.x0 + ")";
       })
-      .on('click', click.bind(this));
+      .on('click', this.click.bind(this));
 
     // Add Circle for the nodes
     nodeEnter.append('circle')
@@ -208,7 +205,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       });
 
     // UPDATE
-    var nodeUpdate = nodeEnter.merge(node);
+    let nodeUpdate = nodeEnter.merge(node);
 
     // Transition to the proper position for the node
     nodeUpdate.transition()
@@ -227,7 +224,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
 
     // Remove any exiting nodes
-    var nodeExit = node.exit().transition()
+    let nodeExit = node.exit().transition()
       .duration(this.duration)
       .attr("transform", (d) => {
         return "translate(" + source.y + "," + source.x + ")";
@@ -245,35 +242,35 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     // ****************** links section ***************************
 
     // Update the links...
-    var link = this.svg.selectAll('path.link')
+    let link = this.svg.selectAll('path.link')
       .data(links, (d) => {
         return d.id;
       });
 
     // Enter any new links at the parent's previous position.
-    var linkEnter = link.enter().insert('path', "g")
+    let linkEnter = link.enter().insert('path', "g")
       .attr("class", "link")
       .attr('d', (d) => {
         var o = {x: source.x0, y: source.y0};
-        return diagonal(o, o)
+        return this.diagonal(o, o)
       });
 
     // UPDATE
-    var linkUpdate = linkEnter.merge(link);
+    let linkUpdate = linkEnter.merge(link);
 
     // Transition back to the parent element position
     linkUpdate.transition()
       .duration(this.duration)
       .attr('d', (d) => {
-        return diagonal(d, d.parent)
+        return this.diagonal(d, d.parent)
       });
 
     // Remove any exiting links
-    var linkExit = link.exit().transition()
+    let linkExit = link.exit().transition()
       .duration(this.duration)
       .attr('d', (d) => {
-        var o = {x: source.x, y: source.y};
-        return diagonal(o, o)
+        let o = {x: source.x, y: source.y};
+        return this.diagonal(o, o)
       })
       .remove();
 
@@ -282,29 +279,26 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       d.x0 = d.x;
       d.y0 = d.y;
     });
-
-    // Creates a curved (diagonal) path from parent to the child nodes
-    function diagonal(s, d) {
-
-      let path = `M ${s.y} ${s.x}
-            C ${(s.y + d.y) / 2} ${s.x},
-              ${(s.y + d.y) / 2} ${d.x},
-              ${d.y} ${d.x}`
-
-      return path
-    }
-
-    // Toggle children on click.
-    function click(d) {
-      if (d.children) {
-        d._children = d.children;
-        d.children = null;
-      } else {
-        d.children = d._children;
-        d._children = null;
-      }
-      this.update(d).bind(this);
-    }
   }
 
+  // Creates a curved (diagonal) path from parent to the child nodes
+  diagonal(s, d) {
+    let path = `M ${s.y} ${s.x}
+            C ${(s.y + d.y) / 2} ${s.x},
+              ${(s.y + d.y) / 2} ${d.x},
+              ${d.y} ${d.x}`;
+    return path;
+  }
+
+  // Toggle children on click.
+  click(d) {
+    if (d.children) {
+      d._children = d.children;
+      d.children = null;
+    } else {
+      d.children = d._children;
+      d._children = null;
+    }
+    this.update(d);
+  }
 }
