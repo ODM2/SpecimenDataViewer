@@ -40,9 +40,25 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     this.svg = this.host.append("svg")
       .attr("width", this.width + this.margin.right + this.margin.left)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
+
+
+    let filter = this.svg.append("defs").append("filter")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 1)
+      .attr("height", 1)
+      .attr("id", "solid");
+
+    filter.append("feFlood")
+      .attr("flood-color", "rgba(255, 255, 255, 0.64)");
+
+    filter.append("feComposite")
+      .attr("in", "SourceGraphic");
+
+    this.svg = this.svg.append("g")
       .attr("transform", "translate("
         + this.margin.left + "," + this.margin.top + ")");
+
 
     var treeData =
     {
@@ -67,7 +83,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
                     {"name": "11/24/2017"}
                   ]
                 },
-                {"name": "value",
+                {
+                  "name": "value",
                   "children": [
                     {"name": "20.35"}
                   ]
@@ -83,7 +100,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
                     {"name": "11/24/2017"}
                   ]
                 },
-                {"name": "value",
+                {
+                  "name": "value",
                   "children": [
                     {"name": "20.35"}
                   ]
@@ -99,7 +117,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
                     {"name": "11/24/2017"}
                   ]
                 },
-                {"name": "value",
+                {
+                  "name": "value",
                   "children": [
                     {"name": "20.35"}
                   ]
@@ -115,7 +134,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
                     {"name": "11/24/2017"}
                   ]
                 },
-                {"name": "value",
+                {
+                  "name": "value",
                   "children": [
                     {"name": "20.35"}
                   ]
@@ -188,12 +208,13 @@ export class DetailsComponent implements OnInit, AfterViewInit {
       .attr('class', 'node')
       .attr('r', 1e-6)
       .style("fill", (d) => {
-        return d._children ? "lightsteelblue" : "#fff";
+        return d._children ? "#9bc0de" : "#fff";
       });
 
     // Add labels for the nodes
     nodeEnter.append('text')
       .attr("dy", ".35em")
+      .attr("filter", "url(#solid)")
       .attr("x", (d) => {
         return d.children || d._children ? -13 : 13;
       })
@@ -218,7 +239,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
     nodeUpdate.select('circle.node')
       .attr('r', 10)
       .style("fill", (d) => {
-        return d._children ? "lightsteelblue" : "#fff";
+        return d._children ? "#9bc0de" : "#fff";
       })
       .attr('cursor', 'pointer');
 

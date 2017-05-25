@@ -33,7 +33,7 @@ export class HistogramComponent implements OnInit, AfterViewInit {
 
     // set the dimensions and margins of the graph
     this.margin = {top: 10, right: 30, bottom: 30, left: 40};
-    this.width = 960 - this.margin.left - this.margin.right;
+    this.width = 730 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
 
     // set the ranges

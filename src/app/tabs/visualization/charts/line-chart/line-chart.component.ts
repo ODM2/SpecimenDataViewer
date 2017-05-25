@@ -14,8 +14,6 @@ export class LineChartComponent implements AfterViewInit, OnInit {
   private host: d3.Selection;
   private svg: d3.Selection;
   private htmlElement: HTMLElement;
-  private width;
-  private height;
   private brush;
   private zoom;
   private parseDate = d3.timeParse("%b %Y");
@@ -35,14 +33,14 @@ export class LineChartComponent implements AfterViewInit, OnInit {
     this.host.html("");
 
     this.svg = this.host.append("svg");
-    this.svg.attr("width", document.querySelector(".mat-tab-body-wrapper").clientWidth - 145);
+    this.svg.attr("width", document.querySelector(".mat-tab-body-wrapper").clientWidth - 485);
     this.svg.attr("height", document.querySelector(".mat-tab-body-wrapper").clientHeight - 175);
 
-    this.focus.margin = {top: 20, right: 20, bottom: 160, left: 40};
+    this.focus.margin = {top: 20, right: 20, bottom: 180, left: 60};
     this.focus.dimensions.width = +this.svg.attr("width") - this.focus.margin.left - this.focus.margin.right;
     this.focus.dimensions.height = +this.svg.attr("height") - this.focus.margin.top - this.focus.margin.bottom;
 
-    this.context.margin = {top: this.focus.dimensions.height + 80, right: 20, bottom: 30, left: 40};
+    this.context.margin = {top: this.focus.dimensions.height + 80, right: 20, bottom: 30, left: 60};
     this.context.dimensions.height = +this.svg.attr("height") - this.context.margin.top - this.context.margin.bottom;
     this.context.dimensions.width = this.focus.dimensions.width;
 
@@ -117,6 +115,20 @@ export class LineChartComponent implements AfterViewInit, OnInit {
       .attr("class", "line")
       .attr("d", this.focus.line);
 
+    // Add circle points to the focus graph
+    this.focus.g.selectAll("dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("r", 3)
+      .attr("class", "point")
+      .attr("fill", "steelblue")
+      .attr("cx", function (d) {
+        return this.focus.scale.x(d.date);
+      }.bind(this))
+      .attr("cy", function (d) {
+        return this.focus.scale.y(d.price);
+      }.bind(this));
+
     this.focus.g.append("g")
       .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + this.focus.dimensions.height + ")")
@@ -130,6 +142,20 @@ export class LineChartComponent implements AfterViewInit, OnInit {
       .datum(data)
       .attr("class", "line")
       .attr("d", this.context.line);
+
+    // Add circle points to the focus graph
+    this.context.g.selectAll("dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("r", 1.5)
+      .attr("class", "point")
+      .attr("fill", "steelblue")
+      .attr("cx", function (d) {
+        return this.context.scale.x(d.date);
+      }.bind(this))
+      .attr("cy", function (d) {
+        return this.context.scale.y(d.price);
+      }.bind(this));
 
     this.context.g.append("g")
       .attr("class", "axis axis--x")
@@ -147,6 +173,22 @@ export class LineChartComponent implements AfterViewInit, OnInit {
       .attr("height", this.focus.dimensions.height)
       .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")")
       .call(this.zoom);
+
+    // Y-axis label
+    this.focus.g.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - this.focus.margin.left)
+      .attr("x",0 - (this.focus.dimensions.height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Y axis label");
+
+    // text label for the x axis
+    this.focus.g.append("text")
+      .attr("x", this.focus.dimensions.width / 2)
+      .attr("y", this.focus.dimensions.height + this.focus.margin.top + 20)
+      .style("text-anchor", "middle")
+      .text("X-axis label");
   }
 
   brushed() {
@@ -154,6 +196,13 @@ export class LineChartComponent implements AfterViewInit, OnInit {
     let s = d3.event.selection || this.context.scale.x.range();
     this.focus.scale.x.domain(s.map(this.context.scale.x.invert, this.context.scale.x));
     this.focus.g.select(".line").attr("d", this.focus.line);
+    this.focus.g.selectAll(".point")
+      .attr("cx", function (d) {
+        return this.focus.scale.x(d.date);
+      }.bind(this))
+      .attr("cy", function (d) {
+        return this.focus.scale.y(d.price);
+      }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
     this.svg.select(".zoom").call(this.zoom.transform, d3.zoomIdentity
       .scale(this.focus.dimensions.width / (s[1] - s[0]))
@@ -165,6 +214,13 @@ export class LineChartComponent implements AfterViewInit, OnInit {
     let t = d3.event.transform;
     this.focus.scale.x.domain(t.rescaleX(this.context.scale.x).domain());
     this.focus.g.select(".line").attr("d", this.focus.line);
+    this.focus.g.selectAll(".point")
+      .attr("cx", function (d) {
+        return this.focus.scale.x(d.date);
+      }.bind(this))
+      .attr("cy", function (d) {
+        return this.focus.scale.y(d.price);
+      }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
     this.context.g.select(".brush").call(this.brush.move, this.focus.scale.x.range().map(t.invertX, t));
   }

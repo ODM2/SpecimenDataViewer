@@ -36,30 +36,9 @@ md-tab-group {
   box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 }
 
-/*md-tab-header {*/
-  /*background-color: #4e5eb9;*/
-  /*color: #FFF;*/
-/*}*/
-
-/*md-tab-header .mat-ink-bar {*/
-    /*background-color: #ffffff;*/
-/*}*/
-
-/*.mat-tab-label-active {*/
-  /*opacity: 1 !important;*/
-  /*background-color: rgba(255,255,255,0.2);*/
-/*}*/
-
 .mat-checkbox-label {
   font-weight: normal;
 }
-
-/*svg {*/
-  /*background: #DDD;*/
-  /*border: 1px solid #000;*/
-  /*width: 100%;*/
-/*}*/
-
 
 /*LINE CHART STYLES*/
 svg {
@@ -69,6 +48,10 @@ svg {
 app-line-chart .line {
   stroke: steelblue;
   fill: none;
+  clip-path: url(#clip);
+}
+
+app-line-chart .point {
   clip-path: url(#clip);
 }
 
@@ -100,14 +83,14 @@ app-line-chart .line.hover path {
 
 app-histogram rect.bar { fill: steelblue; }
 
+/*DETAILS STYLING*/
 app-details .node circle {
-  fill: #fff;
   stroke: steelblue;
   stroke-width: 3px;
 }
 
 app-details .node text {
-  font: 12px sans-serif;
+  font: 14px sans-serif;
 }
 
 app-details .link {
