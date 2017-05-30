@@ -29,7 +29,7 @@
   <md-card-content>
     <table class="table">
       <tr *ngFor="let dataset of datasets; let i = index">
-        <td>
+        <td [style.border-left]="'6px solid' + colors(i)">
           <button md-icon-button
                   [mdTooltip]="dataset.visible ? 'Shown' : 'Hidden'"
                   [mdTooltipShowDelay]="500"
@@ -41,7 +41,10 @@
           </button>
         </td>
         <th>
-          <span><md-icon style="color:steelblue;">stop</md-icon>{{ dataset.variableName }}</span>
+          <span>
+            <!--<md-icon [style.color]="colors(i)">stop</md-icon>-->
+            {{ dataset.variableName }}
+          </span>
           <br>
           <small class="text-muted">
             {{ dataset.siteName }}

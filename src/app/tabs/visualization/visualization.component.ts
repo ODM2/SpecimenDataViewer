@@ -9,31 +9,40 @@ import {Subscription} from "rxjs";
 })
 export class VisualizationComponent implements OnInit, OnDestroy {
   selectedChart: number;
-  chartChangedSubscription = new Subscription;
-
+  histogramTicks: number;
   selectedLineChartView: number;
-  xAxisDataset: string;
 
-  constructor(private visualizationService: VisualizationService) {}
+  chartChangedSubsc = new Subscription;
+  ticksChangedSubsc = new Subscription();
+
+  constructor(private visualizationService: VisualizationService) {
+  }
 
   ngOnInit() {
-    this.visualizationService.init();
-
-    this.selectedLineChartView = this.visualizationService.lineChartViews.line;
-    this.selectedChart = this.visualizationService.charts.lineChart;
-
-    this.visualizationService.setCurrentChart(this.visualizationService.charts.lineChart);
-    this.selectedChart = this.visualizationService.charts.lineChart;
-
-    this.chartChangedSubscription = this.visualizationService.currentChartChanged.subscribe(
+    this.chartChangedSubsc = this.visualizationService.currentChartChanged.subscribe(
       (chart: number) => {
         this.selectedChart = chart;
       }
-    )
+    );
+
+    this.ticksChangedSubsc = this.visualizationService.ticksChanged.subscribe(
+      (ticks: number) => {
+        console.log("ticks set")
+        this.histogramTicks = ticks;
+      }
+    );
+    this.visualizationService.init();
+    this.selectedChart = this.visualizationService.getCurrentChart();
+    this.selectedLineChartView = this.visualizationService.getLineChartView();
   }
 
   ngOnDestroy() {
-    this.chartChangedSubscription.unsubscribe();
+    this.chartChangedSubsc.unsubscribe();
+    this.ticksChangedSubsc.unsubscribe();
+  }
+
+  onTicksChange() {
+    this.visualizationService.setHistogramTicks(this.histogramTicks);
   }
 
 }

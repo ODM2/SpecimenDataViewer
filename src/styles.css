@@ -40,6 +40,22 @@ md-tab-group {
   font-weight: normal;
 }
 
+/*CHARTS GENERAL STYLING*/
+.x-axis-label, .y-axis-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
 /*LINE CHART STYLES*/
 svg {
   font: 10px sans-serif;

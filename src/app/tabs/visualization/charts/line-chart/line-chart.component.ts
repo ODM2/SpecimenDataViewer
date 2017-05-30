@@ -1,13 +1,15 @@
-import {Component, OnInit, AfterViewInit, ViewChild, ElementRef} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy} from '@angular/core';
 import * as d3 from "d3";
 import {LineChart} from "./line-chart.model";
+import {Subscription} from "rxjs";
+import {VisualizationService} from "../../../../visualization.service";
 
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.css']
 })
-export class LineChartComponent implements AfterViewInit, OnInit {
+export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild("containerLineChart") element: ElementRef;
 
   private data = [];
@@ -20,11 +22,50 @@ export class LineChartComponent implements AfterViewInit, OnInit {
   private focus = new LineChart();
   private context = new LineChart();
 
-  constructor() {
+  chartViewSubsc = new Subscription;
+
+  constructor(private visualizationService: VisualizationService) {
   }
 
   ngOnInit() {
+    this.chartViewSubsc = this.visualizationService.lineChartViewChanged.subscribe(
+      (view: number) => {
+        if (view == this.visualizationService.lineChartViews.point) {
+          this.focus.g.selectAll(".line")
+            .classed("hidden", true);
+          this.focus.g.selectAll(".point")
+            .classed("hidden", false);
+          this.context.g.selectAll(".line")
+            .classed("hidden", true);
+          this.context.g.selectAll(".point")
+            .classed("hidden", false);
+        }
+        else if (view == this.visualizationService.lineChartViews.line) {
+          this.focus.g.selectAll(".line")
+            .classed("hidden", false);
+          this.focus.g.selectAll(".point")
+            .classed("hidden", true);
+          this.context.g.selectAll(".line")
+            .classed("hidden", false);
+          this.context.g.selectAll(".point")
+            .classed("hidden", true);
+        }
+        else if (view == this.visualizationService.lineChartViews.both) {
+          this.focus.g.selectAll(".line")
+            .classed("hidden", false);
+          this.focus.g.selectAll(".point")
+            .classed("hidden", false);
+          this.context.g.selectAll(".line")
+            .classed("hidden", false);
+          this.context.g.selectAll(".point")
+            .classed("hidden", false);
+        }
+      }
+    )
+  }
 
+  ngOnDestroy () {
+    this.chartViewSubsc.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -99,6 +140,7 @@ export class LineChartComponent implements AfterViewInit, OnInit {
     d3.csv("assets/line-chart-data.csv", this.type.bind(this), this.loadData.bind(this));
   }
 
+
   loadData(error, data) {
     if (error) throw error;
     this.focus.scale.x.domain(d3.extent(data, (d) => {
@@ -109,6 +151,25 @@ export class LineChartComponent implements AfterViewInit, OnInit {
     })]);
     this.context.scale.x.domain(this.focus.scale.x.domain());
     this.context.scale.y.domain(this.focus.scale.y.domain());
+
+    this.focus.axis.gridY = d3.axisLeft(this.focus.scale.y)
+        .tickSize(-this.focus.dimensions.width)
+        .tickFormat("");
+
+    this.focus.axis.gridX = d3.axisBottom(this.focus.scale.x)
+        .tickSize(-this.focus.dimensions.height)
+        .tickFormat("");
+
+    // add the Y gridlines
+    this.focus.g.append("g")
+      .attr("class", "grid grid-y")
+      .call(this.focus.axis.gridY);
+
+    // add the X gridlines
+    this.focus.g.append("g")
+      .attr("class", "grid grid-x")
+      .attr("transform", "translate(0," + this.focus.dimensions.height + ")")
+      .call(this.focus.axis.gridX);
 
     this.focus.g.append("path")
       .datum(data)
@@ -143,7 +204,7 @@ export class LineChartComponent implements AfterViewInit, OnInit {
       .attr("class", "line")
       .attr("d", this.context.line);
 
-    // Add circle points to the focus graph
+    // Add circle points to the context graph
     this.context.g.selectAll("dot")
       .data(data)
       .enter().append("circle")
@@ -180,15 +241,17 @@ export class LineChartComponent implements AfterViewInit, OnInit {
       .attr("y", 0 - this.focus.margin.left)
       .attr("x",0 - (this.focus.dimensions.height / 2))
       .attr("dy", "1em")
+      .attr("class", "y-axis-label")
       .style("text-anchor", "middle")
       .text("Y axis label");
 
-    // text label for the x axis
+    // X-axis label
     this.focus.g.append("text")
       .attr("x", this.focus.dimensions.width / 2)
       .attr("y", this.focus.dimensions.height + this.focus.margin.top + 20)
       .style("text-anchor", "middle")
-      .text("X-axis label");
+      .attr("class", "x-axis-label")
+      .text("Date");
   }
 
   brushed() {
@@ -204,6 +267,7 @@ export class LineChartComponent implements AfterViewInit, OnInit {
         return this.focus.scale.y(d.price);
       }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
+    this.focus.g.select(".grid-x").call(this.focus.axis.gridX);
     this.svg.select(".zoom").call(this.zoom.transform, d3.zoomIdentity
       .scale(this.focus.dimensions.width / (s[1] - s[0]))
       .translate(-s[0], 0));
@@ -222,6 +286,7 @@ export class LineChartComponent implements AfterViewInit, OnInit {
         return this.focus.scale.y(d.price);
       }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
+    this.focus.g.select(".grid-x").call(this.focus.axis.gridX);
     this.context.g.select(".brush").call(this.brush.move, this.focus.scale.x.range().map(t.invertX, t));
   }
 

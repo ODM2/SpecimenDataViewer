@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {VisualizationService} from "../../../visualization.service";
 import {SummaryStatisticsComponent} from "../summary-statistics/summary-statistics.component";
 import {MdDialog} from "@angular/material";
+import * as d3 from "d3";
 
 @Component({
   selector: 'app-plot-options',
@@ -11,6 +12,7 @@ import {MdDialog} from "@angular/material";
 export class PlotOptionsComponent implements OnInit {
   private xAxisDataset: number;
   plotType: number;
+  colors: any;
   datasets = [
     {
       variableName:"Blue-green algae (cyanobacteria), phycocyanin",
@@ -51,6 +53,7 @@ export class PlotOptionsComponent implements OnInit {
     this.visualizationService.setPlotType(this.visualizationService.plotTypes.timeSeries);
     this.plotType = this.visualizationService.plotTypes.timeSeries;
     this.xAxisDataset = 0;
+    this.colors = d3.scaleOrdinal(d3.schemeCategory10);
   }
 
   toggleVisibility(i: number) {

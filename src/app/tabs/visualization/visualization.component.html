@@ -39,8 +39,25 @@
             </div>
 
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.histogram">
-              Bin Size:
-              <md-slider [min]="0" [max]="100" [value]="50"></md-slider>
+              <md-button-toggle-group
+                [(ngModel)]="histogramTicks"
+                (change)="visualizationService.setHistogramTicks(histogramTicks)">
+                <!--<md-button-toggle [value]="visualizationService.histogramTickTypes.day">-->
+                  <!--<span>Day</span>-->
+                <!--</md-button-toggle>-->
+                <md-button-toggle [value]="visualizationService.histogramTickTypes.week">
+                  <span>Week</span>
+                </md-button-toggle>
+                <md-button-toggle [value]="visualizationService.histogramTickTypes.month">
+                  <span>Month</span>
+                </md-button-toggle>
+                <md-button-toggle [value]="visualizationService.histogramTickTypes.sixMonths">
+                  <span>Six Months</span>
+                </md-button-toggle>
+                <md-button-toggle [value]="visualizationService.histogramTickTypes.year">
+                  <span>Year</span>
+                </md-button-toggle>
+              </md-button-toggle-group>
             </div>
           </div>
 

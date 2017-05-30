@@ -10,18 +10,18 @@ export class ResultsComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   dataseries = [];
-  selected: string = "All";
+  optionDisplay: string = "All";
 
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
-    this.onClearSelected();
+    this.clearSelected();
   }
 
   onDisplay(option: string) {
-    this.selected = option;
+    this.optionDisplay = option;
   }
 
-  onClearSelected() {
+  clearSelected() {
     for (let entry of this.dataseries) {
       entry.selected = false;
     }
@@ -29,5 +29,22 @@ export class ResultsComponent implements OnInit {
 
   onToggleSelect(index: number) {
     this.dataseries[index].selected = !this.dataseries[index].selected;
+  }
+
+  loadDetails () {
+
+  }
+
+  plotSelected() {
+
+  }
+
+  clearSearch() {
+
+  }
+
+
+  clearDateRange() {
+
   }
 }

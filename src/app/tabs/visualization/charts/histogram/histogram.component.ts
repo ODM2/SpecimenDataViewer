@@ -1,12 +1,14 @@
-import {Component, OnInit, AfterViewInit, ElementRef, ViewChild} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy} from '@angular/core';
 import * as d3 from "d3";
+import {VisualizationService} from "../../../../visualization.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-histogram',
   templateUrl: './histogram.component.html',
   styleUrls: ['./histogram.component.css']
 })
-export class HistogramComponent implements OnInit, AfterViewInit {
+export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("containerHistogram") element: ElementRef;
   private data = [];
   private host: d3.Selection;
@@ -20,10 +22,38 @@ export class HistogramComponent implements OnInit, AfterViewInit {
   private width: number;
   private margin: any;
 
-  constructor() {
+  ticksChangedSubscription = new Subscription;
+
+  constructor(private visualizationService: VisualizationService) {
   }
 
   ngOnInit() {
+    let that = this;
+    this.ticksChangedSubscription = this.visualizationService.ticksChanged.subscribe(
+      (ticks: number) => {
+        if (ticks == this.visualizationService.histogramTickTypes.day) {
+          that.chart.thresholds(that.x.ticks(d3.timeDay));
+        }
+        else if (ticks == this.visualizationService.histogramTickTypes.week) {
+          that.chart.thresholds(that.x.ticks(d3.timeWeek));
+        }
+        else if (ticks == this.visualizationService.histogramTickTypes.month) {
+          that.chart.thresholds(that.x.ticks(d3.timeMonth));
+        }
+        else if (ticks == this.visualizationService.histogramTickTypes.sixMonths) {
+          that.chart.thresholds(that.x.ticks(d3.timeMonth.every(6)));
+        }
+        else if (ticks == this.visualizationService.histogramTickTypes.year) {
+          that.chart.thresholds(that.x.ticks(d3.timeYear));
+        }
+
+        d3.csv("assets/histogram-data.csv", this.loadData.bind(that));
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.ticksChangedSubscription.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -32,7 +62,7 @@ export class HistogramComponent implements OnInit, AfterViewInit {
     this.host.html("");
 
     // set the dimensions and margins of the graph
-    this.margin = {top: 10, right: 30, bottom: 30, left: 40};
+    this.margin = {top: 10, right: 30, bottom: 40, left: 60};
     this.width = 730 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
 
@@ -51,17 +81,36 @@ export class HistogramComponent implements OnInit, AfterViewInit {
       .domain(this.x.domain())
       .thresholds(this.x.ticks(d3.timeMonth));
 
+    // get the data
+    d3.csv("assets/histogram-data.csv", this.loadData.bind(this));
+  }
+
+  loadData(error, data) {
+    this.host.selectAll("svg").remove();
     this.svg = this.host.append("svg").attr("width", this.width + this.margin.left + this.margin.right)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
       .attr("transform",
         "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    // get the data
-    d3.csv("assets/histogram-data.csv", this.loadData.bind(this));
-  }
+    // Y-axis label
+    this.svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - this.margin.left)
+      .attr("class", "y-axis-label")
+      .attr("x", 0 - (this.height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Y axis label");
 
-  loadData(error, data) {
+    // X-axis label
+    this.svg.append("text")
+      .attr("x", this.width / 2)
+      .attr("y", this.height + this.margin.top + 30)
+      .attr("class", "x-axis-label")
+      .style("text-anchor", "middle")
+      .text("Date");
+
     if (error) throw error;
 
     // format the data
@@ -99,6 +148,7 @@ export class HistogramComponent implements OnInit, AfterViewInit {
     this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
       .call(d3.axisBottom(this.x));
+      // .call(d3.axisBottom(this.x).ticks(bins.length));
 
     // add the y Axis
     this.svg.append("g")
