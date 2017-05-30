@@ -10,11 +10,14 @@ export class ResultsComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   dataseries = [];
+  plotCount: number;
   optionDisplay: string = "All";
+  allSelected: boolean = false;
 
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
     this.clearSelected();
+    this.plotCount = 0;
   }
 
   onDisplay(option: string) {
@@ -27,7 +30,7 @@ export class ResultsComponent implements OnInit {
     }
   }
 
-  onToggleSelect(index: number) {
+  toggleSelect(index: number) {
     this.dataseries[index].selected = !this.dataseries[index].selected;
   }
 
@@ -35,9 +38,32 @@ export class ResultsComponent implements OnInit {
 
   }
 
-  plotSelected() {
-
+  togglePlot(index: number) {
+    this.dataseries[index].plotted = !this.dataseries[index].plotted;
+    if (!this.dataseries[index].plotted) {
+      this.plotCount = this.plotCount - 1;
+    }
+    else {
+     this.plotCount = this.plotCount + 1;
+    }
   }
+
+  plotSelected() {
+    this.plotCount = 0;
+    for (let dataset of this.dataseries) {
+      dataset.plotted = dataset.selected;
+      if (dataset.plotted) {
+        this.plotCount = this.plotCount + 1;
+      }
+    }
+  }
+
+  toggleSelectedAll() {
+    for (let dataset of this.dataseries) {
+      dataset.selected = !this.allSelected;
+    }
+  }
+
 
   clearSearch() {
 

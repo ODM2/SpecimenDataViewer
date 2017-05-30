@@ -20,7 +20,8 @@ export class DataService {
         startDate: new Date("February 2, 2016 10:13:00"),
         endDate: new Date("February 5, 2016 10:13:00"),
         numberOfValues: 12,
-        selected: false
+        selected: false,
+        plotted: false
       },
       {
         type: "Sensor Result",
@@ -34,7 +35,8 @@ export class DataService {
         startDate: new Date("February 1, 2016 10:13:00"),
         endDate: new Date("February 8, 2016 10:13:00"),
         numberOfValues: 23,
-        selected: false
+        selected: false,
+        plotted: false
       },
       {
         type: "Sample Result",
@@ -48,7 +50,8 @@ export class DataService {
         startDate: new Date("February 22, 2016 10:13:00"),
         endDate: new Date("February 29, 2016 10:13:00"),
         numberOfValues: 100,
-        selected: false
+        selected: false,
+        plotted: false
       }
     ];
 
@@ -159,4 +162,6 @@ export class DataService {
   getSites() {
     return this.sites.slice();
   }
+
+
 }

@@ -67,7 +67,7 @@
                   (click)="plotSelected()"
           >
             <md-icon>assessment</md-icon>
-            Plot
+            Plot ({{this.plotCount}}/5)
           </button>
 
           <!--<button md-raised-button color="primary" (click)="clearSelected()">-->
@@ -93,7 +93,8 @@
         <thead>
         <tr>
           <th>
-            <md-checkbox></md-checkbox>
+            <md-checkbox [(ngModel)]="allSelected"
+                         (click)="toggleSelectedAll()"></md-checkbox>
           </th>
           <!--<th>Type</th>-->
           <th>Network</th>
@@ -114,32 +115,36 @@
             <md-checkbox [(ngModel)]="entry.selected"></md-checkbox>
           </td>
           <!--<td (click)="onToggleSelect(i)">{{ entry.type }}</td>-->
-          <td (click)="onToggleSelect(i)">{{ entry.network }}</td>
-          <td (click)="onToggleSelect(i)">{{ entry.siteCode }}</td>
-          <td (click)="onToggleSelect(i)">{{ entry.siteName }}</td>
-          <td (click)="onToggleSelect(i)">{{ entry.medium }}</td>
-          <td (click)="onToggleSelect(i)">{{ entry.variableCode }}</td>
-          <td (click)="onToggleSelect(i)">{{ entry.variableName }}</td>
-          <td (click)="onToggleSelect(i)">{{ entry.startDate | date }}</td>
-          <td (click)="onToggleSelect(i)">{{ entry.endDate | date}}</td>
+          <td (click)="toggleSelect(i)">{{ entry.network }}</td>
+          <td (click)="toggleSelect(i)">{{ entry.siteCode }}</td>
+          <td (click)="toggleSelect(i)">{{ entry.siteName }}</td>
+          <td (click)="toggleSelect(i)">{{ entry.medium }}</td>
+          <td (click)="toggleSelect(i)">{{ entry.variableCode }}</td>
+          <td (click)="toggleSelect(i)">{{ entry.variableName }}</td>
+          <td (click)="toggleSelect(i)">{{ entry.startDate | date }}</td>
+          <td (click)="toggleSelect(i)">{{ entry.endDate | date}}</td>
           <!--<td (click)="onToggleSelect(i)">{{ entry.numberOfValues }}</td>-->
           <td>
             <button md-icon-button
-                    mdTooltip="Export"
+                    (click)="togglePlot(i)"
+                    mdTooltip="Plot"
+                    [color]="entry.plotted ? 'accent' : 'primary'"
                     [mdTooltipShowDelay]="500">
-              <md-icon style="color:steelblue;">file_download</md-icon>
+              <md-icon>assessment</md-icon>
+            </button>
+
+            <button md-icon-button
+                    mdTooltip="Export"
+                    color="primary"
+                    [mdTooltipShowDelay]="500">
+              <md-icon>file_download</md-icon>
             </button>
 
             <button md-icon-button
                     mdTooltip="View Details"
+                    color="primary"
                     [mdTooltipShowDelay]="500">
-              <md-icon style="color:steelblue;">assignment</md-icon>
-            </button>
-
-            <button md-icon-button
-                    mdTooltip="Plot"
-                    [mdTooltipShowDelay]="500">
-              <md-icon style="color:steelblue;">assessment</md-icon>
+              <md-icon>assignment</md-icon>
             </button>
           </td>
         </tr>
