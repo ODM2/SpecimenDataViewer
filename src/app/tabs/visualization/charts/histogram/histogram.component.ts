@@ -21,6 +21,7 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
   private height: number;
   private width: number;
   private margin: any;
+  private gridY: any;
 
   ticksChangedSubscription = new Subscription;
 
@@ -111,6 +112,7 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
       .style("text-anchor", "middle")
       .text("Date");
 
+
     if (error) throw error;
 
     // format the data
@@ -127,8 +129,16 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.y.domain([0, maxY]);
 
-    // append the bar rectangles to the svg element
+    this.gridY = d3.axisLeft(this.y)
+      .tickSize(-this.width)
+      .tickFormat("");
 
+    // add the Y gridlines
+    this.svg.append("g")
+      .attr("class", "grid grid-y")
+      .call(this.gridY);
+
+    // append the bar rectangles to the svg element
     this.svg.selectAll("rect")
       .data(bins)
       .enter().append("rect")
