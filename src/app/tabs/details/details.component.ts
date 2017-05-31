@@ -1,5 +1,6 @@
-import {Component, OnInit, ElementRef, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnInit, ElementRef, ViewChild, AfterViewInit, Inject} from '@angular/core';
 import * as d3 from "d3";
+import {MdDialogRef, MD_DIALOG_DATA} from "@angular/material";
 
 @Component({
   selector: 'app-details',
@@ -21,7 +22,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   private i: any;
   private duration: any;
 
-  constructor() {
+  constructor(public dialogRef: MdDialogRef<DetailsComponent>,
+              @Inject(MD_DIALOG_DATA) public dialogData: any) {
   }
 
   ngOnInit() {
@@ -34,7 +36,7 @@ export class DetailsComponent implements OnInit, AfterViewInit {
 
     // set the dimensions and margins of the graph
     this.margin = {top: 10, right: 30, bottom: 30, left: 100};
-    this.width = 960 - this.margin.left - this.margin.right;
+    this.width = 900 - this.margin.left - this.margin.right;
     this.height = 480 - this.margin.top - this.margin.bottom;
 
     this.svg = this.host.append("svg")

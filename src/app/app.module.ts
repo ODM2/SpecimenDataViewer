@@ -94,7 +94,7 @@ import { SideNavComponent } from './side-nav/side-nav.component';
     MdSliderModule
   ],
   entryComponents: [
-    SummaryStatisticsComponent
+    SummaryStatisticsComponent,DetailsComponent
   ],
   providers: [DataService, AgmMap, GoogleMapsAPIWrapper, VisualizationService],
   bootstrap: [AppComponent]

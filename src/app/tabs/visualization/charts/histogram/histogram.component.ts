@@ -63,7 +63,7 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     this.host.html("");
 
     // set the dimensions and margins of the graph
-    this.margin = {top: 10, right: 30, bottom: 40, left: 60};
+    this.margin = {top: 40, right: 30, bottom: 40, left: 60};
     this.width = 730 - this.margin.left - this.margin.right;
     this.height = 500 - this.margin.top - this.margin.bottom;
 
@@ -107,10 +107,19 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     // X-axis label
     this.svg.append("text")
       .attr("x", this.width / 2)
-      .attr("y", this.height + this.margin.top + 30)
+      .attr("y", this.height + this.margin.top)
       .attr("class", "x-axis-label")
       .style("text-anchor", "middle")
       .text("Date");
+
+    // add a title
+    this.svg.append("text")
+      .attr("x", (this.width / 2))
+      .attr("y", 0 - (this.margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px")
+      .style("text-decoration", "underline")
+      .text("Graph Title");
 
 
     if (error) throw error;

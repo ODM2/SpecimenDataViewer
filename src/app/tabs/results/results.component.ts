@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DataService} from "../../data.service";
+import {DetailsComponent} from "../details/details.component";
+import {MdDialog} from "@angular/material";
 
 @Component({
   selector: 'app-results',
@@ -7,7 +9,7 @@ import {DataService} from "../../data.service";
   styleUrls: ['./results.component.css']
 })
 export class ResultsComponent implements OnInit {
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, public dialog: MdDialog) { }
 
   dataseries = [];
   plotCount: number = 0;
@@ -88,7 +90,17 @@ export class ResultsComponent implements OnInit {
     return false;
   }
 
-  clearDateRange() {
+  openDetailsDialog(somedata: string) {
+    this.dialog.open(DetailsComponent,
+      {
+        data: somedata,
+        height: '600px',
+        width: '1000px',
+      });
+  }
 
+  clearDateRange() {
+    this.__beginDate = null;
+    this.__endDate = null;
   }
 }

@@ -27,7 +27,6 @@ export class VisualizationComponent implements OnInit, OnDestroy {
 
     this.ticksChangedSubsc = this.visualizationService.ticksChanged.subscribe(
       (ticks: number) => {
-        console.log("ticks set")
         this.histogramTicks = ticks;
       }
     );

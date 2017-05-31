@@ -73,7 +73,7 @@
                   (click)="plotSelected()"
           >
             <md-icon>assessment</md-icon>
-            Plot ({{this.plotCount}}/5)
+            Plot
           </button>
 
           <!--<button md-raised-button color="primary" (click)="clearSelected()">-->
@@ -95,7 +95,7 @@
       </div>
 
       <br>
-
+      <small class="text-muted"><strong>Plotting:</strong> ({{this.plotCount}}/5)</small>
       <table class="table md-shadow-1 table-hover">
         <thead>
         <tr>
@@ -151,6 +151,7 @@
             </button>
 
             <button md-icon-button
+                    (click)="openDetailsDialog('some data')"
                     mdTooltip="View Details"
                     color="primary"
                     [mdTooltipShowDelay]="500">
