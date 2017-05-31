@@ -10,28 +10,37 @@ export class ResultsComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   dataseries = [];
-  plotCount: number;
+  plotCount: number = 0;
+  selectedCount: number = 0;
   optionDisplay: string = "All";
   allSelected: boolean = false;
+  flagIsSomeSelected = false;
+  searchString: string = "";
+  __beginDate: Date;
+  __endDate: Date;
 
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
-    this.clearSelected();
-    this.plotCount = 0;
+    for (let dataset of this.dataseries) {
+      dataset.plotted = false;
+      dataset.selected = false;
+    }
   }
 
   onDisplay(option: string) {
     this.optionDisplay = option;
   }
 
-  clearSelected() {
-    for (let entry of this.dataseries) {
-      entry.selected = false;
-    }
-  }
+  // clearSelected() {
+  //   for (let entry of this.dataseries) {
+  //     entry.selected = false;
+  //   }
+  //   this.flagIsSomeSelected = false;
+  // }
 
   toggleSelect(index: number) {
     this.dataseries[index].selected = !this.dataseries[index].selected;
+    this.flagIsSomeSelected = this.isSomeSelected();
   }
 
   loadDetails () {
@@ -62,13 +71,22 @@ export class ResultsComponent implements OnInit {
     for (let dataset of this.dataseries) {
       dataset.selected = !this.allSelected;
     }
+    this.flagIsSomeSelected = !this.allSelected;
   }
-
 
   clearSearch() {
-
+    this.searchString = "";
   }
 
+  isSomeSelected() {
+    for (let dataset of this.dataseries) {
+      if (dataset.selected) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   clearDateRange() {
 

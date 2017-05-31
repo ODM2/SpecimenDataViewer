@@ -1,18 +1,23 @@
 <div class="col-xs-12" style="margin-bottom: 20px;">
-
   <div class="row">
     <div class="col-xs-12">
       <md-card style="margin-top: 20px;">
         <md-card-content>
           <span>Date Range:</span>
           <md-input-container style="margin-left:12px;">
-            <input mdInput [mdDatepicker]="beginDate" placeholder="Begin Date">
+            <input mdInput
+                   [mdDatepicker]="beginDate"
+                   [(ngModel)]="__beginDate"
+                   placeholder="Begin Date">
             <button mdSuffix [mdDatepickerToggle]="beginDate"></button>
           </md-input-container>
           <md-datepicker #beginDate></md-datepicker>
 
           <md-input-container style="margin-left:12px;">
-            <input mdInput [mdDatepicker]="endDate" placeholder="End Date">
+            <input mdInput
+                   [mdDatepicker]="endDate"
+                   [(ngModel)]="__endDate"
+                   placeholder="End Date">
             <button mdSuffix [mdDatepickerToggle]="endDate"></button>
           </md-input-container>
           <md-datepicker #endDate></md-datepicker>
@@ -53,7 +58,7 @@
         <div class="col-xs-12 col-sm-6">
           <md-icon>search</md-icon>
           <md-input-container style="width: calc(100% - 71px);">
-            <input mdInput placeholder="Search">
+            <input mdInput placeholder="Search" [(ngModel)]="searchString">
           </md-input-container>
           <button md-icon-button (click)="clearSearch()"
                   mdTooltip="Clear"
@@ -64,6 +69,7 @@
 
         <div class="col-xs-12 col-sm-3 text-right">
           <button md-raised-button color="accent"
+                  [disabled]="!flagIsSomeSelected"
                   (click)="plotSelected()"
           >
             <md-icon>assessment</md-icon>
@@ -80,7 +86,8 @@
           <!--Details...-->
           <!--</button>-->
 
-          <button md-raised-button color="primary">
+          <button md-raised-button color="primary"
+                  [disabled]="!flagIsSomeSelected">
             <md-icon>file_download</md-icon>
             Export
           </button>
@@ -110,7 +117,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let entry of dataseries, let i = index" style="cursor: pointer;">
+
+        <tr *ngFor="let entry of dataseries, let i = index"
+            [style.display]="optionDisplay=='All' || entry.selected ? 'table-row' : 'none' "
+            style="cursor: pointer;">
           <td>
             <md-checkbox [(ngModel)]="entry.selected"></md-checkbox>
           </td>
@@ -148,6 +158,7 @@
             </button>
           </td>
         </tr>
+
         </tbody>
       </table>
     </md-card-content>
