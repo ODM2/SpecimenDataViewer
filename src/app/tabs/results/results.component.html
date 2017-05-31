@@ -47,6 +47,10 @@
               <md-icon style="margin-right: 0;">{{ optionDisplay == 'Selected' ? 'check' : ''}}</md-icon>
               Selected
             </button>
+            <button md-menu-item (click)="onDisplay('Plotted')">
+              <md-icon style="margin-right: 0;">{{ optionDisplay == 'Plotted' ? 'check' : ''}}</md-icon>
+              Plotted
+            </button>
           </md-menu>
 
           <label style="margin-right: 8px;">Display:</label>
@@ -119,10 +123,10 @@
         <tbody>
 
         <tr *ngFor="let entry of dataseries, let i = index"
-            [style.display]="optionDisplay=='All' || entry.selected ? 'table-row' : 'none' "
+            [style.display]="(optionDisplay=='All' || optionDisplay=='Selected' && entry.selected || optionDisplay=='Plotted' && entry.plotted) ? 'table-row' : 'none' "
             style="cursor: pointer;">
           <td>
-            <md-checkbox [(ngModel)]="entry.selected"></md-checkbox>
+            <md-checkbox [(ngModel)]="entry.selected" (change)="flagIsSomeSelected=isSomeSelected()"></md-checkbox>
           </td>
           <!--<td (click)="onToggleSelect(i)">{{ entry.type }}</td>-->
           <td (click)="toggleSelect(i)">{{ entry.network }}</td>
