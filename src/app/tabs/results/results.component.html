@@ -1,32 +1,44 @@
 <div class="col-xs-12" style="margin-bottom: 20px;">
   <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 col-sm-5">
       <md-card style="margin-top: 20px;">
         <md-card-content>
-          <span>Date Range:</span>
-          <md-input-container style="margin-left:12px;">
-            <input mdInput
-                   [mdDatepicker]="beginDate"
-                   [(ngModel)]="__beginDate"
-                   placeholder="Begin Date">
-            <button mdSuffix [mdDatepickerToggle]="beginDate"></button>
-          </md-input-container>
-          <md-datepicker #beginDate></md-datepicker>
+          <div class="row">
+            <div class="col-xs-12 col-sm-3"><span>Date Range:</span></div>
+            <div class="col-xs-12 col-sm-9">
+              <div>
+                <md-input-container>
+                  <input mdInput
+                         [mdDatepicker]="beginDate"
+                         [(ngModel)]="__beginDate"
+                         placeholder="Begin Date">
+                  <button mdSuffix [mdDatepickerToggle]="beginDate"></button>
+                </md-input-container>
+                <md-datepicker #beginDate></md-datepicker>
+                <button md-icon-button (click)="__beginDate = null"
+                        mdTooltip="Clear"
+                        [mdTooltipShowDelay]="500">
+                  <md-icon>highlight_off</md-icon>
+                </button>
+              </div>
 
-          <md-input-container style="margin-left:12px;">
-            <input mdInput
-                   [mdDatepicker]="endDate"
-                   [(ngModel)]="__endDate"
-                   placeholder="End Date">
-            <button mdSuffix [mdDatepickerToggle]="endDate"></button>
-          </md-input-container>
-          <md-datepicker #endDate></md-datepicker>
-
-          <button md-icon-button (click)="clearDateRange()"
-                  mdTooltip="Clear"
-                  [mdTooltipShowDelay]="500">
-            <md-icon>highlight_off</md-icon>
-          </button>
+              <div>
+                <md-input-container>
+                  <input mdInput
+                         [mdDatepicker]="endDate"
+                         [(ngModel)]="__endDate"
+                         placeholder="End Date">
+                  <button mdSuffix [mdDatepickerToggle]="endDate"></button>
+                </md-input-container>
+                <md-datepicker #endDate></md-datepicker>
+                <button md-icon-button (click)="__endDate = null"
+                        mdTooltip="Clear"
+                        [mdTooltipShowDelay]="500">
+                  <md-icon>highlight_off</md-icon>
+                </button>
+              </div>
+            </div>
+          </div>
         </md-card-content>
       </md-card>
     </div>
@@ -99,8 +111,12 @@
       </div>
 
       <br>
-      <small class="text-muted"><strong>Plotting:</strong> ({{this.plotCount}}/5)</small>
-      <table class="table md-shadow-1 table-hover">
+
+      <div class="col-xs-12 text-right">
+        <small class="text-muted"><strong>Plotting:</strong> ({{this.plotCount}}/5)</small>
+      </div>
+
+      <table class="table table-striped table-hover md-shadow-1">
         <thead>
         <tr>
           <th>
@@ -159,13 +175,45 @@
                     mdTooltip="View Details"
                     color="primary"
                     [mdTooltipShowDelay]="500">
-              <md-icon>assignment</md-icon>
+              <md-icon>more</md-icon>
             </button>
           </td>
         </tr>
 
         </tbody>
       </table>
+
+      <div id="table-container-2" class="md-shadow-1">
+        <md-table #table [dataSource]="dataSource">
+        <!-- ID Column -->
+        <ng-container cdkColumnDef="userId">
+          <md-header-cell *cdkHeaderCellDef> ID</md-header-cell>
+          <md-cell *cdkCellDef="let row"> {{row.id}}</md-cell>
+        </ng-container>
+
+        <!-- Progress Column -->
+        <ng-container cdkColumnDef="progress">
+          <md-header-cell *cdkHeaderCellDef> Progress</md-header-cell>
+          <md-cell *cdkCellDef="let row"> {{row.progress}}%</md-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container cdkColumnDef="userName">
+          <md-header-cell *cdkHeaderCellDef> Name</md-header-cell>
+          <md-cell *cdkCellDef="let row"> {{row.name}}</md-cell>
+        </ng-container>
+
+        <!-- Color Column -->
+        <ng-container cdkColumnDef="color">
+          <md-header-cell *cdkHeaderCellDef>Color</md-header-cell>
+          <md-cell *cdkCellDef="let row" [style.color]="row.color"> {{row.color}}</md-cell>
+        </ng-container>
+
+        <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+        <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
+      </md-table>
+      </div>
+
     </md-card-content>
   </md-card>
 </div>

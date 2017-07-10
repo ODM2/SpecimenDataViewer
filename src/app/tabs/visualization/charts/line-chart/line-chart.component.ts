@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import {LineChart} from "./line-chart.model";
 import {Subscription} from "rxjs";
 import {VisualizationService} from "../../../../visualization.service";
+import {Chart} from "../chart.model";
 
 @Component({
   selector: 'app-line-chart',
@@ -19,8 +20,8 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
   private brush;
   private zoom;
   private parseDate = d3.timeParse("%b %Y");
-  private focus = new LineChart();
-  private context = new LineChart();
+  private focus = new Chart();
+  private context = new Chart();
 
   chartViewSubsc = new Subscription;
 
@@ -78,55 +79,57 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.svg.attr("height", document.querySelector(".mat-tab-body-wrapper").clientHeight - 175);
 
     this.focus.margin = {top: 20, right: 20, bottom: 180, left: 60};
-    this.focus.dimensions.width = +this.svg.attr("width") - this.focus.margin.left - this.focus.margin.right;
-    this.focus.dimensions.height = +this.svg.attr("height") - this.focus.margin.top - this.focus.margin.bottom;
+    let w = +this.svg.attr("width") - this.focus.margin.left - this.focus.margin.right;
+    let h = +this.svg.attr("height") - this.focus.margin.top - this.focus.margin.bottom;
+    this.focus.setDimensions(w, h);
 
-    this.context.margin = {top: this.focus.dimensions.height + 80, right: 20, bottom: 30, left: 60};
-    this.context.dimensions.height = +this.svg.attr("height") - this.context.margin.top - this.context.margin.bottom;
-    this.context.dimensions.width = this.focus.dimensions.width;
+    this.context.margin = {top: this.focus.getHeight() + 80, right: 20, bottom: 30, left: 60};
+    w = this.focus.getWidth();
+    h = +this.svg.attr("height") - this.context.margin.top - this.context.margin.bottom;
+    this.context.setDimensions(w, h);
 
-    this.focus.scale.x = d3.scaleTime().range([0, this.focus.dimensions.width]);
-    this.focus.scale.y = d3.scaleLinear().range([this.focus.dimensions.height, 0]);
+    this.focus.scales.x = d3.scaleTime().range([0, this.focus.getWidth()]);
+    this.focus.scales.y = d3.scaleLinear().range([this.focus.getHeight(), 0]);
 
-    this.context.scale.x = d3.scaleTime().range([0, this.context.dimensions.width]);
-    this.context.scale.y = d3.scaleLinear().range([this.context.dimensions.height, 0]);
+    this.context.scales.x = d3.scaleTime().range([0, this.context.getWidth()]);
+    this.context.scales.y = d3.scaleLinear().range([this.context.getHeight(), 0]);
 
-    this.focus.axis.x = d3.axisBottom(this.focus.scale.x);
-    this.focus.axis.y = d3.axisLeft(this.focus.scale.y);
+    this.focus.axis.x = d3.axisBottom(this.focus.scales.x);
+    this.focus.axis.y = d3.axisLeft(this.focus.scales.y);
 
-    this.context.axis.x = d3.axisBottom(this.context.scale.x);
+    this.context.axis.x = d3.axisBottom(this.context.scales.x);
 
     this.brush = d3.brushX()
-      .extent([[0, 0], [this.focus.dimensions.width, this.context.dimensions.height]])
+      .extent([[0, 0], [this.focus.getWidth(), this.context.getHeight()]])
       .on("brush end", this.brushed.bind(this));
 
     this.zoom = d3.zoom()
       .scaleExtent([1, Infinity])
-      .translateExtent([[0, 0], [this.focus.dimensions.width, this.focus.dimensions.height]])
-      .extent([[0, 0], [this.focus.dimensions.width, this.focus.dimensions.height]])
+      .translateExtent([[0, 0], [this.focus.getWidth(), this.focus.getHeight()]])
+      .extent([[0, 0], [this.focus.getWidth(), this.focus.getHeight()]])
       .on("zoom", this.zoomed.bind(this));
 
-    this.focus.line = d3.line()
+    this.focus.components.line = d3.line()
       .x((d) => {
-        return this.focus.scale.x(d.date);
+        return this.focus.scales.x(d.date);
       })
       .y((d) => {
-        return this.focus.scale.y(d.price);
+        return this.focus.scales.y(d.price);
       });
 
-    this.context.line = d3.line()
+    this.context.components.line = d3.line()
       .x((d) => {
-        return this.context.scale.x(d.date);
+        return this.context.scales.x(d.date);
       })
       .y((d) => {
-        return this.context.scale.y(d.price);
+        return this.context.scales.y(d.price);
       });
 
     this.svg.append("defs").append("clipPath")
       .attr("id", "clip")
       .append("rect")
-      .attr("width", this.focus.dimensions.width)
-      .attr("height", this.focus.dimensions.height);
+      .attr("width", this.focus.getWidth())
+      .attr("height", this.focus.getHeight());
 
     this.focus.g = this.svg.append("g")
       .attr("class", "focus")
@@ -143,21 +146,21 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
   loadData(error, data) {
     if (error) throw error;
-    this.focus.scale.x.domain(d3.extent(data, (d) => {
+    this.focus.scales.x.domain(d3.extent(data, (d) => {
       return d.date;
     }));
-    this.focus.scale.y.domain([0, d3.max(data, (d) => {
+    this.focus.scales.y.domain([0, d3.max(data, (d) => {
       return d.price;
     })]);
-    this.context.scale.x.domain(this.focus.scale.x.domain());
-    this.context.scale.y.domain(this.focus.scale.y.domain());
+    this.context.scales.x.domain(this.focus.scales.x.domain());
+    this.context.scales.y.domain(this.focus.scales.y.domain());
 
-    this.focus.axis.gridY = d3.axisLeft(this.focus.scale.y)
-        .tickSize(-this.focus.dimensions.width)
+    this.focus.axis.gridY = d3.axisLeft(this.focus.scales.y)
+        .tickSize(-this.focus.getWidth())
         .tickFormat("");
 
-    this.focus.axis.gridX = d3.axisBottom(this.focus.scale.x)
-        .tickSize(-this.focus.dimensions.height)
+    this.focus.axis.gridX = d3.axisBottom(this.focus.scales.x)
+        .tickSize(-this.focus.getHeight())
         .tickFormat("");
 
     // add the Y gridlines
@@ -168,13 +171,13 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     // add the X gridlines
     this.focus.g.append("g")
       .attr("class", "grid grid-x")
-      .attr("transform", "translate(0," + this.focus.dimensions.height + ")")
+      .attr("transform", "translate(0," + this.focus.getHeight() + ")")
       .call(this.focus.axis.gridX);
 
     this.focus.g.append("path")
       .datum(data)
       .attr("class", "line")
-      .attr("d", this.focus.line);
+      .attr("d", this.focus.components.line);
 
     // Add circle points to the focus graph
     this.focus.g.selectAll("dot")
@@ -184,15 +187,15 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("class", "point")
       .attr("fill", "steelblue")
       .attr("cx", function (d) {
-        return this.focus.scale.x(d.date);
+        return this.focus.scales.x(d.date);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scale.y(d.price);
+        return this.focus.scales.y(d.price);
       }.bind(this));
 
     this.focus.g.append("g")
       .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + this.focus.dimensions.height + ")")
+      .attr("transform", "translate(0," + this.focus.getHeight() + ")")
       .call(this.focus.axis.x);
 
     this.focus.g.append("g")
@@ -202,7 +205,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.context.g.append("path")
       .datum(data)
       .attr("class", "line")
-      .attr("d", this.context.line);
+      .attr("d", this.context.components.line);
 
     // Add circle points to the context graph
     this.context.g.selectAll("dot")
@@ -212,26 +215,26 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("class", "point")
       .attr("fill", "steelblue")
       .attr("cx", function (d) {
-        return this.context.scale.x(d.date);
+        return this.context.scales.x(d.date);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.context.scale.y(d.price);
+        return this.context.scales.y(d.price);
       }.bind(this));
 
     this.context.g.append("g")
       .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + this.context.dimensions.height + ")")
+      .attr("transform", "translate(0," + this.context.getHeight() + ")")
       .call(this.context.axis.x);
 
     this.context.g.append("g")
       .attr("class", "brush")
       .call(this.brush)
-      .call(this.brush.move, this.focus.scale.x.range());
+      .call(this.brush.move, this.focus.scales.x.range());
 
     this.svg.append("rect")
       .attr("class", "zoom")
-      .attr("width", this.focus.dimensions.width)
-      .attr("height", this.focus.dimensions.height)
+      .attr("width", this.focus.getWidth())
+      .attr("height", this.focus.getHeight())
       .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")")
       .call(this.zoom);
 
@@ -239,7 +242,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.g.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - this.focus.margin.left)
-      .attr("x",0 - (this.focus.dimensions.height / 2))
+      .attr("x",0 - (this.focus.getHeight() / 2))
       .attr("dy", "1em")
       .attr("class", "y-axis-label")
       .style("text-anchor", "middle")
@@ -247,8 +250,8 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
     // X-axis label
     this.focus.g.append("text")
-      .attr("x", this.focus.dimensions.width / 2)
-      .attr("y", this.focus.dimensions.height + this.focus.margin.top + 20)
+      .attr("x", this.focus.getWidth() / 2)
+      .attr("y", this.focus.getHeight() + this.focus.margin.top + 20)
       .style("text-anchor", "middle")
       .attr("class", "x-axis-label")
       .text("Date");
@@ -256,38 +259,38 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
   brushed() {
     if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-    let s = d3.event.selection || this.context.scale.x.range();
-    this.focus.scale.x.domain(s.map(this.context.scale.x.invert, this.context.scale.x));
-    this.focus.g.select(".line").attr("d", this.focus.line);
+    let s = d3.event.selection || this.context.scales.x.range();
+    this.focus.scales.x.domain(s.map(this.context.scales.x.invert, this.context.scales.x));
+    this.focus.g.select(".line").attr("d", this.focus.components.line);
     this.focus.g.selectAll(".point")
       .attr("cx", function (d) {
-        return this.focus.scale.x(d.date);
+        return this.focus.scales.x(d.date);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scale.y(d.price);
+        return this.focus.scales.y(d.price);
       }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
     this.focus.g.select(".grid-x").call(this.focus.axis.gridX);
     this.svg.select(".zoom").call(this.zoom.transform, d3.zoomIdentity
-      .scale(this.focus.dimensions.width / (s[1] - s[0]))
+      .scale(this.focus.getWidth() / (s[1] - s[0]))
       .translate(-s[0], 0));
   }
 
   zoomed() {
     if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = d3.event.transform;
-    this.focus.scale.x.domain(t.rescaleX(this.context.scale.x).domain());
-    this.focus.g.select(".line").attr("d", this.focus.line);
+    this.focus.scales.x.domain(t.rescaleX(this.context.scales.x).domain());
+    this.focus.g.select(".line").attr("d", this.focus.components.line);
     this.focus.g.selectAll(".point")
       .attr("cx", function (d) {
-        return this.focus.scale.x(d.date);
+        return this.focus.scales.x(d.date);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scale.y(d.price);
+        return this.focus.scales.y(d.price);
       }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
     this.focus.g.select(".grid-x").call(this.focus.axis.gridX);
-    this.context.g.select(".brush").call(this.brush.move, this.focus.scale.x.range().map(t.invertX, t));
+    this.context.g.select(".brush").call(this.brush.move, this.focus.scales.x.range().map(t.invertX, t));
   }
 
   type(d) {

@@ -2,6 +2,7 @@ import {Component, OnInit, AfterViewInit, ElementRef, ViewChild, OnDestroy} from
 import * as d3 from "d3";
 import {VisualizationService} from "../../../../visualization.service";
 import {Subscription} from "rxjs";
+import {Chart} from "../chart.model";
 
 @Component({
   selector: 'app-histogram',
@@ -15,13 +16,10 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
   private svg: d3.Selection;
   private htmlElement: HTMLElement;
   private parseDate = d3.timeParse("%d-%m-%Y");
-  private chart: any;
   private y: any;
   private x: any;
-  private height: number;
-  private width: number;
-  private margin: any;
   private gridY: any;
+  private chart = new Chart();
 
   ticksChangedSubscription = new Subscription;
 
@@ -33,19 +31,19 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ticksChangedSubscription = this.visualizationService.ticksChanged.subscribe(
       (ticks: number) => {
         if (ticks == this.visualizationService.histogramTickTypes.day) {
-          that.chart.thresholds(that.x.ticks(d3.timeDay));
+          that.chart.components.layout.thresholds(that.x.ticks(d3.timeDay));
         }
         else if (ticks == this.visualizationService.histogramTickTypes.week) {
-          that.chart.thresholds(that.x.ticks(d3.timeWeek));
+          that.chart.components.layout.thresholds(that.x.ticks(d3.timeWeek));
         }
         else if (ticks == this.visualizationService.histogramTickTypes.month) {
-          that.chart.thresholds(that.x.ticks(d3.timeMonth));
+          that.chart.components.layout.thresholds(that.x.ticks(d3.timeMonth));
         }
         else if (ticks == this.visualizationService.histogramTickTypes.sixMonths) {
-          that.chart.thresholds(that.x.ticks(d3.timeMonth.every(6)));
+          that.chart.components.layout.thresholds(that.x.ticks(d3.timeMonth.every(6)));
         }
         else if (ticks == this.visualizationService.histogramTickTypes.year) {
-          that.chart.thresholds(that.x.ticks(d3.timeYear));
+          that.chart.components.layout.thresholds(that.x.ticks(d3.timeYear));
         }
 
         d3.csv("assets/histogram-data.csv", this.loadData.bind(that));
@@ -63,19 +61,22 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     this.host.html("");
 
     // set the dimensions and margins of the graph
-    this.margin = {top: 40, right: 30, bottom: 40, left: 60};
-    this.width = 730 - this.margin.left - this.margin.right;
-    this.height = 500 - this.margin.top - this.margin.bottom;
+    this.chart.margin = {top: 40, right: 30, bottom: 40, left: 60};
+    let w = 730 - this.chart.margin.left - this.chart.margin.right;
+    let h = 500 - this.chart.margin.top - this.chart.margin.bottom;
+
+    this.chart.setDimensions(w, h);
+    // console.log(this.dimensions.height);
 
     // set the ranges
     this.x = d3.scaleTime()
       .domain([new Date(2010, 6, 3), new Date(2012, 0, 1)])
-      .rangeRound([0, this.width]);
+      .rangeRound([0, this.chart.getWidth()]);
     this.y = d3.scaleLinear()
-      .range([this.height , 0]);
+      .range([this.chart.getHeight() , 0]);
 
     // set the parameters for the histogram
-    this.chart = d3.histogram()
+    this.chart.components.layout = d3.histogram()
       .value((d) => {
         return d.date;
       })
@@ -88,39 +89,38 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadData(error, data) {
     this.host.selectAll("svg").remove();
-    this.svg = this.host.append("svg").attr("width", this.width + this.margin.left + this.margin.right)
-      .attr("height", this.height + this.margin.top + this.margin.bottom)
+    this.svg = this.host.append("svg").attr("width", this.chart.getWidth() + this.chart.margin.left + this.chart.margin.right)
+      .attr("height", this.chart.getHeight() + this.chart.margin.top + this.chart.margin.bottom)
       .append("g")
       .attr("transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")");
+        "translate(" + this.chart.margin.left + "," + this.chart.margin.top + ")");
 
     // Y-axis label
     this.svg.append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", 0 - this.margin.left)
+      .attr("y", 0 - this.chart.margin.left)
       .attr("class", "y-axis-label")
-      .attr("x", 0 - (this.height / 2))
+      .attr("x", 0 - (this.chart.getHeight() / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
       .text("Y axis label");
 
     // X-axis label
     this.svg.append("text")
-      .attr("x", this.width / 2)
-      .attr("y", this.height + this.margin.top)
+      .attr("x", this.chart.getWidth() / 2)
+      .attr("y", this.chart.getHeight() + this.chart.margin.top)
       .attr("class", "x-axis-label")
       .style("text-anchor", "middle")
       .text("Date");
 
     // add a title
     this.svg.append("text")
-      .attr("x", (this.width / 2))
-      .attr("y", 0 - (this.margin.top / 2))
+      .attr("x", (this.chart.getWidth() / 2))
+      .attr("y", 0 - (this.chart.margin.top / 2))
       .attr("text-anchor", "middle")
       .style("font-size", "20px")
       .style("text-decoration", "underline")
       .text("Graph Title");
-
 
     if (error) throw error;
 
@@ -130,7 +130,7 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // group the data for the bars
-    let bins = this.chart(data);
+    let bins = this.chart.components.layout(data);
 
     // Scale the range of the data in the y domain
     let maxY = d3.max(bins, (d) => {
@@ -139,7 +139,7 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     this.y.domain([0, maxY]);
 
     this.gridY = d3.axisLeft(this.y)
-      .tickSize(-this.width)
+      .tickSize(-this.chart.getWidth())
       .tickFormat("");
 
     // add the Y gridlines
@@ -165,7 +165,7 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // add the x Axis
     this.svg.append("g")
-      .attr("transform", "translate(0," + this.height + ")")
+      .attr("transform", "translate(0," + this.chart.getHeight() + ")")
       .call(d3.axisBottom(this.x));
       // .call(d3.axisBottom(this.x).ticks(bins.length));
 
@@ -187,6 +187,6 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   rectHeight(d) {
-    return this.height - this.y(d.length);
+    return this.chart.getHeight() - this.y(d.length);
   }
 }

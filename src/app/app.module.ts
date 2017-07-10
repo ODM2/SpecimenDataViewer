@@ -21,8 +21,10 @@ import {
   MdTooltipModule,
   MdRadioModule,
   MdDialogModule,
-  MdSliderModule
+  MdSliderModule,
+  MdTableModule
 } from '@angular/material';
+import {CdkTableModule} from '@angular/cdk'
 import 'hammerjs';
 
 import {AppComponent} from './app.component';
@@ -91,7 +93,9 @@ import { SideNavComponent } from './side-nav/side-nav.component';
     MdTooltipModule,
     MdRadioModule,
     MdDialogModule,
-    MdSliderModule
+    MdSliderModule,
+    MdTableModule,
+    CdkTableModule
   ],
   entryComponents: [
     SummaryStatisticsComponent,DetailsComponent
