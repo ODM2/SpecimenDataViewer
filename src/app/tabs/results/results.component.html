@@ -179,35 +179,98 @@
             </button>
           </td>
         </tr>
-
         </tbody>
       </table>
 
       <div id="table-container-2" class="md-shadow-1">
         <md-table #table [dataSource]="dataSource">
-        <!-- ID Column -->
-        <ng-container cdkColumnDef="userId">
-          <md-header-cell *cdkHeaderCellDef> ID</md-header-cell>
-          <md-cell *cdkCellDef="let row"> {{row.id}}</md-cell>
-        </ng-container>
+          <!-- Selection Column -->
+          <ng-container cdkColumnDef="selection">
+            <md-header-cell *cdkHeaderCellDef>
+              <md-checkbox [(ngModel)]="allSelected"
+                         (click)="toggleSelectedAll()"></md-checkbox>
+            </md-header-cell>
 
-        <!-- Progress Column -->
-        <ng-container cdkColumnDef="progress">
-          <md-header-cell *cdkHeaderCellDef> Progress</md-header-cell>
-          <md-cell *cdkCellDef="let row"> {{row.progress}}%</md-cell>
-        </ng-container>
+            <md-cell *cdkCellDef="let row">
+              <md-checkbox (change)="flagIsSomeSelected=isSomeSelected()"></md-checkbox>
+            </md-cell>
+          </ng-container>
 
-        <!-- Name Column -->
-        <ng-container cdkColumnDef="userName">
-          <md-header-cell *cdkHeaderCellDef> Name</md-header-cell>
-          <md-cell *cdkCellDef="let row"> {{row.name}}</md-cell>
-        </ng-container>
+          <!-- Actions Column -->
+          <ng-container cdkColumnDef="actions">
+            <md-header-cell *cdkHeaderCellDef> Actions</md-header-cell>
+            <md-cell *cdkCellDef="let row">
+              <button md-icon-button
+                      mdTooltip="Plot"
+                      color="primary"
+                      [mdTooltipShowDelay]="500">
+                <md-icon>assessment</md-icon>
+              </button>
 
-        <!-- Color Column -->
-        <ng-container cdkColumnDef="color">
-          <md-header-cell *cdkHeaderCellDef>Color</md-header-cell>
-          <md-cell *cdkCellDef="let row" [style.color]="row.color"> {{row.color}}</md-cell>
-        </ng-container>
+              <button md-icon-button
+                      mdTooltip="Export"
+                      color="primary"
+                      [mdTooltipShowDelay]="500">
+                <md-icon>file_download</md-icon>
+              </button>
+
+              <button md-icon-button
+                      (click)="openDetailsDialog('some data')"
+                      mdTooltip="View Details"
+                      color="primary"
+                      [mdTooltipShowDelay]="500">
+                <md-icon>more</md-icon>
+              </button>
+            </md-cell>
+          </ng-container>
+
+          <!-- StartDate Column -->
+          <ng-container cdkColumnDef="endDate">
+            <md-header-cell *cdkHeaderCellDef> End Date</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.endDate.toLocaleString()}}</md-cell>
+          </ng-container>
+
+          <!-- StartDate Column -->
+          <ng-container cdkColumnDef="startDate">
+            <md-header-cell *cdkHeaderCellDef> Start Date</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.startDate.toLocaleString()}}</md-cell>
+          </ng-container>
+
+          <!-- VariableName Column -->
+          <ng-container cdkColumnDef="variableName">
+            <md-header-cell *cdkHeaderCellDef> Variable Name</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.variableName}}</md-cell>
+          </ng-container>
+
+          <!-- Site Name Column -->
+          <ng-container cdkColumnDef="siteName">
+            <md-header-cell *cdkHeaderCellDef> Site Name</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.siteName}}</md-cell>
+          </ng-container>
+
+          <!-- Site Code Column -->
+          <ng-container cdkColumnDef="siteCode">
+            <md-header-cell *cdkHeaderCellDef> Site Code</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.siteCode}}</md-cell>
+          </ng-container>
+
+          <!-- Network Column -->
+          <ng-container cdkColumnDef="network">
+            <md-header-cell *cdkHeaderCellDef> Network</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.network}}</md-cell>
+          </ng-container>
+
+          <!-- Variable Code Column -->
+          <ng-container cdkColumnDef="variableCode">
+            <md-header-cell *cdkHeaderCellDef> Variable Code</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.variableCode}}</md-cell>
+          </ng-container>
+
+          <!-- Medium Column -->
+          <ng-container cdkColumnDef="medium">
+            <md-header-cell *cdkHeaderCellDef> medium</md-header-cell>
+            <md-cell *cdkCellDef="let row"> {{row.medium}}</md-cell>
+          </ng-container>
 
         <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
         <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>

@@ -28,7 +28,19 @@ export class ResultsComponent implements OnInit {
   __beginDate: Date;
   __endDate: Date;
 
-  displayedColumns = ['userId', 'userName', 'progress', 'color'];
+  displayedColumns = [
+    'selection',
+    'variableCode',
+    'network',
+    'siteCode',
+    'siteName',
+    'variableName',
+    'startDate',
+    'endDate',
+    'medium',
+    'actions',
+  ];
+
   exampleDatabase = new ExampleDatabase();
   dataSource: ExampleDataSource | null;
 
@@ -118,50 +130,55 @@ export class ResultsComponent implements OnInit {
   // }
 }
 
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  color: string;
+export interface Dataset {
+  variableCode: string;
+  network: string;
+  siteCode: string;
+  siteName: string;
+  variableName: string;
+  startDate: Date;
+  endDate: Date;
+  medium: string;
 }
 
 /** Constants used to fill up our data base. */
-const COLORS = ['maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple',
-  'fuchsia', 'lime', 'teal', 'aqua', 'blue', 'navy', 'black', 'gray'];
-const NAMES = ['Maia', 'Asher', 'Olivia', 'Atticus', 'Amelia', 'Jack',
-  'Charlotte', 'Theodore', 'Isla', 'Oliver', 'Isabella', 'Jasper',
-  'Cora', 'Levi', 'Violet', 'Arthur', 'Mia', 'Thomas', 'Elizabeth'];
+const VARIABLE_CODES = ['ODO', 'ODO_Local', 'AAA'];
+const SITE_CODES = ['RB_ARBR_A	', 'ASDSASDFW', 'FFFCVBB'];
+const NETWORKS = ['GAMUT	', 'Logan', 'SLC'];
+const SITE_NAMES = ['Logan River', 'Red Butte Creek', 'Utah River'];
+const VARIABLE_NAMES = ['Temperature', 'Water Pressure', 'Wind Speed'];
+const MEDIUMS = ['Air', 'Water', 'Wind'];
 
 
 /** An example database that the data source uses to retrieve data for the table. */
 export class ExampleDatabase {
   /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<UserData[]> = new BehaviorSubject<UserData[]>([]);
-  get data(): UserData[] { return this.dataChange.value; }
+  dataChange: BehaviorSubject<Dataset[]> = new BehaviorSubject<Dataset[]>([]);
+  get data(): Dataset[] { return this.dataChange.value; }
 
   constructor() {
     // Fill up the database with 100 users.
-    for (let i = 0; i < 100; i++) { this.addUser(); }
+    for (let i = 0; i < 100; i++) { this.addDataset(); }
   }
 
   /** Adds a new user to the database. */
-  addUser() {
+  addDataset() {
     const copiedData = this.data.slice();
-    copiedData.push(this.createNewUser());
+    copiedData.push(this.createNewDataset());
     this.dataChange.next(copiedData);
   }
 
   /** Builds and returns a new User. */
-  private createNewUser() {
-    const name =
-        NAMES[Math.round(Math.random() * (NAMES.length - 1))] + ' ' +
-        NAMES[Math.round(Math.random() * (NAMES.length - 1))].charAt(0) + '.';
-
+  private createNewDataset() {
     return {
-      id: (this.data.length + 1).toString(),
-      name: name,
-      progress: Math.round(Math.random() * 100).toString(),
-      color: COLORS[Math.round(Math.random() * (COLORS.length - 1))]
+        variableCode: VARIABLE_CODES[Math.round(Math.random() * (VARIABLE_CODES.length - 1))],
+        network: NETWORKS[Math.round(Math.random() * (NETWORKS.length - 1))],
+        siteCode: SITE_CODES[Math.round(Math.random() * (SITE_CODES.length - 1))],
+        siteName: SITE_NAMES[Math.round(Math.random() * (SITE_NAMES.length - 1))],
+        variableName: VARIABLE_NAMES[Math.round(Math.random() * (VARIABLE_NAMES.length - 1))],
+        startDate: new Date(),
+        endDate: new Date(),
+        medium: MEDIUMS[Math.round(Math.random() * (MEDIUMS.length - 1))],
     };
   }
 }
@@ -172,7 +189,7 @@ export class ExampleDataSource extends DataSource<any> {
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<UserData[]> {
+  connect(): Observable<Dataset[]> {
     return this._exampleDatabase.dataChange;
   }
 
