@@ -16,12 +16,12 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./results.component.css']
 })
 export class ResultsComponent implements OnInit {
-  constructor(private dataService: DataService, public dialog: MdDialog) { }
-
   dataseries = [];
-  plotCount: number = 0;
-  selectedCount: number = 0;
-  optionDisplay: string = "All";
+  allSelected = false;
+  someSelected = false;
+  plotCount = 0;
+  selectedCount = 0;
+  optionDisplay = 'All';
   // flagIsSomeSelected = false;
   __beginDate: Date;
   __endDate: Date;
@@ -42,6 +42,9 @@ export class ResultsComponent implements OnInit {
   ];
 
   @ViewChild('filter') filter: ElementRef;
+
+  constructor(private dataService: DataService, public dialog: MdDialog) {
+  }
 
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
@@ -73,25 +76,36 @@ export class ResultsComponent implements OnInit {
   }
 
   toggleSelectedAll() {
-    // this.dataSource.toggleAllSelected(true);
+    // Some are selected. Deselect all.
+    if (this.selectedCount > 0 && this.selectedCount < this.exampleDatabase.data.length) {
+      this.exampleDatabase.data.forEach((d) => {
+        d.selected = false;
+      });
+      this.selectedCount = 0;
 
-    console.log(this.exampleDatabase);
-    console.log(this.dataSource);
+      this.allSelected = true;
+    } else if (this.selectedCount === 0) {
+      this.exampleDatabase.data.forEach((d) => {
+        d.selected = !this.allSelected;
+      });
+    }
   }
 
   clearSearch() {
-    this.dataSource.filter = "";
+    this.dataSource.filter = '';
   }
 
-  // isSomeSelected() {
-  //   for (let dataset of this.dataseries) {
-  //     if (dataset.selected) {
-  //       return true;
-  //     }
-  //   }
-  //
-  //   return false;
-  // }
+  updateSelectedCount() {
+    let selected = 0;
+    for (const dataset of this.exampleDatabase.data) {
+      if (dataset.selected) {
+        selected++;
+      }
+    }
+
+    this.selectedCount = selected;
+    console.log(this.selectedCount);
+  }
 
   openDetailsDialog(somedata: string) {
     this.dialog.open(DetailsComponent,
@@ -139,7 +153,7 @@ export class ExampleDatabase {
   constructor() {
     // Fill up the database with 15 users.
     for (let i = 0; i < 8; i++) { this.addDataset(); }
-    this.toggleAllSelected(false);
+    // this.toggleAllSelected(false);
   }
 
   /** Adds a new user to the database. */
@@ -149,13 +163,13 @@ export class ExampleDatabase {
     this.dataChange.next(copiedData);
   }
 
-  toggleAllSelected(state: boolean) {
-    const copiedData = this.data.slice();
-    for (let dataset of copiedData) {
-      dataset.selected = state;
-    }
-    this.dataChange.next(copiedData);
-  }
+  // toggleAllSelected(state: boolean) {
+  //   const copiedData = this.data.slice();
+  //   for (let dataset of copiedData) {
+  //     dataset.selected = state;
+  //   }
+  //   this.dataChange.next(copiedData);
+  // }
 
   /** Builds and returns a new User. */
   private createNewDataset() {
@@ -188,6 +202,10 @@ export class ExampleDataSource extends DataSource<any> {
   constructor(private _exampleDatabase: ExampleDatabase) {
     super();
   }
+
+  // toggleAllSelected(state: boolean) {
+  //   console.log(state);
+  // }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Dataset[]> {

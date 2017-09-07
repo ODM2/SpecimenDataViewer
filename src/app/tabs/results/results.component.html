@@ -112,12 +112,13 @@
             <md-header-cell *cdkHeaderCellDef>
               <md-checkbox
                 [(ngModel)]="allSelected"
+                [(indeterminate)]="selectedCount"
                 (click)="toggleSelectedAll()">
               </md-checkbox>
             </md-header-cell>
 
             <md-cell *cdkCellDef="let row">
-              <md-checkbox [(ngModel)]="row.selected"></md-checkbox>
+              <md-checkbox [(ngModel)]="row.selected" (change)="updateSelectedCount()"></md-checkbox>
               <!--{{ row.selected }}-->
             </md-cell>
           </ng-container>
