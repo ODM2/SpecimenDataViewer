@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {DataService} from "../../data.service";
 import {DetailsComponent} from "../details/details.component";
-import {MdDialog, MdTableModule} from "@angular/material";
-import {CdkTableModule} from "@angular/cdk"
+import {MdDialog} from "@angular/material";
+// import {CdkTableModule} from "@angular/cdk"
 import {DataSource} from '@angular/cdk';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
@@ -22,11 +22,11 @@ export class ResultsComponent implements OnInit {
   plotCount: number = 0;
   selectedCount: number = 0;
   optionDisplay: string = "All";
-  allSelected: boolean = false;
-  flagIsSomeSelected = false;
-  searchString: string = "";
+  // flagIsSomeSelected = false;
   __beginDate: Date;
   __endDate: Date;
+  exampleDatabase = new ExampleDatabase();
+  dataSource: ExampleDataSource | null;
 
   displayedColumns = [
     'selection',
@@ -41,47 +41,25 @@ export class ResultsComponent implements OnInit {
     'actions',
   ];
 
-  exampleDatabase = new ExampleDatabase();
-  dataSource: ExampleDataSource | null;
+  @ViewChild('filter') filter: ElementRef;
 
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
-    for (let dataset of this.dataseries) {
-      dataset.plotted = false;
-      dataset.selected = false;
-    }
 
     this.dataSource = new ExampleDataSource(this.exampleDatabase);
+    Observable.fromEvent(this.filter.nativeElement, 'keyup')
+      .debounceTime(150)
+      .distinctUntilChanged()
+      .subscribe(() => {
+        if (!this.dataSource) {
+          return;
+        }
+        this.dataSource.filter = this.filter.nativeElement.value;
+      });
   }
 
   onDisplay(option: string) {
     this.optionDisplay = option;
-  }
-
-  // clearSelected() {
-  //   for (let entry of this.dataseries) {
-  //     entry.selected = false;
-  //   }
-  //   this.flagIsSomeSelected = false;
-  // }
-
-  toggleSelect(index: number) {
-    this.dataseries[index].selected = !this.dataseries[index].selected;
-    this.flagIsSomeSelected = this.isSomeSelected();
-  }
-
-  loadDetails () {
-
-  }
-
-  togglePlot(index: number) {
-    this.dataseries[index].plotted = !this.dataseries[index].plotted;
-    if (!this.dataseries[index].plotted) {
-      this.plotCount = this.plotCount - 1;
-    }
-    else {
-     this.plotCount = this.plotCount + 1;
-    }
   }
 
   plotSelected() {
@@ -95,25 +73,25 @@ export class ResultsComponent implements OnInit {
   }
 
   toggleSelectedAll() {
-    for (let dataset of this.dataseries) {
-      dataset.selected = !this.allSelected;
-    }
-    this.flagIsSomeSelected = !this.allSelected;
+    // this.dataSource.toggleAllSelected(true);
+
+    console.log(this.exampleDatabase);
+    console.log(this.dataSource);
   }
 
   clearSearch() {
-    this.searchString = "";
+    this.dataSource.filter = "";
   }
 
-  isSomeSelected() {
-    for (let dataset of this.dataseries) {
-      if (dataset.selected) {
-        return true;
-      }
-    }
-
-    return false;
-  }
+  // isSomeSelected() {
+  //   for (let dataset of this.dataseries) {
+  //     if (dataset.selected) {
+  //       return true;
+  //     }
+  //   }
+  //
+  //   return false;
+  // }
 
   openDetailsDialog(somedata: string) {
     this.dialog.open(DetailsComponent,
@@ -139,6 +117,8 @@ export interface Dataset {
   startDate: Date;
   endDate: Date;
   medium: string;
+  selected: boolean;
+  plotted: boolean;
 }
 
 /** Constants used to fill up our data base. */
@@ -157,14 +137,23 @@ export class ExampleDatabase {
   get data(): Dataset[] { return this.dataChange.value; }
 
   constructor() {
-    // Fill up the database with 100 users.
-    for (let i = 0; i < 100; i++) { this.addDataset(); }
+    // Fill up the database with 15 users.
+    for (let i = 0; i < 8; i++) { this.addDataset(); }
+    this.toggleAllSelected(false);
   }
 
   /** Adds a new user to the database. */
   addDataset() {
     const copiedData = this.data.slice();
     copiedData.push(this.createNewDataset());
+    this.dataChange.next(copiedData);
+  }
+
+  toggleAllSelected(state: boolean) {
+    const copiedData = this.data.slice();
+    for (let dataset of copiedData) {
+      dataset.selected = state;
+    }
     this.dataChange.next(copiedData);
   }
 
@@ -179,18 +168,40 @@ export class ExampleDatabase {
         startDate: new Date(),
         endDate: new Date(),
         medium: MEDIUMS[Math.round(Math.random() * (MEDIUMS.length - 1))],
+        selected: false,
+        plotted: false
     };
   }
 }
 
 export class ExampleDataSource extends DataSource<any> {
+  _filterChange = new BehaviorSubject('');
+
+  get filter(): string {
+    return this._filterChange.value;
+  }
+
+  set filter(filter: string) {
+    this._filterChange.next(filter);
+  }
+
   constructor(private _exampleDatabase: ExampleDatabase) {
     super();
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Dataset[]> {
-    return this._exampleDatabase.dataChange;
+    const displayDataChanges = [
+      this._exampleDatabase.dataChange,
+      this._filterChange
+    ];
+
+    return Observable.merge(...displayDataChanges).map(() => {
+      return this._exampleDatabase.data.slice().filter((item: Dataset) => {
+        let searchStr = (item.network + item.siteName + item.variableName + item.variableCode + item.siteCode + item.medium).toLowerCase();
+        return searchStr.indexOf(this.filter.toLowerCase()) != -1;
+      });
+    });
   }
 
   disconnect() {}

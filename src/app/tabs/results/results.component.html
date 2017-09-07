@@ -74,8 +74,9 @@
         <div class="col-xs-12 col-sm-6">
           <md-icon>search</md-icon>
           <md-input-container style="width: calc(100% - 71px);">
-            <input mdInput placeholder="Search" [(ngModel)]="searchString">
+            <input #filter mdInput placeholder="Search" [(ngModel)]="searchString">
           </md-input-container>
+
           <button md-icon-button (click)="clearSearch()"
                   mdTooltip="Clear"
                   [mdTooltipShowDelay]="500">
@@ -85,25 +86,13 @@
 
         <div class="col-xs-12 col-sm-3 text-right">
           <button md-raised-button color="accent"
-                  [disabled]="!flagIsSomeSelected"
                   (click)="plotSelected()"
           >
             <md-icon>assessment</md-icon>
             Plot
           </button>
 
-          <!--<button md-raised-button color="primary" (click)="clearSelected()">-->
-          <!--<md-icon>clear</md-icon>-->
-          <!--Clear Selected-->
-          <!--</button>-->
-
-          <!--<button md-raised-button color="primary" (click)="loadDetails()">-->
-          <!--<md-icon>assignment</md-icon>-->
-          <!--Details...-->
-          <!--</button>-->
-
-          <button md-raised-button color="primary"
-                  [disabled]="!flagIsSomeSelected">
+          <button md-raised-button color="primary">
             <md-icon>file_download</md-icon>
             Export
           </button>
@@ -116,83 +105,20 @@
         <small class="text-muted"><strong>Plotting:</strong> ({{this.plotCount}}/5)</small>
       </div>
 
-      <table class="table table-striped table-hover md-shadow-1">
-        <thead>
-        <tr>
-          <th>
-            <md-checkbox [(ngModel)]="allSelected"
-                         (click)="toggleSelectedAll()"></md-checkbox>
-          </th>
-          <!--<th>Type</th>-->
-          <th>Network</th>
-          <th>Site Code</th>
-          <th>Site Name</th>
-          <th>Medium</th>
-          <th>Variable Code</th>
-          <th>Variable Name</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <!--<th>Number of Values</th>-->
-          <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        <tr *ngFor="let entry of dataseries, let i = index"
-            [style.display]="(optionDisplay=='All' || optionDisplay=='Selected' && entry.selected || optionDisplay=='Plotted' && entry.plotted) ? 'table-row' : 'none' "
-            style="cursor: pointer;">
-          <td>
-            <md-checkbox [(ngModel)]="entry.selected" (change)="flagIsSomeSelected=isSomeSelected()"></md-checkbox>
-          </td>
-          <!--<td (click)="onToggleSelect(i)">{{ entry.type }}</td>-->
-          <td (click)="toggleSelect(i)">{{ entry.network }}</td>
-          <td (click)="toggleSelect(i)">{{ entry.siteCode }}</td>
-          <td (click)="toggleSelect(i)">{{ entry.siteName }}</td>
-          <td (click)="toggleSelect(i)">{{ entry.medium }}</td>
-          <td (click)="toggleSelect(i)">{{ entry.variableCode }}</td>
-          <td (click)="toggleSelect(i)">{{ entry.variableName }}</td>
-          <td (click)="toggleSelect(i)">{{ entry.startDate | date }}</td>
-          <td (click)="toggleSelect(i)">{{ entry.endDate | date}}</td>
-          <!--<td (click)="onToggleSelect(i)">{{ entry.numberOfValues }}</td>-->
-          <td>
-            <button md-icon-button
-                    (click)="togglePlot(i)"
-                    mdTooltip="Plot"
-                    [color]="entry.plotted ? 'accent' : 'primary'"
-                    [mdTooltipShowDelay]="500">
-              <md-icon>assessment</md-icon>
-            </button>
-
-            <button md-icon-button
-                    mdTooltip="Export"
-                    color="primary"
-                    [mdTooltipShowDelay]="500">
-              <md-icon>file_download</md-icon>
-            </button>
-
-            <button md-icon-button
-                    (click)="openDetailsDialog('some data')"
-                    mdTooltip="View Details"
-                    color="primary"
-                    [mdTooltipShowDelay]="500">
-              <md-icon>more</md-icon>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
       <div id="table-container-2" class="md-shadow-1">
         <md-table #table [dataSource]="dataSource">
           <!-- Selection Column -->
           <ng-container cdkColumnDef="selection">
             <md-header-cell *cdkHeaderCellDef>
-              <md-checkbox [(ngModel)]="allSelected"
-                         (click)="toggleSelectedAll()"></md-checkbox>
+              <md-checkbox
+                [(ngModel)]="allSelected"
+                (click)="toggleSelectedAll()">
+              </md-checkbox>
             </md-header-cell>
 
             <md-cell *cdkCellDef="let row">
-              <md-checkbox (change)="flagIsSomeSelected=isSomeSelected()"></md-checkbox>
+              <md-checkbox [(ngModel)]="row.selected"></md-checkbox>
+              <!--{{ row.selected }}-->
             </md-cell>
           </ng-container>
 
@@ -200,25 +126,25 @@
           <ng-container cdkColumnDef="actions">
             <md-header-cell *cdkHeaderCellDef> Actions</md-header-cell>
             <md-cell *cdkCellDef="let row">
-              <button md-icon-button
-                      mdTooltip="Plot"
-                      color="primary"
-                      [mdTooltipShowDelay]="500">
-                <md-icon>assessment</md-icon>
-              </button>
+              <ng-container mdTooltip="Plot">
+                <button md-icon-button
+                        [color]="row.plotted ? 'accent' : 'primary'"
+                        (click)="row.plotted = !row.plotted">
+                  <md-icon>assessment</md-icon>
+                </button>
+                <!--{{row.plotted}}-->
+              </ng-container>
 
               <button md-icon-button
                       mdTooltip="Export"
-                      color="primary"
-                      [mdTooltipShowDelay]="500">
+                      color="primary">
                 <md-icon>file_download</md-icon>
               </button>
 
               <button md-icon-button
-                      (click)="openDetailsDialog('some data')"
+                      (click)="openDetailsDialog('Some data')"
                       mdTooltip="View Details"
-                      color="primary"
-                      [mdTooltipShowDelay]="500">
+                      color="primary">
                 <md-icon>more</md-icon>
               </button>
             </md-cell>
@@ -268,7 +194,7 @@
 
           <!-- Medium Column -->
           <ng-container cdkColumnDef="medium">
-            <md-header-cell *cdkHeaderCellDef> medium</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef> Medium</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.medium}}</md-cell>
           </ng-container>
 
