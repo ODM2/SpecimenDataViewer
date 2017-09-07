@@ -18,11 +18,9 @@ import 'rxjs/add/operator/map';
 export class ResultsComponent implements OnInit {
   dataseries = [];
   allSelected = false;
-  someSelected = false;
   plotCount = 0;
   selectedCount = 0;
   optionDisplay = 'All';
-  // flagIsSomeSelected = false;
   __beginDate: Date;
   __endDate: Date;
   exampleDatabase = new ExampleDatabase();
@@ -230,10 +228,12 @@ export class ExampleDataSource extends DataSource<any> {
 
     return Observable.merge(...displayDataChanges).map(() => {
       return this._exampleDatabase.data.slice().filter((item: Dataset) => {
-        const searchStr = (item.network + item.siteName + item.variableName + item.variableCode + item.siteCode + item.medium).toLowerCase();
+        const searchStr =
+          (item.network + item.siteName + item.variableName + item.variableCode
+            + item.siteCode + item.medium).toLowerCase();
         const flagSearched = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
-        console.log(this.display);
-        const flagDisplayed = (item.selected === true && this.display === 'Selected') || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
+        const flagDisplayed = (item.selected === true && this.display === 'Selected')
+          || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
         return flagDisplayed && flagSearched;
       });
     });
