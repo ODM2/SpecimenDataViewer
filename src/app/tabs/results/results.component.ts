@@ -50,6 +50,7 @@ export class ResultsComponent implements OnInit {
     this.dataseries = this.dataService.getDataseries();
 
     this.dataSource = new ExampleDataSource(this.exampleDatabase);
+    this.onDisplay('All');
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
       .distinctUntilChanged()
@@ -63,16 +64,27 @@ export class ResultsComponent implements OnInit {
 
   onDisplay(option: string) {
     this.optionDisplay = option;
+    this.dataSource.display = option;
   }
 
   plotSelected() {
     this.plotCount = 0;
-    for (let dataset of this.dataseries) {
+    for (let dataset of this.exampleDatabase.data) {
       dataset.plotted = dataset.selected;
       if (dataset.plotted) {
         this.plotCount = this.plotCount + 1;
       }
     }
+  }
+
+  updatePlotCount() {
+    let plotted = 0;
+    for (const dataset of this.exampleDatabase.data) {
+      if (dataset.plotted) {
+        plotted++;
+      }
+    }
+    this.plotCount = plotted;
   }
 
   toggleSelectedAll() {
@@ -110,7 +122,6 @@ export class ResultsComponent implements OnInit {
     }
 
     this.selectedCount = selected;
-    console.log(this.selectedCount);
   }
 
   openDetailsDialog(somedata: string) {
@@ -157,9 +168,8 @@ export class ExampleDatabase {
   get data(): Dataset[] { return this.dataChange.value; }
 
   constructor() {
-    // Fill up the database with 15 users.
+    // Fill up the database with 8 users.
     for (let i = 0; i < 8; i++) { this.addDataset(); }
-    // this.toggleAllSelected(false);
   }
 
   /** Adds a new user to the database. */
@@ -168,14 +178,6 @@ export class ExampleDatabase {
     copiedData.push(this.createNewDataset());
     this.dataChange.next(copiedData);
   }
-
-  // toggleAllSelected(state: boolean) {
-  //   const copiedData = this.data.slice();
-  //   for (let dataset of copiedData) {
-  //     dataset.selected = state;
-  //   }
-  //   this.dataChange.next(copiedData);
-  // }
 
   /** Builds and returns a new User. */
   private createNewDataset() {
@@ -196,6 +198,7 @@ export class ExampleDatabase {
 
 export class ExampleDataSource extends DataSource<any> {
   _filterChange = new BehaviorSubject('');
+  _displayChange = new BehaviorSubject('');
 
   get filter(): string {
     return this._filterChange.value;
@@ -205,25 +208,33 @@ export class ExampleDataSource extends DataSource<any> {
     this._filterChange.next(filter);
   }
 
+  get display(): string {
+    return this._displayChange.value;
+  }
+
+  set display(filter: string) {
+    this._displayChange.next(filter);
+  }
+
   constructor(private _exampleDatabase: ExampleDatabase) {
     super();
   }
-
-  // toggleAllSelected(state: boolean) {
-  //   console.log(state);
-  // }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Dataset[]> {
     const displayDataChanges = [
       this._exampleDatabase.dataChange,
-      this._filterChange
+      this._filterChange,
+      this._displayChange
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
       return this._exampleDatabase.data.slice().filter((item: Dataset) => {
-        let searchStr = (item.network + item.siteName + item.variableName + item.variableCode + item.siteCode + item.medium).toLowerCase();
-        return searchStr.indexOf(this.filter.toLowerCase()) != -1;
+        const searchStr = (item.network + item.siteName + item.variableName + item.variableCode + item.siteCode + item.medium).toLowerCase();
+        const flagSearched = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
+        console.log(this.display);
+        const flagDisplayed = (item.selected === true && this.display === 'Selected') || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
+        return flagDisplayed && flagSearched;
       });
     });
   }
