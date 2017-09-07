@@ -81,15 +81,21 @@ export class ResultsComponent implements OnInit {
       this.exampleDatabase.data.forEach((d) => {
         d.selected = false;
       });
-      this.selectedCount = 0;
 
       this.allSelected = true;
-    } else if (this.selectedCount === 0) {
+    } else if (this.selectedCount == 0) {
       this.exampleDatabase.data.forEach((d) => {
         d.selected = !this.allSelected;
       });
+    } else if (this.selectedCount == this.exampleDatabase.data.length) {
+      this.exampleDatabase.data.forEach((d) => {
+        d.selected = false;
+      });
     }
+
+    this.updateSelectedCount();
   }
+
 
   clearSearch() {
     this.dataSource.filter = '';

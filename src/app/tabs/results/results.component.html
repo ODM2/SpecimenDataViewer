@@ -87,6 +87,7 @@
         <div class="col-xs-12 col-sm-3 text-right">
           <button md-raised-button color="accent"
                   (click)="plotSelected()"
+                  [disabled]="selectedCount == 0"
           >
             <md-icon>assessment</md-icon>
             Plot
@@ -112,8 +113,8 @@
             <md-header-cell *cdkHeaderCellDef>
               <md-checkbox
                 [(ngModel)]="allSelected"
-                [(indeterminate)]="selectedCount"
-                (click)="toggleSelectedAll()">
+                (click)="toggleSelectedAll()"
+                [indeterminate]="selectedCount >= 1">
               </md-checkbox>
             </md-header-cell>
 
