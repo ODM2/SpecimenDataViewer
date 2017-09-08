@@ -22,7 +22,8 @@ import {
   MdRadioModule,
   MdDialogModule,
   MdSliderModule,
-  MdTableModule
+  MdTableModule,
+  MdPaginatorModule
 } from '@angular/material';
 import {CdkTableModule} from '@angular/cdk'
 import 'hammerjs';
@@ -95,10 +96,11 @@ import { SideNavComponent } from './side-nav/side-nav.component';
     MdDialogModule,
     MdSliderModule,
     MdTableModule,
-    CdkTableModule
+    CdkTableModule,
+    MdPaginatorModule
   ],
   entryComponents: [
-    SummaryStatisticsComponent,DetailsComponent
+    SummaryStatisticsComponent, DetailsComponent
   ],
   providers: [DataService, AgmMap, GoogleMapsAPIWrapper, VisualizationService],
   bootstrap: [AppComponent]

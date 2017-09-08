@@ -1,7 +1,7 @@
 import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {DataService} from "../../data.service";
 import {DetailsComponent} from "../details/details.component";
-import {MdDialog} from "@angular/material";
+import {MdDialog, MdPaginator} from "@angular/material";
 // import {CdkTableModule} from "@angular/cdk"
 import {DataSource} from '@angular/cdk';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
@@ -40,6 +40,7 @@ export class ResultsComponent implements OnInit {
   ];
 
   @ViewChild('filter') filter: ElementRef;
+  @ViewChild(MdPaginator) paginator: MdPaginator;
 
   constructor(private dataService: DataService, public dialog: MdDialog) {
   }
@@ -47,7 +48,8 @@ export class ResultsComponent implements OnInit {
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
 
-    this.dataSource = new ExampleDataSource(this.exampleDatabase);
+    this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator);
+
     this.onDisplay('All');
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
@@ -221,7 +223,7 @@ export class ExampleDataSource extends DataSource<any> {
     this._displayChange.next(filter);
   }
 
-  constructor(private _exampleDatabase: ExampleDatabase) {
+  constructor(private _exampleDatabase: ExampleDatabase, private _paginator: MdPaginator) {
     super();
   }
 
@@ -230,11 +232,12 @@ export class ExampleDataSource extends DataSource<any> {
     const displayDataChanges = [
       this._exampleDatabase.dataChange,
       this._filterChange,
-      this._displayChange
+      this._displayChange,
+      this._paginator.page,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      return this._exampleDatabase.data.slice().filter((item: Dataset) => {
+      const data = this._exampleDatabase.data.slice().filter((item: Dataset) => {
         const searchStr =
           (item.network + item.siteName + item.variableName + item.variableCode
             + item.siteCode + item.medium).toLowerCase();
@@ -243,6 +246,10 @@ export class ExampleDataSource extends DataSource<any> {
           || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
         return flagDisplayed && flagSearched;
       });
+
+      // Grab the page's slice of data.
+      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
+      return data.splice(startIndex, this._paginator.pageSize);
     });
   }
 
