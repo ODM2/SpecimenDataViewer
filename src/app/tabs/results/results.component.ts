@@ -40,6 +40,7 @@ export class ResultsComponent implements OnInit {
     'actions',
   ];
 
+  @ViewChild('chkSelectAll') selectAll: ElementRef;
   @ViewChild('filter') filter: ElementRef;
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
@@ -105,13 +106,18 @@ export class ResultsComponent implements OnInit {
       this.exampleDatabase.data.forEach((d) => {
         d.selected = false;
       });
-
       this.allSelected = true;
-    } else if (this.selectedCount == 0) {
-      this.exampleDatabase.data.forEach((d) => {
-        d.selected = !this.allSelected;
+    } else if (this.selectedCount === 0) {  // None selected, select all
+      this.exampleDatabase.data.forEach((d, index) => {
+        // console.log(this.paginator.pageSize);
+        // console.log(this.paginator.pageIndex);
+        const start = this.paginator.pageSize * this.paginator.pageIndex;
+        const end = this.paginator.pageSize * this.paginator.pageIndex + this.paginator.pageSize;
+        if (index >= start && index < end) {
+          d.selected = !this.allSelected;
+        }
       });
-    } else if (this.selectedCount == this.exampleDatabase.data.length) {
+    } else if (this.selectedCount === this.exampleDatabase.data.length) { // All selected, deselect all
       this.exampleDatabase.data.forEach((d) => {
         d.selected = false;
       });
@@ -259,15 +265,15 @@ export class ExampleDataSource extends DataSource<any> {
         const flagSearched = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
         const flagDisplayed = (item.selected === true && this.display === 'Selected')
           || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
-        let inDateRange = true;
+        let withinDateRange = true;
 
         const start = this.dateRange.value[0];
         const end = this.dateRange.value[1];
         if ((start && item.startDate < start ) || (end && item.endDate > end)) {
-          inDateRange = false;
+          withinDateRange = false;
         }
 
-        return flagDisplayed && flagSearched && inDateRange;
+        return flagDisplayed && flagSearched && withinDateRange;
       });
 
       // Grab the page's slice of data.

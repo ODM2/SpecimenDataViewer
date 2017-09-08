@@ -33,7 +33,7 @@
                        [mdDatepicker]="beginDate"
                        [(ngModel)]="__beginDate"
                        (dateChange)="onDateRangeChange()"
-                       placeholder="Begin Date">
+                       placeholder="Start Date">
                 <md-datepicker-toggle mdSuffix [for]="beginDate"></md-datepicker-toggle>
               </md-input-container>
               <md-datepicker #beginDate></md-datepicker>
@@ -103,7 +103,8 @@
             <md-chip color="accent" selected="true">
               <md-icon>assessment</md-icon>
               <strong>Plotting:&nbsp;</strong>
-              ({{this.plotCount}}/5)</md-chip>
+              ({{this.plotCount}}/5)
+            </md-chip>
           </md-chip-list>
           <button md-raised-button
                   (click)="clearPlots()"
@@ -120,8 +121,8 @@
           <ng-container cdkColumnDef="selection">
             <md-header-cell *cdkHeaderCellDef>
               <md-checkbox
-                [(ngModel)]="allSelected"
                 (click)="toggleSelectedAll()"
+                [(ngModel)]="allSelected"
                 [indeterminate]="selectedCount >= 1">
               </md-checkbox>
             </md-header-cell>
@@ -208,14 +209,14 @@
             <md-cell *cdkCellDef="let row"> {{row.medium}}</md-cell>
           </ng-container>
 
-        <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
-        <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
-      </md-table>
+          <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+          <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
+        </md-table>
       </div>
       <md-paginator #paginator
                     [length]="exampleDatabase.data.length"
                     [pageIndex]="0"
-                    [pageSize]="25"
+                    [pageSize]="5"
                     [pageSizeOptions]="[5, 10, 25, 50, 100]">
       </md-paginator>
     </md-card-content>
