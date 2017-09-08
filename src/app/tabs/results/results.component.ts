@@ -3,7 +3,7 @@ import {DataService} from "../../data.service";
 import {DetailsComponent} from "../details/details.component";
 import {MdDialog, MdPaginator} from "@angular/material";
 // import {CdkTableModule} from "@angular/cdk"
-import {DataSource} from '@angular/cdk';
+import {DataSource} from '@angular/cdk/table';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';

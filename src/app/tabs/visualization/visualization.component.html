@@ -7,14 +7,14 @@
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.boxPlot">
               <md-input-container style="margin-left:12px;">
                 <input mdInput [mdDatepicker]="beginDate" placeholder="Begin Date">
-                <button mdSuffix [mdDatepickerToggle]="beginDate"></button>
+                <md-datepicker-toggle mdSuffix [for]="beginDate"></md-datepicker-toggle>
               </md-input-container>
 
               <md-datepicker #beginDate></md-datepicker>
 
               <md-input-container style="margin-left:12px;">
                 <input mdInput [mdDatepicker]="endDate" placeholder="End Date">
-                <button mdSuffix [mdDatepickerToggle]="endDate"></button>
+                <md-datepicker-toggle mdSuffix [for]="endDate"></md-datepicker-toggle>
               </md-input-container>
 
               <md-datepicker #endDate></md-datepicker>

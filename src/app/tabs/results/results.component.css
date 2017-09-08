@@ -6,11 +6,16 @@
   width: 100px;
 }
 
-#table-container-2 {
+#specimen-table-container {
   display: flex;
   flex-direction: column;
-  max-height: 500px;
   min-width: 300px;
+  overflow: auto;
+  margin-top: 20px;
+}
+
+#specimen-table-container md-table {
+  min-width: 1290px;
 }
 
 .example-header {
@@ -19,6 +24,15 @@
   align-items: center;
   padding-left: 24px;
   font-size: 20px;
+}
+
+.plotting {
+  vertical-align: middle;
+}
+
+.custom-input-addon {
+  top: -3px;
+  left: -7px;
 }
 
 .mat-table {
@@ -31,4 +45,16 @@
 
 .cdk-column-actions {
     min-width: 127px;
+}
+
+.mat-header-row {
+  background: #3f51b5;
+}
+
+.mat-header-cell {
+  color: #FFF;
+}
+
+md-row:nth-child(even) {
+  background: #eaecf7;
 }
