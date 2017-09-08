@@ -75,6 +75,13 @@ export class ResultsComponent implements OnInit {
     }
   }
 
+  clearPlots() {
+    for (let dataset of this.exampleDatabase.data) {
+      dataset.plotted = false;
+      this.plotCount = 0;
+    }
+  }
+
   updatePlotCount() {
     let plotted = 0;
     for (const dataset of this.exampleDatabase.data) {

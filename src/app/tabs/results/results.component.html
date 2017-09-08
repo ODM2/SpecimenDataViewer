@@ -46,6 +46,13 @@
             Plot
           </button>
 
+          <button md-raised-button
+                  (click)="clearPlots()"
+                  [disabled]="plotCount == 0">
+            <i class="material-icons">clear</i>
+            Clear Plot
+          </button>
+
           <button md-raised-button color="primary"
                   [disabled]="selectedCount == 0">
             <md-icon>file_download</md-icon>
