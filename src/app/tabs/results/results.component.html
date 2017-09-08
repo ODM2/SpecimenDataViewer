@@ -32,11 +32,13 @@
                 <input mdInput
                        [mdDatepicker]="beginDate"
                        [(ngModel)]="__beginDate"
+                       (dateChange)="onDateRangeChange()"
                        placeholder="Begin Date">
                 <md-datepicker-toggle mdSuffix [for]="beginDate"></md-datepicker-toggle>
               </md-input-container>
               <md-datepicker #beginDate></md-datepicker>
-              <button md-icon-button class="custom-input-addon" (click)="__beginDate = null"
+              <button md-icon-button class="custom-input-addon"
+                      (click)="__beginDate = null;;onDateRangeChange()"
                       mdTooltip="Clear"
                       [mdTooltipShowDelay]="500">
                 <md-icon>highlight_off</md-icon>
@@ -44,12 +46,14 @@
               <md-input-container>
                 <input mdInput
                        [mdDatepicker]="endDate"
+                       (dateChange)="onDateRangeChange()"
                        [(ngModel)]="__endDate"
                        placeholder="End Date">
                 <md-datepicker-toggle mdSuffix [for]="endDate"></md-datepicker-toggle>
               </md-input-container>
               <md-datepicker #endDate></md-datepicker>
-              <button md-icon-button (click)="__endDate = null"
+              <button md-icon-button
+                      (click)="__endDate = null;onDateRangeChange()"
                       class="custom-input-addon"
                       mdTooltip="Clear"
                       [mdTooltipShowDelay]="500">
@@ -62,15 +66,15 @@
         <!--ACTIONS CONTROLS-->
         <div class="col-xs-9">
           <md-menu #appMenu="mdMenu" [overlapTrigger]="false">
-            <button md-menu-item (click)="onDisplay('All')">
+            <button md-menu-item (click)="onDisplayChange('All')">
               <md-icon style="margin-right: 0;">{{ optionDisplay == 'All' ? 'check' : ''}}</md-icon>
               All
             </button>
-            <button md-menu-item (click)="onDisplay('Selected')">
+            <button md-menu-item (click)="onDisplayChange('Selected')">
               <md-icon style="margin-right: 0;">{{ optionDisplay == 'Selected' ? 'check' : ''}}</md-icon>
               Selected
             </button>
-            <button md-menu-item (click)="onDisplay('Plotted')">
+            <button md-menu-item (click)="onDisplayChange('Plotted')">
               <md-icon style="margin-right: 0;">{{ optionDisplay == 'Plotted' ? 'check' : ''}}</md-icon>
               Plotted
             </button>
@@ -159,13 +163,13 @@
           <!-- StartDate Column -->
           <ng-container cdkColumnDef="endDate">
             <md-header-cell *cdkHeaderCellDef> End Date</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.endDate.toLocaleString()}}</md-cell>
+            <md-cell *cdkCellDef="let row"> {{row.endDate.toLocaleString()|date:'dd/MM/yyyy'}}</md-cell>
           </ng-container>
 
           <!-- StartDate Column -->
           <ng-container cdkColumnDef="startDate">
             <md-header-cell *cdkHeaderCellDef> Start Date</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.startDate.toLocaleString()}}</md-cell>
+            <md-cell *cdkCellDef="let row"> {{row.startDate.toLocaleString()|date:'dd/MM/yyyy'}}</md-cell>
           </ng-container>
 
           <!-- VariableName Column -->

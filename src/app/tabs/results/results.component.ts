@@ -51,7 +51,7 @@ export class ResultsComponent implements OnInit {
 
     this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator);
 
-    this.onDisplay('All');
+    this.onDisplayChange('All');
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
       .distinctUntilChanged()
@@ -63,9 +63,13 @@ export class ResultsComponent implements OnInit {
       });
   }
 
-  onDisplay(option: string) {
+  onDisplayChange(option: string) {
     this.optionDisplay = option;
     this.dataSource.display = option;
+  }
+
+  onDateRangeChange() {
+    this.dataSource.dateRange = [this.__beginDate, this.__endDate];
   }
 
   plotSelected() {
@@ -176,8 +180,8 @@ export class ExampleDatabase {
   get data(): Dataset[] { return this.dataChange.value; }
 
   constructor() {
-    // Fill up the database with 8 users.
-    for (let i = 0; i < 8; i++) { this.addDataset(); }
+    // Fill up the database with samples.
+    for (let i = 0; i < 100; i++) { this.addDataset(); }
   }
 
   /** Adds a new user to the database. */
@@ -207,6 +211,7 @@ export class ExampleDatabase {
 export class ExampleDataSource extends DataSource<any> {
   _filterChange = new BehaviorSubject('');
   _displayChange = new BehaviorSubject('');
+  _dateRangeChange = new BehaviorSubject([]);
 
   get filter(): string {
     return this._filterChange.value;
@@ -224,6 +229,14 @@ export class ExampleDataSource extends DataSource<any> {
     this._displayChange.next(filter);
   }
 
+  get dateRange() {
+    return this._dateRangeChange;
+  }
+
+  set dateRange(filter: any) {
+    this._dateRangeChange.next(filter);
+  }
+
   constructor(private _exampleDatabase: ExampleDatabase, private _paginator: MdPaginator) {
     super();
   }
@@ -235,6 +248,7 @@ export class ExampleDataSource extends DataSource<any> {
       this._filterChange,
       this._displayChange,
       this._paginator.page,
+      this._dateRangeChange,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
@@ -245,7 +259,15 @@ export class ExampleDataSource extends DataSource<any> {
         const flagSearched = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
         const flagDisplayed = (item.selected === true && this.display === 'Selected')
           || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
-        return flagDisplayed && flagSearched;
+        let inDateRange = true;
+
+        const start = this.dateRange.value[0];
+        const end = this.dateRange.value[1];
+        if ((start && item.startDate < start ) || (end && item.endDate > end)) {
+          inDateRange = false;
+        }
+
+        return flagDisplayed && flagSearched && inDateRange;
       });
 
       // Grab the page's slice of data.
