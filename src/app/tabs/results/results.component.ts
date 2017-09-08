@@ -25,6 +25,7 @@ export class ResultsComponent implements OnInit {
   __endDate: Date;
   exampleDatabase = new ExampleDatabase();
   dataSource: ExampleDataSource | null;
+  searchString = '';
 
   displayedColumns = [
     'selection',
@@ -117,7 +118,7 @@ export class ResultsComponent implements OnInit {
 
 
   clearSearch() {
-    this.dataSource.filter = '';
+    this.searchString = '';
   }
 
   updateSelectedCount() {

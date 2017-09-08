@@ -23,7 +23,7 @@ import {
   MdDialogModule,
   MdSliderModule,
   MdTableModule,
-  MdPaginatorModule
+  MdPaginatorModule, MdChipsModule
 } from '@angular/material';
 import {CdkTableModule} from '@angular/cdk/table';
 import 'hammerjs';
@@ -98,6 +98,7 @@ import { SideNavComponent } from './side-nav/side-nav.component';
     MdTableModule,
     CdkTableModule,
     MdPaginatorModule,
+    MdChipsModule
   ],
   entryComponents: [
     SummaryStatisticsComponent, DetailsComponent
