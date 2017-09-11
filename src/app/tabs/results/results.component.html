@@ -113,25 +113,12 @@
               <md-icon>assessment</md-icon>
               Plotting ({{this.plotCount}}/5)
             </span>
-            <button id="btnClearPlots" type="button" class="btn btn-primary"
+            <button id="btnClearPlots" type="button" md-raised-button color="primary"
                     (click)="clearPlots()"
                     [disabled]="plotCount == 0"
             >Clear Plot
             </button>
           </div>
-          <!--<md-chip-list style="display: inline-block;vertical-align: middle;">-->
-            <!--<md-chip color="accent" selected="true">-->
-              <!--<md-icon>assessment</md-icon>-->
-              <!--<strong>Plotting:&nbsp;</strong>-->
-              <!--({{this.plotCount}}/5)-->
-            <!--</md-chip>-->
-          <!--</md-chip-list>-->
-          <!--<button md-raised-button-->
-                  <!--(click)="clearPlots()"-->
-                  <!--[disabled]="plotCount == 0">-->
-            <!--<i class="material-icons">clear</i>-->
-            <!--Clear Plot-->
-          <!--</button>-->
         </div>
       </div>
 
