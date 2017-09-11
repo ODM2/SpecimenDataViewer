@@ -101,21 +101,21 @@ export class ResultsComponent implements OnInit {
   }
 
   toggleSelectedAll() {
-    // Some are selected. Deselect all.
     if (this.selectedCount > 0 && this.selectedCount < this.exampleDatabase.data.length) {
       this.exampleDatabase.data.forEach((d) => {
         d.selected = false;
       });
       this.allSelected = true;
     } else if (this.selectedCount === 0) {  // None selected, select all
+      // const start = this.paginator.pageSize * this.paginator.pageIndex;
+      // const end = this.paginator.pageSize * this.paginator.pageIndex + this.paginator.pageSize;
       this.exampleDatabase.data.forEach((d, index) => {
         // console.log(this.paginator.pageSize);
         // console.log(this.paginator.pageIndex);
-        const start = this.paginator.pageSize * this.paginator.pageIndex;
-        const end = this.paginator.pageSize * this.paginator.pageIndex + this.paginator.pageSize;
-        if (index >= start && index < end) {
-          d.selected = !this.allSelected;
-        }
+
+        // if (index >= start && index < end) {
+        d.selected = true;
+        // }
       });
     } else if (this.selectedCount === this.exampleDatabase.data.length) { // All selected, deselect all
       this.exampleDatabase.data.forEach((d) => {
@@ -296,25 +296,25 @@ export class ExampleDataSource extends DataSource<any> {
           const valueA = isNaN(+propertyA) ? propertyA : +propertyA;
           const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
 
-          return (valueA < valueB ? -1 : 1) * (this._sort.direction == 'asc' ? 1 : -1);
+          return (valueA < valueB ? -1 : 1) * (this._sort.direction === 'asc' ? 1 : -1);
         })
         .filter((item: Dataset) => {
-        const searchStr =
-          (item.network + item.siteName + item.variableName + item.variableCode
-            + item.siteCode + item.medium).toLowerCase();
-        const flagSearched = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
-        const flagDisplayed = (item.selected === true && this.display === 'Selected')
-          || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
-        let withinDateRange = true;
+          const searchStr =
+            (item.network + item.siteName + item.variableName + item.variableCode
+              + item.siteCode + item.medium).toLowerCase();
+          const flagSearched = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
+          const flagDisplayed = (item.selected === true && this.display === 'Selected')
+            || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
+          let withinDateRange = true;
 
-        const start = this.dateRange.value[0];
-        const end = this.dateRange.value[1];
-        if ((start && item.startDate < start ) || (end && item.endDate > end)) {
-          withinDateRange = false;
-        }
+          const start = this.dateRange.value[0];
+          const end = this.dateRange.value[1];
+          if ((start && item.startDate < start ) || (end && item.endDate > end)) {
+            withinDateRange = false;
+          }
 
-        return flagDisplayed && flagSearched && withinDateRange;
-      });
+          return flagDisplayed && flagSearched && withinDateRange;
+        });
 
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
