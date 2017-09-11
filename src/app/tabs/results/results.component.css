@@ -62,3 +62,15 @@ md-row:nth-child(even) {
 label {
   font-weight: bold;
 }
+
+.btn-group {
+  border-radius: 4px;
+}
+
+.input-group-addon {
+  border: 0;
+}
+
+#btnClearPlots {
+  cursor: pointer;
+}
