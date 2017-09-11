@@ -58,3 +58,7 @@
 md-row:nth-child(even) {
   background: #eaecf7;
 }
+
+label {
+  font-weight: bold;
+}
