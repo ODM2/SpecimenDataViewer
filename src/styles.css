@@ -114,3 +114,13 @@ app-details .link {
   stroke: #ccc;
   stroke-width: 2px;
 }
+
+/*Left panel styling*/
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+
+md-checkbox > label {
+  margin-bottom: 0;
+}
