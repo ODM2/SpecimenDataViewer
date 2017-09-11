@@ -25,6 +25,7 @@ export class ResultsComponent implements OnInit {
   exampleDatabase = new ExampleDatabase();
   dataSource: ExampleDataSource | null;
   searchString = '';
+  viewChange;
 
   displayedColumns = [
     'selection',
@@ -43,6 +44,7 @@ export class ResultsComponent implements OnInit {
   @ViewChild('filter') filter: ElementRef;
   @ViewChild(MdPaginator) paginator: MdPaginator;
   @ViewChild(MdSort) sort: MdSort;
+  @ViewChild('table') myTable;
 
   constructor(private dataService: DataService, public dialog: MdDialog) {
   }
@@ -107,15 +109,8 @@ export class ResultsComponent implements OnInit {
       });
       this.allSelected = true;
     } else if (this.selectedCount === 0) {  // None selected, select all
-      // const start = this.paginator.pageSize * this.paginator.pageIndex;
-      // const end = this.paginator.pageSize * this.paginator.pageIndex + this.paginator.pageSize;
-      this.exampleDatabase.data.forEach((d, index) => {
-        // console.log(this.paginator.pageSize);
-        // console.log(this.paginator.pageIndex);
-
-        // if (index >= start && index < end) {
+      this.myTable._dataDiffer.collection.forEach((d) => {
         d.selected = true;
-        // }
       });
     } else if (this.selectedCount === this.exampleDatabase.data.length) { // All selected, deselect all
       this.exampleDatabase.data.forEach((d) => {
