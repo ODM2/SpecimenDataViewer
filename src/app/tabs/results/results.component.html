@@ -125,7 +125,7 @@
       </div>
 
       <div id="specimen-table-container" class="md-shadow-1">
-        <md-table #table [dataSource]="dataSource">
+        <md-table #table [dataSource]="dataSource" mdSort>
           <!-- Selection Column -->
           <ng-container cdkColumnDef="selection">
             <md-header-cell *cdkHeaderCellDef>
@@ -144,7 +144,7 @@
 
           <!-- Actions Column -->
           <ng-container cdkColumnDef="actions">
-            <md-header-cell *cdkHeaderCellDef> Actions</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Actions</md-header-cell>
             <md-cell *cdkCellDef="let row">
               <ng-container mdTooltip="Plot">
                 <button md-icon-button
@@ -172,49 +172,49 @@
 
           <!-- StartDate Column -->
           <ng-container cdkColumnDef="endDate">
-            <md-header-cell *cdkHeaderCellDef> End Date</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> End Date</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.endDate.toLocaleString()|date:'dd/MM/yyyy'}}</md-cell>
           </ng-container>
 
           <!-- StartDate Column -->
           <ng-container cdkColumnDef="startDate">
-            <md-header-cell *cdkHeaderCellDef> Start Date</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Start Date</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.startDate.toLocaleString()|date:'dd/MM/yyyy'}}</md-cell>
           </ng-container>
 
           <!-- VariableName Column -->
           <ng-container cdkColumnDef="variableName">
-            <md-header-cell *cdkHeaderCellDef> Variable Name</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Variable Name</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.variableName}}</md-cell>
           </ng-container>
 
           <!-- Site Name Column -->
           <ng-container cdkColumnDef="siteName">
-            <md-header-cell *cdkHeaderCellDef> Site Name</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Site Name</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.siteName}}</md-cell>
           </ng-container>
 
           <!-- Site Code Column -->
           <ng-container cdkColumnDef="siteCode">
-            <md-header-cell *cdkHeaderCellDef> Site Code</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Site Code</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.siteCode}}</md-cell>
           </ng-container>
 
           <!-- Network Column -->
           <ng-container cdkColumnDef="network">
-            <md-header-cell *cdkHeaderCellDef> Network</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Network</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.network}}</md-cell>
           </ng-container>
 
           <!-- Variable Code Column -->
           <ng-container cdkColumnDef="variableCode">
-            <md-header-cell *cdkHeaderCellDef> Variable Code</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Variable Code</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.variableCode}}</md-cell>
           </ng-container>
 
           <!-- Medium Column -->
           <ng-container cdkColumnDef="medium">
-            <md-header-cell *cdkHeaderCellDef> Medium</md-header-cell>
+            <md-header-cell *cdkHeaderCellDef md-sort-header> Medium</md-header-cell>
             <md-cell *cdkCellDef="let row"> {{row.medium}}</md-cell>
           </ng-container>
 

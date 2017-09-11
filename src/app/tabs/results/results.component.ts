@@ -1,8 +1,7 @@
 import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {DataService} from "../../data.service";
 import {DetailsComponent} from "../details/details.component";
-import {MdDialog, MdPaginator} from "@angular/material";
-// import {CdkTableModule} from "@angular/cdk"
+import {MdDialog, MdPaginator, MdSort} from "@angular/material";
 import {DataSource} from '@angular/cdk/table';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
@@ -43,6 +42,7 @@ export class ResultsComponent implements OnInit {
   @ViewChild('chkSelectAll') selectAll: ElementRef;
   @ViewChild('filter') filter: ElementRef;
   @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MdSort) sort: MdSort;
 
   constructor(private dataService: DataService, public dialog: MdDialog) {
   }
@@ -50,7 +50,7 @@ export class ResultsComponent implements OnInit {
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
 
-    this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator);
+    this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator, this.sort);
 
     this.onDisplayChange('All');
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
@@ -243,7 +243,7 @@ export class ExampleDataSource extends DataSource<any> {
     this._dateRangeChange.next(filter);
   }
 
-  constructor(private _exampleDatabase: ExampleDatabase, private _paginator: MdPaginator) {
+  constructor(private _exampleDatabase: ExampleDatabase, private _paginator: MdPaginator, private _sort: MdSort) {
     super();
   }
 
@@ -255,10 +255,50 @@ export class ExampleDataSource extends DataSource<any> {
       this._displayChange,
       this._paginator.page,
       this._dateRangeChange,
+      this._sort.mdSortChange,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._exampleDatabase.data.slice().filter((item: Dataset) => {
+      const data = this._exampleDatabase.data.slice()
+        .sort((a, b) => {
+          let propertyA: number | string = '';
+          let propertyB: number | string = '';
+          let DateA: Date;
+          let DateB: Date;
+
+          switch (this._sort.active) {
+            case 'variableCode':
+              [propertyA, propertyB] = [a.variableCode, b.variableCode];
+              break;
+            case 'network':
+              [propertyA, propertyB] = [a.network, b.network];
+              break;
+            case 'siteCode':
+              [propertyA, propertyB] = [a.siteCode, b.siteCode];
+              break;
+            case 'siteName':
+              [propertyA, propertyB] = [a.siteName, b.siteName];
+              break;
+            case 'variableName':
+              [propertyA, propertyB] = [a.variableName, b.variableName];
+              break;
+            case 'startDate':
+              [DateA, DateB] = [a.startDate, b.startDate];
+              break;
+            case 'endDate':
+              [DateA, DateB] = [a.endDate, b.endDate];
+              break;
+            case 'medium':
+              [propertyA, propertyB] = [a.medium, b.medium];
+              break;
+          }
+
+          const valueA = isNaN(+propertyA) ? propertyA : +propertyA;
+          const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
+
+          return (valueA < valueB ? -1 : 1) * (this._sort.direction == 'asc' ? 1 : -1);
+        })
+        .filter((item: Dataset) => {
         const searchStr =
           (item.network + item.siteName + item.variableName + item.variableCode
             + item.siteCode + item.medium).toLowerCase();
