@@ -31,41 +31,39 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit() {
     this.chartViewSubsc = this.visualizationService.lineChartViewChanged.subscribe(
       (view: number) => {
-        if (view == this.visualizationService.lineChartViews.point) {
-          this.focus.g.selectAll(".line")
-            .classed("hidden", true);
-          this.focus.g.selectAll(".point")
-            .classed("hidden", false);
-          this.context.g.selectAll(".line")
-            .classed("hidden", true);
-          this.context.g.selectAll(".point")
-            .classed("hidden", false);
-        }
-        else if (view == this.visualizationService.lineChartViews.line) {
-          this.focus.g.selectAll(".line")
-            .classed("hidden", false);
-          this.focus.g.selectAll(".point")
-            .classed("hidden", true);
-          this.context.g.selectAll(".line")
-            .classed("hidden", false);
-          this.context.g.selectAll(".point")
-            .classed("hidden", true);
-        }
-        else if (view == this.visualizationService.lineChartViews.both) {
-          this.focus.g.selectAll(".line")
-            .classed("hidden", false);
-          this.focus.g.selectAll(".point")
-            .classed("hidden", false);
-          this.context.g.selectAll(".line")
-            .classed("hidden", false);
-          this.context.g.selectAll(".point")
-            .classed("hidden", false);
+        if (view === this.visualizationService.lineChartViews.point) {
+          this.focus.g.selectAll('.line')
+            .classed('invisible ', true);
+          this.focus.g.selectAll('.point')
+            .classed('invisible ', false);
+          this.context.g.selectAll('.line')
+            .classed('invisible ', true);
+          this.context.g.selectAll('.point')
+            .classed('invisible ', false);
+        } else if (view === this.visualizationService.lineChartViews.line) {
+          this.focus.g.selectAll('.line')
+            .classed('invisible ', false);
+          this.focus.g.selectAll('.point')
+            .classed('invisible ', true);
+          this.context.g.selectAll('.line')
+            .classed('invisible ', false);
+          this.context.g.selectAll('.point')
+            .classed('invisible ', true);
+        } else if (view === this.visualizationService.lineChartViews.both) {
+          this.focus.g.selectAll('.line')
+            .classed('invisible ', false);
+          this.focus.g.selectAll('.point')
+            .classed('invisible ', false);
+          this.context.g.selectAll('.line')
+            .classed('invisible ', false);
+          this.context.g.selectAll('.point')
+            .classed('invisible ', false);
         }
       }
     )
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.chartViewSubsc.unsubscribe();
   }
 
