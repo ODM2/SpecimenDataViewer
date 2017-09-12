@@ -1,9 +1,8 @@
 import {Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy} from '@angular/core';
-import * as d3 from "d3";
-import {LineChart} from "./line-chart.model";
-import {Subscription} from "rxjs";
-import {VisualizationService} from "../../../../visualization.service";
-import {Chart} from "../chart.model";
+import * as d3 from 'd3';
+import {Subscription} from 'rxjs/Subscription';
+import {VisualizationService} from '../../../../visualization.service';
+import {Chart} from '../chart.model';
 
 @Component({
   selector: 'app-line-chart',
@@ -11,15 +10,13 @@ import {Chart} from "../chart.model";
   styleUrls: ['./line-chart.component.css']
 })
 export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
-  @ViewChild("containerLineChart") element: ElementRef;
-
-  private data = [];
+  @ViewChild('containerLineChart') element: ElementRef;
   private host: d3.Selection;
   private svg: d3.Selection;
   private htmlElement: HTMLElement;
   private brush;
   private zoom;
-  private parseDate = d3.timeParse("%b %Y");
+  private parseDate = d3.timeParse('%b %Y');
   private focus = new Chart();
   private context = new Chart();
 
@@ -143,7 +140,9 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   loadData(error, data) {
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
     this.focus.scales.x.domain(d3.extent(data, (d) => {
       return d.date;
     }));

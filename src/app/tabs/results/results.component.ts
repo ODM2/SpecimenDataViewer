@@ -392,7 +392,6 @@ export class ExampleDataSource extends DataSource<any> {
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
       data = data.splice(startIndex, this._paginator.pageSize);
-      console.log("Page from connection");
       return data;
     });
   }

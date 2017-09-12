@@ -95,6 +95,45 @@ app-line-chart .line.hover path {
   stroke-width: 6px;
 }
 
+/*SCATTERPLOT STYLES*/
+svg {
+  font: 10px sans-serif;
+}
+
+app-scatter-plot .line {
+  stroke: steelblue;
+  fill: none;
+  clip-path: url(#clip);
+}
+
+app-scatter-plot .point {
+  clip-path: url(#clip);
+}
+
+app-scatter-plot .zoom {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+
+app-scatter-plot .line path {
+  fill: none;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+
+  transition: stroke-width 250ms linear;
+  -moz-transition: stroke-width 250ms linear;
+  -webkit-transition: stroke-width 250ms linear;
+
+  transition-delay: 250ms;
+  -moz-transition-delay: 250ms;
+  -webkit-transition-delay: 250ms;
+}
+
+app-scatter-plot .line.hover path {
+  stroke-width: 6px;
+}
+
 /*HISTOGRAM STYLING*/
 
 app-histogram rect.bar { fill: steelblue; }
