@@ -128,10 +128,11 @@
           <ng-container cdkColumnDef="selection">
             <md-header-cell *cdkHeaderCellDef>
               <md-checkbox
-                (click)="toggleSelectedAll()"
+                (change)="toggleSelectedAll()"
                 [(ngModel)]="allSelected"
                 [indeterminate]="selectedCount >= 1">
               </md-checkbox>
+              <!--{{ selectedCount}},{{allSelected}}-->
             </md-header-cell>
 
             <md-cell *cdkCellDef="let row">

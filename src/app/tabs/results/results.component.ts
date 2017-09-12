@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, ElementRef, ViewChild} from '@angular/core';
 import {DataService} from "../../data.service";
 import {DetailsComponent} from "../details/details.component";
 import {MdDialog, MdPaginator, MdSort} from "@angular/material";
@@ -8,13 +8,14 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.css']
 })
-export class ResultsComponent implements OnInit {
+export class ResultsComponent implements OnInit, OnDestroy {
   dataseries = [];
   allSelected = false;
   plotCount = 0;
@@ -25,7 +26,7 @@ export class ResultsComponent implements OnInit {
   exampleDatabase = new ExampleDatabase();
   dataSource: ExampleDataSource | null;
   searchString = '';
-  viewChange;
+  pageChanged = new Subscription;
 
   displayedColumns = [
     'selection',
@@ -51,8 +52,80 @@ export class ResultsComponent implements OnInit {
 
   ngOnInit() {
     this.dataseries = this.dataService.getDataseries();
-
     this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator, this.sort);
+
+    this.pageChanged = this.paginator.page.subscribe((d) => {
+      let data = this.exampleDatabase.data.slice()
+        .sort((a, b) => {
+          let propertyA: number | string = '';
+          let propertyB: number | string = '';
+          let DateA: Date;
+          let DateB: Date;
+
+          switch (this.sort.active) {
+            case 'variableCode':
+              [propertyA, propertyB] = [a.variableCode, b.variableCode];
+              break;
+            case 'network':
+              [propertyA, propertyB] = [a.network, b.network];
+              break;
+            case 'siteCode':
+              [propertyA, propertyB] = [a.siteCode, b.siteCode];
+              break;
+            case 'siteName':
+              [propertyA, propertyB] = [a.siteName, b.siteName];
+              break;
+            case 'variableName':
+              [propertyA, propertyB] = [a.variableName, b.variableName];
+              break;
+            case 'startDate':
+              [DateA, DateB] = [a.startDate, b.startDate];
+              break;
+            case 'endDate':
+              [DateA, DateB] = [a.endDate, b.endDate];
+              break;
+            case 'medium':
+              [propertyA, propertyB] = [a.medium, b.medium];
+              break;
+          }
+
+          const valueA = isNaN(+propertyA) ? propertyA : +propertyA;
+          const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
+
+          return (valueA < valueB ? -1 : 1) * (this.sort.direction === 'asc' ? 1 : -1);
+        })
+        .filter((item: Dataset) => {
+          const searchStr =
+            (item.network + item.siteName + item.variableName + item.variableCode
+            + item.siteCode + item.medium).toLowerCase();
+          const flagSearched = searchStr.indexOf(this.searchString.toLowerCase()) !== -1;
+          const flagDisplayed = (item.selected === true && this.optionDisplay === 'Selected')
+            || (item.plotted === true && this.optionDisplay === 'Plotted') || this.optionDisplay === 'All';
+          let withinDateRange = true;
+
+          const start = this.__beginDate;
+          const end = this.__endDate;
+          if ((start && item.startDate < start ) || (end && item.endDate > end)) {
+            withinDateRange = false;
+          }
+
+          return flagDisplayed && flagSearched && withinDateRange;
+        });
+
+      // Grab the page's slice of data.
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      data = data.splice(startIndex, this.paginator.pageSize);
+
+      let selected = 0;
+      for (const d of data) {
+        if (d.selected) {
+          selected++;
+        }
+      }
+
+      this.selectedCount = selected;
+      this.allSelected = this.selectedCount == data.length;
+    });
 
     this.onDisplayChange('All');
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
@@ -66,8 +139,13 @@ export class ResultsComponent implements OnInit {
       });
   }
 
+  ngOnDestroy() {
+    this.pageChanged.unsubscribe();
+  }
+
   onDisplayChange(option: string) {
     this.optionDisplay = option;
+    this.paginator.pageIndex = 0;
     this.dataSource.display = option;
   }
 
@@ -103,17 +181,16 @@ export class ResultsComponent implements OnInit {
   }
 
   toggleSelectedAll() {
-    if (this.selectedCount > 0 && this.selectedCount < this.exampleDatabase.data.length) {
-      this.exampleDatabase.data.forEach((d) => {
+    if (this.selectedCount > 0 && this.selectedCount < this.myTable._dataDiffer.collection.length) {
+      this.myTable._dataDiffer.collection.forEach((d) => {
         d.selected = false;
       });
-      this.allSelected = true;
     } else if (this.selectedCount === 0) {  // None selected, select all
       this.myTable._dataDiffer.collection.forEach((d) => {
         d.selected = true;
       });
-    } else if (this.selectedCount === this.exampleDatabase.data.length) { // All selected, deselect all
-      this.exampleDatabase.data.forEach((d) => {
+    } else if (this.selectedCount === this.myTable._dataDiffer.collection.length) { // All selected, deselect all
+      this.myTable._dataDiffer.collection.forEach((d) => {
         d.selected = false;
       });
     }
@@ -121,21 +198,22 @@ export class ResultsComponent implements OnInit {
     this.updateSelectedCount();
   }
 
-
   clearSearch() {
     this.searchString = '';
   }
 
   updateSelectedCount() {
     let selected = 0;
-    for (const dataset of this.exampleDatabase.data) {
-      if (dataset.selected) {
+    for (const d of this.myTable._dataDiffer.collection) {
+      if (d.selected) {
         selected++;
       }
     }
 
     this.selectedCount = selected;
+    this.allSelected = this.selectedCount == this.myTable._dataDiffer.collection.length;
   }
+
 
   openDetailsDialog(somedata: string) {
     this.dialog.open(DetailsComponent,
@@ -172,7 +250,6 @@ const NETWORKS = ['GAMUT	', 'Logan', 'SLC'];
 const SITE_NAMES = ['Logan River', 'Red Butte Creek', 'Utah River'];
 const VARIABLE_NAMES = ['Temperature', 'Water Pressure', 'Wind Speed'];
 const MEDIUMS = ['Air', 'Water', 'Wind'];
-
 
 /** An example database that the data source uses to retrieve data for the table. */
 export class ExampleDatabase {
@@ -254,7 +331,7 @@ export class ExampleDataSource extends DataSource<any> {
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._exampleDatabase.data.slice()
+      let data = this._exampleDatabase.data.slice()
         .sort((a, b) => {
           let propertyA: number | string = '';
           let propertyB: number | string = '';
@@ -313,7 +390,9 @@ export class ExampleDataSource extends DataSource<any> {
 
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
-      return data.splice(startIndex, this._paginator.pageSize);
+      data = data.splice(startIndex, this._paginator.pageSize);
+      console.log("Page from connection");
+      return data;
     });
   }
 
