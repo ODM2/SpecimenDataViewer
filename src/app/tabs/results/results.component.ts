@@ -181,6 +181,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   toggleSelectedAll() {
+    // Some are selected, deselect all
     if (this.selectedCount > 0 && this.selectedCount < this.myTable._dataDiffer.collection.length) {
       this.myTable._dataDiffer.collection.forEach((d) => {
         d.selected = false;
