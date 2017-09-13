@@ -57,7 +57,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
             .classed('invisible ', false);
         }
       }
-    )
+    );
   }
 
   ngOnDestroy() {

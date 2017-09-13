@@ -4,6 +4,7 @@ export class VisualizationService {
   private currentChart: number;
   private currentLineChartView: number;
   private histogramTicks: number;
+  private pointRadius: number;
 
   readonly charts = {scatterPlot: 0, lineChart: 1, histogram: 2, boxPlot: 3};
   readonly plotTypes = {timeSeries: 0, location: 1, correlation: 2};
@@ -13,6 +14,7 @@ export class VisualizationService {
   currentChartChanged = new Subject();
   ticksChanged = new Subject();
   lineChartViewChanged = new Subject();
+  pointRadiusChanged = new Subject();
 
   setPlotType (type: number) {
     if(type == this.plotTypes.timeSeries) {
@@ -33,10 +35,16 @@ export class VisualizationService {
     this.setLineChartView(this.lineChartViews.both);
     this.setPlotType(this.plotTypes.timeSeries);
     this.setHistogramTicks(this.histogramTickTypes.month);
+    this.setPointRadius(3);
   }
 
   getPlotType () {
     return this.plotType;
+  }
+
+  setPointRadius(val: number) {
+    this.pointRadius = val;
+    this.pointRadiusChanged.next(this.pointRadius);
   }
 
   setCurrentChart (chart: number) {

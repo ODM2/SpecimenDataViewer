@@ -18,15 +18,21 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
   private focus = new Chart();
   private colors = d3.scaleOrdinal(d3.schemeCategory10);
 
+  pointRadiusSub = new Subscription;
+
   constructor(private visualizationService: VisualizationService) {
   }
 
   ngOnInit() {
-
+    this.pointRadiusSub = this.visualizationService.pointRadiusChanged.subscribe(
+      (val: number) => {
+        this.focus.g.selectAll('circle').attr('r', val);
+      }
+    );
   }
 
   ngOnDestroy() {
-
+    this.pointRadiusSub.unsubscribe();
   }
 
   ngAfterViewInit() {

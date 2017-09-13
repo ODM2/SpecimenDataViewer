@@ -11,6 +11,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
   selectedChart: number;
   histogramTicks: number;
   selectedLineChartView: number;
+  selectedPointRadius: number;
 
   chartChangedSubsc = new Subscription;
   ticksChangedSubsc = new Subscription();
@@ -30,6 +31,7 @@ export class VisualizationComponent implements OnInit, OnDestroy {
         this.histogramTicks = ticks;
       }
     );
+
     this.visualizationService.init();
     this.selectedChart = this.visualizationService.getCurrentChart();
     this.selectedLineChartView = this.visualizationService.getLineChartView();

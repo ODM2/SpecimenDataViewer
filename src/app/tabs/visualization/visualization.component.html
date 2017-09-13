@@ -29,11 +29,13 @@
                 </md-button-toggle>
 
                 <md-button-toggle [value]="visualizationService.lineChartViews.line">
-                  <md-icon>show_chart</md-icon><span> Line</span>
+                  <md-icon>show_chart</md-icon>
+                  <span> Line</span>
                 </md-button-toggle>
 
                 <md-button-toggle [value]="visualizationService.lineChartViews.both">
-                  <md-icon>timeline</md-icon><span> Both</span>
+                  <md-icon>timeline</md-icon>
+                  <span> Both</span>
                 </md-button-toggle>
               </md-button-toggle-group>
             </div>
@@ -43,7 +45,7 @@
                 [(ngModel)]="histogramTicks"
                 (change)="visualizationService.setHistogramTicks(histogramTicks)">
                 <!--<md-button-toggle [value]="visualizationService.histogramTickTypes.day">-->
-                  <!--<span>Day</span>-->
+                <!--<span>Day</span>-->
                 <!--</md-button-toggle>-->
                 <md-button-toggle [value]="visualizationService.histogramTickTypes.week">
                   <span>Week</span>
@@ -58,6 +60,13 @@
                   <span>Year</span>
                 </md-button-toggle>
               </md-button-toggle-group>
+            </div>
+
+            <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.scatterPlot">
+              <md-slider
+                [(ngModel)]="selectedPointRadius"
+                (change)="visualizationService.setPointRadius(selectedPointRadius)"
+                min="1" max="10" step="1" value="3"></md-slider>
             </div>
           </div>
 

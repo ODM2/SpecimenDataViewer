@@ -16,6 +16,7 @@
 
 #specimen-table-container md-table {
   min-width: 1290px;
+  overflow-y: hidden;
 }
 
 .example-header {
