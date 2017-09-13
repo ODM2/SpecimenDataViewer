@@ -16,6 +16,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
   private htmlElement: HTMLElement;
   private parseDate = d3.timeParse('%b %Y');
   private focus = new Chart();
+  private colors = d3.scaleOrdinal(d3.schemeCategory10);
 
   constructor(private visualizationService: VisualizationService) {
   }
@@ -45,7 +46,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.scales.x = d3.scaleTime().range([0, this.focus.getWidth()]);
     this.focus.scales.x2 = d3.scaleLinear().range([0, this.focus.getWidth()]);
     this.focus.scales.y = d3.scaleLinear().range([this.focus.getHeight(), 0]);
-    this.focus.scales.y2 = d3.scaleTime().range([0, this.focus.getHeight()]);
+    this.focus.scales.y2 = d3.scaleTime().range([this.focus.getHeight(), 0]);
 
     this.focus.axis.x = d3.axisBottom(this.focus.scales.x);
     this.focus.axis.y = d3.axisLeft(this.focus.scales.y);
@@ -114,7 +115,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .enter().append("circle")
       .attr("r", 3)
       .attr("class", "point")
-      .attr("fill", "steelblue")
+      .attr("fill", this.colors(0))
       .attr("cx", function (d) {
         return this.focus.scales.x(d.date);
       }.bind(this))
@@ -127,7 +128,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .enter().append("circle")
       .attr("r", 3)
       .attr("class", "point")
-      .attr("fill", "orange")
+      .attr("fill", this.colors(1))
       .attr("cx", function (d) {
         return this.focus.scales.x2(d.price);
       }.bind(this))

@@ -31,12 +31,13 @@
       <tr *ngFor="let dataset of datasets; let i = index">
         <td [style.border-left]="'6px solid' + colors(i)">
           <button md-icon-button
-                  [mdTooltip]="dataset.visible ? 'Shown' : 'Hidden'"
+                  [mdTooltip]="dataset.visible || xAxisDataset == i ? 'Shown' : 'Hidden'"
                   [mdTooltipShowDelay]="500"
+                  [disabled]="xAxisDataset == i"
                   (click)="toggleVisibility(i)">
-            <md-icon [style.color]="dataset.visible? 'steelblue' : '#AAA'"
+            <md-icon [style.color]="dataset.visible || xAxisDataset == i? 'steelblue' : '#AAA'"
             >
-              {{ dataset.visible == true ? "visibility" : "visibility_off" }}
+              {{ dataset.visible || xAxisDataset == i ? "visibility" : "visibility_off" }}
             </md-icon>
           </button>
         </td>
@@ -44,7 +45,7 @@
           <button md-icon-button
                   mdTooltip="Select as x-axis"
                   [mdTooltipShowDelay]="500"
-                  (click)="xAxisDataset=i;dataset.visible=true;">
+                  (click)="xAxisDataset=i">
             <md-icon [color]="'accent'">
               {{ xAxisDataset == i ? "radio_button_checked" : "radio_button_unchecked" }}
             </md-icon>
