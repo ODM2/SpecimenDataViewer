@@ -159,6 +159,10 @@ app-details .link {
   padding: 0 !important;
 }
 
+.mat-expansion-panel-header {
+  padding: 0 24px 0 10px !important;
+}
+
 
 md-checkbox > label {
   margin-bottom: 0;
