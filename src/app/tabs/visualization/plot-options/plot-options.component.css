@@ -1,3 +1,11 @@
 md-icon {
   vertical-align: middle;
 }
+
+.options-table td {
+  padding: 0.75em 5px;
+}
+
+button:focus {
+  outline: 0;
+}

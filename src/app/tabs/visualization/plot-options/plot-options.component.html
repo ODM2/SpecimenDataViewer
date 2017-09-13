@@ -27,7 +27,7 @@
   </md-card-header>
 
   <md-card-content>
-    <table class="table">
+    <table class="table options-table">
       <tr *ngFor="let dataset of datasets; let i = index">
         <td [style.border-left]="'6px solid' + colors(i)">
           <button md-icon-button
@@ -37,6 +37,16 @@
             <md-icon [style.color]="dataset.visible? 'steelblue' : '#AAA'"
             >
               {{ dataset.visible == true ? "visibility" : "visibility_off" }}
+            </md-icon>
+          </button>
+        </td>
+        <td *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.correlation">
+          <button md-icon-button
+                  mdTooltip="Select as x-axis"
+                  [mdTooltipShowDelay]="500"
+                  (click)="xAxisDataset=i;dataset.visible=true;">
+            <md-icon [color]="'accent'">
+              {{ xAxisDataset == i ? "radio_button_checked" : "radio_button_unchecked" }}
             </md-icon>
           </button>
         </td>
@@ -56,16 +66,6 @@
                   [mdTooltipShowDelay]="500"
                   (click)="openDialog(dataset)">
             <md-icon style="color:steelblue;">event_note</md-icon>
-          </button>
-        </td>
-        <td *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.correlation">
-          <button md-icon-button
-                  mdTooltip="Select as x-axis"
-                  [mdTooltipShowDelay]="500"
-                  (click)="xAxisDataset=i">
-            <md-icon [color]="'accent'">
-              {{ xAxisDataset == i ? "radio_button_checked" : "radio_button_unchecked" }}
-            </md-icon>
           </button>
         </td>
       </tr>
