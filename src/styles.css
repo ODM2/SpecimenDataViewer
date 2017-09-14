@@ -130,6 +130,11 @@ app-scatter-plot .line path {
   -webkit-transition-delay: 250ms;
 }
 
+app-scatter-plot circle {
+  opacity: 0.75;
+  clip-path: url(#clip);
+}
+
 app-scatter-plot .line.hover path {
   stroke-width: 6px;
 }

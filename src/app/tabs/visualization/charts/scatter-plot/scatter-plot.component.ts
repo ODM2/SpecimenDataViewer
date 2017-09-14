@@ -193,8 +193,8 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     let t = d3.event.transform;
     this.focus.scales.x.domain(t.rescaleX(this.originalScales.x).domain());
     this.focus.scales.x2.domain(t.rescaleX(this.originalScales.x2).domain());
-    this.focus.scales.y.domain(t.rescaleX(this.originalScales.y).domain());
-    this.focus.scales.y2.domain(t.rescaleX(this.originalScales.y2).domain());
+    this.focus.scales.y.domain(t.rescaleY(this.originalScales.y).domain());
+    this.focus.scales.y2.domain(t.rescaleY(this.originalScales.y2).domain());
 
     this.focus.g.selectAll(".point-1")
       .attr("cx", function (d) {
