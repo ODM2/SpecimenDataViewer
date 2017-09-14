@@ -18,7 +18,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
   private focus = new Chart();
   private colors = d3.scaleOrdinal(d3.schemeCategory10);
   private zoom;
-  originalScales = {x:null, x2:null, y: null, y2:null};
+  originalScales = {x: null, x2: null, y: null, y2: null};
 
   pointRadiusSub = new Subscription;
 
@@ -71,8 +71,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("id", "clip")
       .append("rect")
       .attr("width", this.focus.getWidth())
-      .attr("height", this.focus.getHeight());
-
+      .attr("height", this.focus.getHeight())
     this.focus.g = this.svg.append("g")
       .attr("class", "focus")
       .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")");
@@ -127,10 +126,11 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .call(this.focus.axis.gridX);
 
     // Add circle points to the focus graph
+    const radius = this.visualizationService.getPointRadius();
     this.focus.g.selectAll("dot")
       .data(data)
       .enter().append("circle")
-      .attr("r", 3)
+      .attr("r", radius)
       .attr("class", "point-1")
       .attr("fill", this.colors(0))
       .attr("cx", function (d) {
@@ -143,7 +143,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.g.selectAll("dot2")
       .data(data)
       .enter().append("circle")
-      .attr("r", 3)
+      .attr("r", radius)
       .attr("class", "point-2")
       .attr("fill", this.colors(1))
       .attr("cx", function (d) {

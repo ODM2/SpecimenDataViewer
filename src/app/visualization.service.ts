@@ -47,6 +47,10 @@ export class VisualizationService {
     this.pointRadiusChanged.next(this.pointRadius);
   }
 
+  getPointRadius() {
+    return this.pointRadius;
+  }
+
   setCurrentChart (chart: number) {
     this.currentChart = chart;
     this.currentChartChanged.next(this.currentChart);
