@@ -9,23 +9,26 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
+import json
 import os
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+with open(BASE_DIR + '/datasetapi/settings.json') as settings_file:
+    data = json.load(settings_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '1dw6^0l(v5d4mb4i9&6=c++@^d=f@z=kiiq!cr6#uxgscv8@7('
+SECRET_KEY = data["secret_key"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["odm2wofpy1.uwrl.usu.edu"]
 
 
 # Application definition
@@ -76,24 +79,7 @@ WSGI_APPLICATION = 'datasetapi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
-    },
-    'ODM2Samples': {
-        'ENGINE': 'django_pyodbc',
-        'NAME': 'ODM2Samples',
-        'USER': 'WebApplication',
-        'PASSWORD': 'W3bAppl1c4t10n!',
-        'HOST': '129.123.41.140',
-        'PORT': '1433',
-        'OPTIONS': {
-            'MARS_Connection': True,
-        },
-    }
-}
-
+DATABASES = data["databases"]
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -134,3 +120,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DATABASE_ROUTERS = ['datasetapi.db_routers.WebSDLRouter']
+

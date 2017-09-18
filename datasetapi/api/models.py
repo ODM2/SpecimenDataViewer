@@ -12,7 +12,6 @@ from api.querysets import AffiliationQuerySet, RelatedActionManager, ResultManag
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
-from django_pyodbc import *
 
 
 # TODO: function to handle the file upload folder for file fields.

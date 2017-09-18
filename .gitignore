@@ -6,6 +6,7 @@
 /out-tsc
 *.pyc
 *settings.json
+/venv
 # dependencies
 /node_modules
 
