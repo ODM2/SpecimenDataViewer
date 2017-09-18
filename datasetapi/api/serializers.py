@@ -45,7 +45,7 @@ class DataSetResultSerializer(serializers.ModelSerializer):
 
 
 class DataSetSerializer(serializers.ModelSerializer):
-    data_set_results = DataSetResultSerializer(read_only=True, required=False, many=True)
+    results = ResultSerializer(read_only=True, required=False, many=True)
 
     class Meta:
         model = DataSet
