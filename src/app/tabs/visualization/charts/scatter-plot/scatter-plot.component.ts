@@ -122,13 +122,25 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   plotData(data) {
-    this.focus.scales.x.domain(d3.extent(data, (d) => {
+    let extentX = d3.extent(data, (d) => {
       return d.price1;
-    }));
+    });
 
-    this.focus.scales.y.domain(d3.extent(data, (d) => {
+    // Make the extent a little bigger to show the data points within spaced from the edge
+    let deltaX = (extentX[1] - extentX[0]) / 10;
+    extentX[0] = extentX[0] - deltaX;
+    extentX[1] = extentX[1] + deltaX;
+    this.focus.scales.x.domain(extentX);
+
+    // Same for y axis
+    let extentY = d3.extent(data, (d) => {
       return d.price2;
-    }));
+    });
+
+    let deltaY = (extentY[1] - extentY[0]) / 10;
+    extentY[0] = extentY[0] - deltaY;
+    extentY[1] = extentY[1] + deltaY;
+    this.focus.scales.y.domain(extentY);
 
     this.originalScales.x = this.focus.scales.x.copy();
     this.originalScales.y = this.focus.scales.y.copy();
