@@ -18,7 +18,9 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
   private focus = new Chart();
   private colors = d3.scaleOrdinal(d3.schemeCategory10);
   private zoom;
-  originalScales = {x: null, x2: null, y: null, y2: null};
+  data1;
+  data2;
+  originalScales = {x: null, y: null};
 
   pointRadiusSub = new Subscription;
 
@@ -51,15 +53,11 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     const h = +this.svg.attr("height") - this.focus.margin.top - this.focus.margin.bottom;
     this.focus.setDimensions(w, h);
 
-    this.focus.scales.x = d3.scaleTime().range([0, this.focus.getWidth()]);
-    this.focus.scales.x2 = d3.scaleLinear().range([0, this.focus.getWidth()]);
+    this.focus.scales.x = d3.scaleLinear().range([0, this.focus.getWidth()]);
     this.focus.scales.y = d3.scaleLinear().range([this.focus.getHeight(), 0]);
-    this.focus.scales.y2 = d3.scaleTime().range([this.focus.getHeight(), 0]);
 
     this.focus.axis.x = d3.axisBottom(this.focus.scales.x);
     this.focus.axis.y = d3.axisLeft(this.focus.scales.y);
-    this.focus.axis.x2 = d3.axisBottom(this.focus.scales.x2);
-    this.focus.axis.y2 = d3.axisLeft(this.focus.scales.y2);
 
     this.zoom = d3.zoom()
       .scaleExtent([1, Infinity])
@@ -71,46 +69,75 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("id", "clip")
       .append("rect")
       .attr("width", this.focus.getWidth())
-      .attr("height", this.focus.getHeight())
+      .attr("height", this.focus.getHeight());
     this.focus.g = this.svg.append("g")
       .attr("class", "focus")
       .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")");
 
     // Data handling
-    d3.csv("assets/line-chart-data.csv", this.type.bind(this), this.loadData.bind(this));
+    // d3.csv("assets/scatter.csv", this.type.bind(this), this.loadData.bind(this));
+    // Data handling
+    d3.csv("assets/scatter.csv", this.type.bind(this), function (error, data) {
+      this.data1 = data;
+      if (this.data2) {
+        let data = this.combineDatasets(this.data1, this.data2);
+        this.plotData(data);
+      }
+    }.bind(this));
+
+    d3.csv("assets/scatter2.csv", this.type.bind(this), function (error, data) {
+      this.data2 = data;
+      if (this.data1) {
+        let data = this.combineDatasets(this.data1, this.data2);
+        this.plotData(data);
+      }
+    }.bind(this));
   }
 
-  loadData(error, data) {
-    if (error) {
-      throw error;
-    }
+  combineDatasets(d1, d2) {
+    let data = d1.concat(d2);
+    let result = [];
+    data.forEach((entry) => {
+      let existing = result.filter((v) => {
+        return v.date.getTime() == entry.date.getTime();
+      });
 
+      if (existing.length) {
+        let existingIndex = result.indexOf(existing[0]);
+        result[existingIndex] = {
+          date: result[existingIndex].date,
+          price1: result[existingIndex].price,
+          price2: entry.price
+        }
+      } else {
+        result.push(entry);
+      }
+    });
+
+    result = result.filter((v) => {
+      return v.hasOwnProperty('price1') && v.hasOwnProperty('price2');
+    });
+
+    return result;
+  }
+
+  plotData(data) {
     this.focus.scales.x.domain(d3.extent(data, (d) => {
-      return d.date;
+      return d.price1;
     }));
 
-    this.focus.scales.x2.domain([0, d3.max(data, (d) => {
-      return d.price;
-    })]);
-
-    this.focus.scales.y.domain([0, d3.max(data, (d) => {
-      return d.price;
-    })]);
-
-    this.focus.scales.y2.domain(d3.extent(data, (d) => {
-      return d.date;
+    this.focus.scales.y.domain(d3.extent(data, (d) => {
+      return d.price2;
     }));
 
     this.originalScales.x = this.focus.scales.x.copy();
-    this.originalScales.x2 = this.focus.scales.x2.copy();
     this.originalScales.y = this.focus.scales.y.copy();
-    this.originalScales.y2 = this.focus.scales.y2.copy();
 
     this.focus.axis.gridY = d3.axisLeft(this.focus.scales.y)
       .tickSize(-this.focus.getWidth())
       .tickFormat("");
 
-    this.focus.axis.gridX = d3.axisBottom(this.focus.scales.x2)
+    this.focus.axis.gridX = d3.axisBottom(this.focus.scales.x)
       .tickSize(-this.focus.getHeight())
       .tickFormat("");
 
@@ -131,26 +158,13 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .data(data)
       .enter().append("circle")
       .attr("r", radius)
-      .attr("class", "point-1")
+      .attr("class", "point")
       .attr("fill", this.colors(0))
       .attr("cx", function (d) {
-        return this.focus.scales.x(d.date);
+        return this.focus.scales.x(d.price1);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scales.y(d.price);
-      }.bind(this));
-
-    this.focus.g.selectAll("dot2")
-      .data(data)
-      .enter().append("circle")
-      .attr("r", radius)
-      .attr("class", "point-2")
-      .attr("fill", this.colors(1))
-      .attr("cx", function (d) {
-        return this.focus.scales.x2(d.price);
-      }.bind(this))
-      .attr("cy", function (d) {
-        return this.focus.scales.y2(d.date);
+        return this.focus.scales.y(d.price2);
       }.bind(this));
 
     this.focus.g.append("g")
@@ -160,7 +174,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.g.append("g")
       .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + this.focus.getHeight() + ")")
-      .call(this.focus.axis.x2);
+      .call(this.focus.axis.x);
 
     this.svg.append("rect")
       .attr("class", "zoom")
@@ -192,27 +206,17 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     if (d3.event.sourceEvent && d3.event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
     let t = d3.event.transform;
     this.focus.scales.x.domain(t.rescaleX(this.originalScales.x).domain());
-    this.focus.scales.x2.domain(t.rescaleX(this.originalScales.x2).domain());
     this.focus.scales.y.domain(t.rescaleY(this.originalScales.y).domain());
-    this.focus.scales.y2.domain(t.rescaleY(this.originalScales.y2).domain());
 
-    this.focus.g.selectAll(".point-1")
+    this.focus.g.selectAll(".point")
       .attr("cx", function (d) {
-        return this.focus.scales.x(d.date);
+        return this.focus.scales.x(d.price1);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scales.y(d.price);
+        return this.focus.scales.y(d.price2);
       }.bind(this));
 
-    this.focus.g.selectAll(".point-2")
-      .attr("cx", function (d) {
-        return this.focus.scales.x2(d.price);
-      }.bind(this))
-      .attr("cy", function (d) {
-        return this.focus.scales.y2(d.date);
-      }.bind(this));
-
-    this.focus.g.select(".axis--x").call(this.focus.axis.x2);
+    this.focus.g.select(".axis--x").call(this.focus.axis.x);
     this.focus.g.select(".grid-x").call(this.focus.axis.gridX);
     this.focus.g.select(".axis--y").call(this.focus.axis.y);
     this.focus.g.select(".grid-y").call(this.focus.axis.gridY);
