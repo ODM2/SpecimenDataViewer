@@ -164,20 +164,22 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("transform", "translate(0," + this.focus.getHeight() + ")")
       .call(this.focus.axis.gridX);
 
-    // Add circle points to the focus graph
-    const radius = this.visualizationService.getPointRadius();
-    this.focus.g.selectAll("dot")
-      .data(data)
-      .enter().append("circle")
-      .attr("r", radius)
-      .attr("class", "point")
-      .attr("fill", this.colors(0))
-      .attr("cx", function (d) {
-        return this.focus.scales.x(d.price1);
-      }.bind(this))
-      .attr("cy", function (d) {
-        return this.focus.scales.y(d.price2);
-      }.bind(this));
+    let div;
+    console.log(document.getElementsByClassName("graph-tooltip").length);
+    if (document.getElementsByClassName("graph-tooltip").length == 0) {
+      div = d3.select("body").append("div")
+        .attr("class", "graph-tooltip")
+        .style("opacity", 0);
+    }else {
+      div = d3.select(".graph-tooltip");
+    }
+
+    this.focus.g.append("rect")
+      .attr("class", "zoom")
+      .attr("width", this.focus.getWidth())
+      .attr("height", this.focus.getHeight())
+      .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")")
+      .call(this.zoom);
 
     this.focus.g.append("g")
       .attr("class", "axis axis--y")
@@ -188,12 +190,50 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("transform", "translate(0," + this.focus.getHeight() + ")")
       .call(this.focus.axis.x);
 
-    this.svg.append("rect")
-      .attr("class", "zoom")
-      .attr("width", this.focus.getWidth())
-      .attr("height", this.focus.getHeight())
-      .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")")
-      .call(this.zoom);
+    // Add circle points to the focus graph
+    const radius = this.visualizationService.getPointRadius();
+    this.focus.g.selectAll("dot")
+      .data(data)
+      .enter().append("circle")
+      .attr("r", radius)
+      .attr("class", "point")
+      .attr("fill", this.colors(0))
+      .on("mouseover", (d) => {
+        div.transition()
+          .duration(200)
+          .style("opacity", 0.9);
+        div.html("" +
+          "<table>" +
+            "<tr>" +
+              "<th>Date: </th>" +
+              "<td>" + new Date(d.date).toDateString() + "</td>" +
+            "</tr>" +
+            "<tr>" +
+              "<th>Value1: </th>" +
+              "<td>" + d.price1 + "</td>" +
+            "</tr>" +
+            "<tr>" +
+              "<th>Value2: </th>" +
+              "<td>" + d.price2 + "</td>" +
+            "</tr>" +
+          "</table>")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", (d) => {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0);
+
+        div.style("left", -100 + "px");
+        div.style("top", -100 + "px");
+      })
+      .attr("cx", function (d) {
+        return this.focus.scales.x(d.price1);
+      }.bind(this))
+      .attr("cy", function (d) {
+        return this.focus.scales.y(d.price2);
+      }.bind(this));
 
     // Y-axis label
     this.focus.g.append("text")
@@ -234,7 +274,6 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.g.select(".grid-y").call(this.focus.axis.gridY);
     // this.context.g.select(".brush").call(this.brush.move, this.focus.scales.x.range().map(t.invertX, t));
   }
-
 
 
   type(d) {
