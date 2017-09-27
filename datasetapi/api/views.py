@@ -16,11 +16,15 @@ def get_sampling_feature(request):
     if request.method == 'GET':
         box = request.GET['box'] if 'box' in request.GET else None
         sampling_feature_type = request.GET['type'] if 'type' in request.GET else None
-        sfids = request.GET.getlist('sfids[]') if 'sfids' in request.GET else None
+        sfids = request.GET.getlist('sfids') if 'sfids' in request.GET else None
 
-        if sampling_feature_type or sfids or box:
-            sampling_features = SamplingFeature.objects.get(Q(sampling_feature_type__id=sampling_feature_type) |
-                                                            Q(pk__in=sfids))
+        if sampling_feature_type and not sfids:
+            sampling_features = SamplingFeature.objects.filter(Q(sampling_feature_type=sampling_feature_type))
+        elif sfids and not sampling_feature_type:
+            sampling_features = SamplingFeature.objects.filter(Q(pk__in=sfids))
+        elif sfids and sampling_feature_type:
+            sampling_features = SamplingFeature.objects.filter(Q(pk__in=sfids)) & \
+                                (Q(sampling_feature_type=sampling_feature_type))
         else:
             sampling_features = SamplingFeature.objects.all()
 
