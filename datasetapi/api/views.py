@@ -68,7 +68,7 @@ def get_dataset_metadata(request):
         elif data_set_type:
             data_sets = DataSet.objects.filter(Q(data_set_type__id=data_set_type))
         else:
-            data_sets = DataSet.objects.all()[:100]
+            data_sets = DataSet.objects.all()[:50]
         serialized_data = serializers.DataSetSerializer('json', data_sets, many=True)
         serialized_data.is_valid()
 
