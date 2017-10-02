@@ -2,7 +2,7 @@ from api.models import FeatureAction, Result, ProcessingLevel, TimeSeriesResult,
     SpatialReference, \
     ElevationDatum, SiteType, ActionBy, Action, Method, DataLoggerProgramFile, DataLoggerFile, \
     InstrumentOutputVariable, DataLoggerFileColumn, DataSet, DataSetResult, MeasurementResultValue, Variable, \
-    Specimen
+    Specimen, Site, MeasurementResult
 from rest_framework import serializers
 
 
@@ -17,7 +17,15 @@ class MeasurementResultValuesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MeasurementResultValue
-        fields = ['__all__']
+        fields = '__all__'
+
+
+class MeasurementResultSerializer(serializers.ModelSerializer):
+    measurementresultvalue_set = MeasurementResultValuesSerializer(read_only=True, many=True, required=False)
+
+    class Meta:
+        model = MeasurementResult
+        fields = ['measurementresultvalue_set']
 
 
 class VariableSerializer(serializers.ModelSerializer):
@@ -28,12 +36,11 @@ class VariableSerializer(serializers.ModelSerializer):
 
 class ResultSerializer(serializers.ModelSerializer):
     variable = VariableSerializer(read_only=True, required=False)
-    values = MeasurementResultValuesSerializer(read_only=True, required=False, many=True)
+    measurementresult = MeasurementResultSerializer(read_only=True, required=False)
 
     class Meta:
         model = Result
-        fields = ['variable',  'result_datetime', 'valid_datetime', 'value_count', 'values',
-                  'sampled_medium']
+        fields = '__all__'
 
 
 class DataSetResultSerializer(serializers.ModelSerializer):
@@ -60,9 +67,17 @@ class FeatureActionSerializer(serializers.ModelSerializer):
         fields = ['results']
 
 
+class SiteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Site
+        fields = '__all__'
+
+
 class SamplingFeatureSerializer(serializers.ModelSerializer):
     feature_actions = FeatureActionSerializer(read_only=True, required=False, many=True)
-    specimens = SpecimenSerializer(read_only=True, required=False)
+    specimen = SpecimenSerializer(read_only=True, required=False)
+    site = SiteSerializer(read_only=True, required=False)
 
     class Meta:
         model = SamplingFeature
@@ -70,7 +85,8 @@ class SamplingFeatureSerializer(serializers.ModelSerializer):
 
 
 class SamplingFeatureMetaDataSerializer(serializers.ModelSerializer):
-    specimens = SpecimenSerializer(read_only=True, required=False)
+    specimen = SpecimenSerializer(read_only=True, required=False)
+    site = SiteSerializer(read_only=True, required=False)
 
     class Meta:
         model = SamplingFeature

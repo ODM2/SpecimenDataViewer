@@ -12,6 +12,7 @@ from api.querysets import AffiliationQuerySet, RelatedActionManager, ResultManag
 from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from django_pyodbc import *
 
 
 # TODO: function to handle the file upload folder for file fields.
@@ -1134,9 +1135,7 @@ class Specimen(models.Model):
     is_field_specimen = models.BooleanField(db_column='isfieldspecimen', default=None)
 
     def __repr__(self):
-        return "<SpatialReference('%s', '%s', '%s')>" % (
-            self.spatial_reference_id, self.srs_code, self.srs_name
-        )
+        return "<SpatialReference()>"
 
     class Meta:
         managed = False
