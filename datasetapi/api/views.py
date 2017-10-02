@@ -43,9 +43,13 @@ def get_sampling_feature_info(request):
         sfids = request.GET.getlist('sfids[]') if 'sfids' in request.GET else None
         data_set_type = request.GET('datasettype') if 'datasettype' in request.GET else None
 
-        if sampling_feature_type or sfids or data_set_type:
-            sampling_features = SamplingFeature.objects.get(Q(sampling_feature_type__id=sampling_feature_type) |
-                                                            Q(pk__in=sfids))
+        if data_set_type and not sfids:
+            sampling_features = SamplingFeature.objects.filter(Q(data_set_type=sampling_feature_type))
+        elif sfids and not data_set_type:
+            sampling_features = SamplingFeature.objects.filter(Q(pk__in=sfids))
+        elif sfids and data_set_type:
+            sampling_features = SamplingFeature.objects.filter(Q(pk__in=sfids)) & \
+                                (Q(data_set_type=sampling_feature_type))
         else:
             sampling_features = SamplingFeature.objects.all()
 
@@ -63,8 +67,13 @@ def get_dataset_metadata(request):
         data_set_id = request.GET.getlist('datasetid') if 'datasetid' in request.GET else None
         data_set_type = request.GET('datasettype') if 'datasettype' in request.GET else None
 
-        if data_set_id or data_set_type:
-            data_sets = DataSet.objects.get(Q(data_set_id__id=data_set_id) | Q(data_set_type__id=data_set_type))
+        if data_set_id and not data_set_type:
+            data_sets = DataSet.objects.get(Q(data_set_id__id=data_set_id))
+        elif data_set_type and not data_set_id:
+            data_sets = Q(data_set_type__id=data_set_type)
+        elif data_set_id and data_set_type:
+            data_sets = DataSet.objects.filter(Q(data_set_id__id=data_set_id)) & \
+                      Q(data_set_type__id=data_set_type)
         else:
             data_sets = DataSet.objects.all()
         serialized_data = serializers.DataSetSerializer('json', data_sets, many=True)
