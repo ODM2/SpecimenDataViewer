@@ -25,7 +25,7 @@ def get_sampling_feature(request):
         elif sfids and not sampling_feature_type:
             sampling_features = SamplingFeature.objects.filter(Q(pk__in=sfids_list))
         else:
-            sampling_features = SamplingFeature.objects.all()[:1000]
+            sampling_features = SamplingFeature.objects.all()[:100]
 
         serialized_data = serializers.SamplingFeatureSerializer('json', sampling_features, many=True)
         serialized_data.is_valid()
@@ -68,7 +68,7 @@ def get_dataset_metadata(request):
         elif data_set_type:
             data_sets = DataSet.objects.filter(Q(data_set_type__id=data_set_type))
         else:
-            data_sets = DataSet.objects.all()
+            data_sets = DataSet.objects.all()[:100]
         serialized_data = serializers.DataSetSerializer('json', data_sets, many=True)
         serialized_data.is_valid()
 
