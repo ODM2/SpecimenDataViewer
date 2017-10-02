@@ -2,7 +2,7 @@ from api.models import FeatureAction, Result, ProcessingLevel, TimeSeriesResult,
     SpatialReference, \
     ElevationDatum, SiteType, ActionBy, Action, Method, DataLoggerProgramFile, DataLoggerFile, \
     InstrumentOutputVariable, DataLoggerFileColumn, DataSet, DataSetResult, MeasurementResultValue, Variable, \
-    Specimen, Site, MeasurementResult
+    Specimen, Site, MeasurementResult, RelatedFeature
 from rest_framework import serializers
 
 
@@ -74,6 +74,31 @@ class SiteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class SamplingFeatureMetaDataSerializer(serializers.ModelSerializer):
+    specimen = SpecimenSerializer(read_only=True, required=False)
+    site = SiteSerializer(read_only=True, required=False)
+
+    class Meta:
+        model = SamplingFeature
+        fields = '__all__'
+
+
+class SpecimensRelatedFeatureSerializer(serializers.ModelSerializer):
+    sampling_feature = SamplingFeatureMetaDataSerializer(read_only=True, required=False)
+
+    class Meta:
+        model = RelatedFeature
+        fields = '__all__'
+
+
+class SiteRelatedFeatureSerializer(serializers.ModelSerializer):
+    related_feature = SamplingFeatureMetaDataSerializer(read_only=True, required=False)
+
+    class Meta:
+        model = RelatedFeature
+        fields = '__all__'
+
+
 class SamplingFeatureSerializer(serializers.ModelSerializer):
     feature_actions = FeatureActionSerializer(read_only=True, required=False, many=True)
     specimen = SpecimenSerializer(read_only=True, required=False)
@@ -84,9 +109,11 @@ class SamplingFeatureSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SamplingFeatureMetaDataSerializer(serializers.ModelSerializer):
+class SamplingFeatureInfo(serializers.ModelSerializer):
     specimen = SpecimenSerializer(read_only=True, required=False)
     site = SiteSerializer(read_only=True, required=False)
+    related_features__sampling_feature = SiteRelatedFeatureSerializer(read_only=True, required=False, many=True)
+    related_features__related_feature = SpecimensRelatedFeatureSerializer(read_only=True, required=False, many=True)
 
     class Meta:
         model = SamplingFeature
