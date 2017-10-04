@@ -103,6 +103,8 @@ class SamplingFeatureSerializer(serializers.ModelSerializer):
     feature_actions = FeatureActionSerializer(read_only=True, required=False, many=True)
     specimen = SpecimenSerializer(read_only=True, required=False)
     site = SiteSerializer(read_only=True, required=False)
+    related_features__sampling_feature = SiteRelatedFeatureSerializer(read_only=True, required=False, many=True)
+    related_features__related_feature = SpecimensRelatedFeatureSerializer(read_only=True, required=False, many=True)
 
     class Meta:
         model = SamplingFeature
