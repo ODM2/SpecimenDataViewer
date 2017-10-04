@@ -40,7 +40,7 @@ def get_sampling_feature(request):
     if request.method == 'GET':
         sampling_feature_type = request.GET['type'] if 'type' in request.GET else None
         sfids = request.GET.getlist('sfids') if 'sfids' in request.GET else None
-        data_set_type = request.GET.get('datasettype') if 'datasettype' in request.GET else None
+        data_set_type = request.GET('datasettype') if 'datasettype' in request.GET else None
         if sfids:
             sfids_list = sfids[0].split(",")
 
@@ -72,7 +72,7 @@ def get_dataset_metadata(request):
             data_sets = DataSet.objects.filter(Q(data_set_type__in=data_set_type))
         else:
             data_sets = DataSet.objects.all()[:100]
-        serialized_data = serializers.DataSetSerializer('json', data_sets, many=True)
+        serialized_data = serializers.DataSetMetaDataSerializer('json', data_sets, many=True)
         serialized_data.is_valid()
 
     else:
@@ -104,7 +104,7 @@ def get_dataset_values(request):
         data_set_id = request.GET.getlist('datasetid') if 'datasetid' in request.GET else None
 
         if data_set_id:
-            data_sets = DataSet.objects.get(datasetid=data_set_id)
+            data_sets = DataSet.objects.filter(data_set_id__in=data_set_id)
         else:
             data_sets = DataSet.objects.all()
 

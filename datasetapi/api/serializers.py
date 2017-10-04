@@ -43,11 +43,16 @@ class ResultSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class DataSetResultSerializer(serializers.ModelSerializer):
-    results = ResultSerializer(read_only=True, required=False, many=True)
+class ResultMetaDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = '__all__'
+
+
+class DataSetMetaDataSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = DataSetResult
+        model = DataSet
         fields = '__all__'
 
 
@@ -61,6 +66,14 @@ class DataSetSerializer(serializers.ModelSerializer):
 
 class FeatureActionSerializer(serializers.ModelSerializer):
     results = ResultSerializer(read_only=True, required=False, many=True)
+
+    class Meta:
+        model = FeatureAction
+        fields = ['results']
+
+
+class FeatureActionMetaDataSerializer(serializers.ModelSerializer):
+    results = ResultMetaDataSerializer(read_only=True, required=False, many=True)
 
     class Meta:
         model = FeatureAction
@@ -99,7 +112,7 @@ class SiteRelatedFeatureSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SamplingFeatureSerializer(serializers.ModelSerializer):#For all data
+class SamplingFeatureSerializer(serializers.ModelSerializer):
     feature_actions = FeatureActionSerializer(read_only=True, required=False, many=True)
     specimen = SpecimenSerializer(read_only=True, required=False)
     site = SiteSerializer(read_only=True, required=False)
@@ -111,7 +124,8 @@ class SamplingFeatureSerializer(serializers.ModelSerializer):#For all data
         fields = '__all__'
 
 
-class SamplingFeatureInfo(serializers.ModelSerializer):#For meta data
+class SamplingFeatureInfo(serializers.ModelSerializer):
+    feature_actions = FeatureActionMetaDataSerializer(read_only=True, required=False, many=True)
     specimen = SpecimenSerializer(read_only=True, required=False)
     site = SiteSerializer(read_only=True, required=False)
     related_features__sampling_feature = SiteRelatedFeatureSerializer(read_only=True, required=False, many=True)
