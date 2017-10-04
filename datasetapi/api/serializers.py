@@ -99,7 +99,7 @@ class SiteRelatedFeatureSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SamplingFeatureSerializer(serializers.ModelSerializer):
+class SamplingFeatureSerializer(serializers.ModelSerializer):#For all data
     feature_actions = FeatureActionSerializer(read_only=True, required=False, many=True)
     specimen = SpecimenSerializer(read_only=True, required=False)
     site = SiteSerializer(read_only=True, required=False)
@@ -111,7 +111,7 @@ class SamplingFeatureSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SamplingFeatureInfo(serializers.ModelSerializer):
+class SamplingFeatureInfo(serializers.ModelSerializer):#For meta data
     specimen = SpecimenSerializer(read_only=True, required=False)
     site = SiteSerializer(read_only=True, required=False)
     related_features__sampling_feature = SiteRelatedFeatureSerializer(read_only=True, required=False, many=True)
