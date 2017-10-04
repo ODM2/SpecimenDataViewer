@@ -38,9 +38,9 @@ def get_sampling_feature_info(request):
 
 def get_sampling_feature(request):
     if request.method == 'GET':
-        sampling_feature_type = request.GET['type'] if 'type' in request.GET else None
+        sampling_feature_type = request.GET.get['type'] if 'type' in request.GET else None
         sfids = request.GET.getlist('sfids') if 'sfids' in request.GET else None
-        data_set_type = request.GET('datasettype') if 'datasettype' in request.GET else None
+        data_set_type = request.GET.get('datasettype') if 'datasettype' in request.GET else None
         if sfids:
             sfids_list = sfids[0].split(",")
 
