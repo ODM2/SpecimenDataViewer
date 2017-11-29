@@ -177,7 +177,6 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("d", this.focus.components.line);
 
     let div;
-    console.log(document.getElementsByClassName("graph-tooltip").length);
     if (document.getElementsByClassName("graph-tooltip").length == 0) {
       div = d3.select("body").append("div")
         .attr("class", "graph-tooltip")

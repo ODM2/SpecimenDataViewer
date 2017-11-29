@@ -9,10 +9,13 @@ import {Filter} from "./filter.model";
 })
 export class FiltersComponent implements OnInit {
   filters: Filter[];
-  constructor(private dataService: DataService) { }
+
+  constructor(private dataService: DataService) {
+  }
 
   ngOnInit() {
     this.filters = this.dataService.getFilters();
+    console.log("Filters loaded")
   }
 
 }

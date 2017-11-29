@@ -220,11 +220,10 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
-      .on("mouseout", (d) => {
+      .on("mouseout", () => {
         div.transition()
           .duration(500)
           .style("opacity", 0);
-
         div.style("left", -100 + "px");
         div.style("top", -100 + "px");
       })

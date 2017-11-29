@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import {DataService} from "../../../data.service";
 
 export class Chart {
   public margin: {top: number, right: number, bottom: number, left: number};
@@ -36,5 +37,9 @@ export class Chart {
 
   getHeight() {
     return this.dimensions.height;
+  }
+
+  getData() {
+    // this.dataService.getDataseries().subscribe();
   }
 }
