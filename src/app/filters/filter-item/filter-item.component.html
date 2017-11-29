@@ -1,17 +1,17 @@
-<md-expansion-panel [expanded]="true">
-  <md-expansion-panel-header>
-    <md-panel-title>
-      <md-icon>{{ filter.icon }}</md-icon>
+<mat-expansion-panel [expanded]="true">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-icon>{{ filter.icon }}</mat-icon>
       <span class="sidenav-filter-name">{{ filter.name }}</span>
-    </md-panel-title>
-  </md-expansion-panel-header>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
 
   <div *ngFor="let item of filter.items" class="filter-item">
-    <md-checkbox [(ngModel)]="item.selected">
+    <mat-checkbox [(ngModel)]="item.selected">
       <span>{{ item.name }}</span>
-    </md-checkbox>
+    </mat-checkbox>
     <span class="badge badge-primary">{{ item.count }}</span>
   </div>
-</md-expansion-panel>
+</mat-expansion-panel>
 
 

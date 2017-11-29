@@ -1,59 +1,59 @@
-<md-card>
-  <md-card-header>
-    <!--<md-card-title>Data format</md-card-title>-->
-  </md-card-header>
+<mat-card>
+  <mat-card-header>
+    <!--<mat-card-title>Data format</mat-card-title>-->
+  </mat-card-header>
 
-  <md-card-content>
-    <md-button-toggle-group
+  <mat-card-content>
+    <mat-button-toggle-group
       [(ngModel)]="plotType"
       (change)="visualizationService.setPlotType(plotType)"
     >
-      <md-button-toggle [value]="visualizationService.plotTypes.timeSeries">
+      <mat-button-toggle [value]="visualizationService.plotTypes.timeSeries">
         Time Series
-      </md-button-toggle>
-      <md-button-toggle [value]="visualizationService.plotTypes.location">
+      </mat-button-toggle>
+      <mat-button-toggle [value]="visualizationService.plotTypes.location">
         Location
-      </md-button-toggle>
-      <md-button-toggle [value]="visualizationService.plotTypes.correlation">
+      </mat-button-toggle>
+      <mat-button-toggle [value]="visualizationService.plotTypes.correlation">
         Correlation
-      </md-button-toggle>
-    </md-button-toggle-group>
-  </md-card-content>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-card-content>
 
   <br><br>
 
-  <md-card-header>
-    <md-card-title>Datasets</md-card-title>
-  </md-card-header>
+  <mat-card-header>
+    <mat-card-title>Datasets</mat-card-title>
+  </mat-card-header>
 
-  <md-card-content>
+  <mat-card-content>
     <table class="table options-table">
       <tr *ngFor="let dataset of datasets; let i = index">
         <td [style.border-left]="'6px solid' + colors(i)">
-          <button md-icon-button
-                  [mdTooltip]="dataset.visible || xAxisDataset == i ? 'Shown' : 'Hidden'"
-                  [mdTooltipShowDelay]="500"
+          <button mat-icon-button
+                  [matTooltip]="dataset.visible || xAxisDataset == i ? 'Shown' : 'Hidden'"
+                  [matTooltipShowDelay]="500"
                   [disabled]="xAxisDataset == i"
                   (click)="toggleVisibility(i)">
-            <md-icon [style.color]="dataset.visible || xAxisDataset == i? 'steelblue' : '#AAA'"
+            <mat-icon [style.color]="dataset.visible || xAxisDataset == i? 'steelblue' : '#AAA'"
             >
               {{ dataset.visible || xAxisDataset == i ? "visibility" : "visibility_off" }}
-            </md-icon>
+            </mat-icon>
           </button>
         </td>
         <td *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.correlation">
-          <button md-icon-button
-                  mdTooltip="Select as x-axis"
-                  [mdTooltipShowDelay]="500"
+          <button mat-icon-button
+                  matTooltip="Select as x-axis"
+                  [matTooltipShowDelay]="500"
                   (click)="xAxisDataset=i">
-            <md-icon [color]="'accent'">
+            <mat-icon [color]="'accent'">
               {{ xAxisDataset == i ? "radio_button_checked" : "radio_button_unchecked" }}
-            </md-icon>
+            </mat-icon>
           </button>
         </td>
         <th>
           <span>
-            <!--<md-icon [style.color]="colors(i)">stop</md-icon>-->
+            <!--<mat-icon [style.color]="colors(i)">stop</mat-icon>-->
             {{ dataset.variableName }}
           </span>
           <br>
@@ -62,14 +62,14 @@
           </small>
         </th>
         <td>
-          <button md-icon-button
-                  mdTooltip="View Summary Statistics"
-                  [mdTooltipShowDelay]="500"
+          <button mat-icon-button
+                  matTooltip="View Summary Statistics"
+                  [matTooltipShowDelay]="500"
                   (click)="openDialog(dataset)">
-            <md-icon style="color:steelblue;">event_note</md-icon>
+            <mat-icon style="color:steelblue;">event_note</mat-icon>
           </button>
         </td>
       </tr>
     </table>
-  </md-card-content>
-</md-card>
+  </mat-card-content>
+</mat-card>

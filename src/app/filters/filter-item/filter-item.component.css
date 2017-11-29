@@ -8,11 +8,11 @@
   font-size: 12px;
 }
 
-md-icon {
+mat-icon {
   vertical-align: middle;
 }
 
-md-checkbox {
+mat-checkbox {
   display: inline-block;
   width: calc(100% - 25px);
 }
@@ -21,12 +21,12 @@ md-checkbox {
   padding: 0;
 }
 
-md-expansion-panel-header {
+mat-expansion-panel-header {
   border: 1px solid #ddd;
   border-right: 0;
   background: #f3f3f3 !important;
 }
 
-md-expansion-panel {
+mat-expansion-panel {
   margin: 10px;
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef, ViewChild, AfterViewInit, Inject} from '@angular/core';
 import * as d3 from "d3";
-import {MdDialogRef, MD_DIALOG_DATA} from "@angular/material";
+import {MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 
 @Component({
   selector: 'app-details',
@@ -22,8 +22,8 @@ export class DetailsComponent implements OnInit, AfterViewInit {
   private i: any;
   private duration: any;
 
-  constructor(public dialogRef: MdDialogRef<DetailsComponent>,
-              @Inject(MD_DIALOG_DATA) public dialogData: any) {
+  constructor(public dialogRef: MatDialogRef<DetailsComponent>,
+              @Inject(MAT_DIALOG_DATA) public dialogData: any) {
   }
 
   ngOnInit() {

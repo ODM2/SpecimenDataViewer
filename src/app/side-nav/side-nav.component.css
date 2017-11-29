@@ -1,4 +1,4 @@
-md-sidenav {
+mat-sidenav {
   padding: 12px;
   width: 250px;
   -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
@@ -6,11 +6,11 @@ md-sidenav {
   background-color: white;
 }
 
-md-sidenav-container {
+mat-sidenav-container {
   height: 100%;
 }
 
-md-sidenav {
+mat-sidenav {
   padding: 0;
 }
 
@@ -53,6 +53,6 @@ md-sidenav {
   left: 10px;
 }
 
-.sidenav-header md-icon {
+.sidenav-header mat-icon {
   vertical-align: middle;
 }

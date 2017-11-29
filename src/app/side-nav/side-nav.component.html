@@ -1,14 +1,14 @@
 <div class="row" style="height: 100%;">
-    <md-sidenav-container style="width:100%;">
-      <md-sidenav #sidenav mode="side" opened="true">
+    <mat-sidenav-container style="width:100%;">
+      <mat-sidenav #sidenav mode="side" opened="true">
         <div class="sidenav-header">
           <div class="row">
             <div class="col-sm-6">
-              <md-icon>filter_list</md-icon>
+              <mat-icon>filter_list</mat-icon>
               <span>Filters</span>
             </div>
             <div class="col-sm-6 text-right">
-              <md-icon mdTooltip="Clear All" mdTooltipPosition="right" style="cursor: pointer;">highlight_off</md-icon>
+              <mat-icon matTooltip="Clear All" matTooltipPosition="right" style="cursor: pointer;">highlight_off</mat-icon>
             </div>
           </div>
         </div>
@@ -19,18 +19,18 @@
 
         <div class="sidenav-footer"
              (click)="sidenav.close(); onNavBarClose()"
-             mdTooltip="Hide filters" mdTooltipPosition="above"
+             matTooltip="Hide filters" matTooltipPosition="above"
         >
           <i class="material-icons">keyboard_arrow_left</i>
         </div>
-      </md-sidenav>
+      </mat-sidenav>
 
       <app-tabs></app-tabs>
-    </md-sidenav-container>
+    </mat-sidenav-container>
     <button id="btnShowFilters"
-            mdTooltip="Show filters"
-            mdTooltipPosition="right"
-            *ngIf="!sideNavVisible" md-mini-fab (click)="sidenav.open(); onNavBarOpen()">
-      <md-icon>filter_list</md-icon>
+            matTooltip="Show filters"
+            matTooltipPosition="right"
+            *ngIf="!sideNavVisible" mat-mini-fab (click)="sidenav.open(); onNavBarOpen()">
+      <mat-icon>filter_list</mat-icon>
     </button>
   </div>

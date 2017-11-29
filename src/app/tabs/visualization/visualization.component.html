@@ -1,112 +1,112 @@
 <div class="row">
   <div class="col-12 col-sm-8">
-    <md-card id="visualization-card">
-      <md-card-header>
+    <mat-card id="visualization-card">
+      <mat-card-header>
         <div class="row" style="width: 100%;">
           <div class="col-sm-8">
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.boxPlot">
-              <md-input-container style="margin-left:12px;">
-                <input mdInput [mdDatepicker]="beginDate" placeholder="Begin Date">
-                <md-datepicker-toggle mdSuffix [for]="beginDate"></md-datepicker-toggle>
-              </md-input-container>
+              <mat-input-container style="margin-left:12px;">
+                <input matInput [matDatepicker]="beginDate" placeholder="Begin Date">
+                <mat-datepicker-toggle matSuffix [for]="beginDate"></mat-datepicker-toggle>
+              </mat-input-container>
 
-              <md-datepicker #beginDate></md-datepicker>
+              <mat-datepicker #beginDate></mat-datepicker>
 
-              <md-input-container style="margin-left:12px;">
-                <input mdInput [mdDatepicker]="endDate" placeholder="End Date">
-                <md-datepicker-toggle mdSuffix [for]="endDate"></md-datepicker-toggle>
-              </md-input-container>
+              <mat-input-container style="margin-left:12px;">
+                <input matInput [matDatepicker]="endDate" placeholder="End Date">
+                <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+              </mat-input-container>
 
-              <md-datepicker #endDate></md-datepicker>
+              <mat-datepicker #endDate></mat-datepicker>
             </div>
 
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.lineChart">
-              <md-button-toggle-group
+              <mat-button-toggle-group
                 [(ngModel)]="selectedLineChartView"
                 (change)="visualizationService.setLineChartView(selectedLineChartView)">
-                <md-button-toggle [value]="visualizationService.lineChartViews.point">
+                <mat-button-toggle [value]="visualizationService.lineChartViews.point">
                   <span>● Point</span>
-                </md-button-toggle>
+                </mat-button-toggle>
 
-                <md-button-toggle [value]="visualizationService.lineChartViews.line">
-                  <md-icon>show_chart</md-icon>
+                <mat-button-toggle [value]="visualizationService.lineChartViews.line">
+                  <mat-icon>show_chart</mat-icon>
                   <span> Line</span>
-                </md-button-toggle>
+                </mat-button-toggle>
 
-                <md-button-toggle [value]="visualizationService.lineChartViews.both">
-                  <md-icon>timeline</md-icon>
+                <mat-button-toggle [value]="visualizationService.lineChartViews.both">
+                  <mat-icon>timeline</mat-icon>
                   <span> Both</span>
-                </md-button-toggle>
-              </md-button-toggle-group>
+                </mat-button-toggle>
+              </mat-button-toggle-group>
             </div>
 
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.histogram">
-              <md-button-toggle-group
+              <mat-button-toggle-group
                 [(ngModel)]="histogramTicks"
                 (change)="visualizationService.setHistogramTicks(histogramTicks)">
-                <!--<md-button-toggle [value]="visualizationService.histogramTickTypes.day">-->
+                <!--<mat-button-toggle [value]="visualizationService.histogramTickTypes.day">-->
                 <!--<span>Day</span>-->
-                <!--</md-button-toggle>-->
-                <md-button-toggle [value]="visualizationService.histogramTickTypes.week">
+                <!--</mat-button-toggle>-->
+                <mat-button-toggle [value]="visualizationService.histogramTickTypes.week">
                   <span>Week</span>
-                </md-button-toggle>
-                <md-button-toggle [value]="visualizationService.histogramTickTypes.month">
+                </mat-button-toggle>
+                <mat-button-toggle [value]="visualizationService.histogramTickTypes.month">
                   <span>Month</span>
-                </md-button-toggle>
-                <md-button-toggle [value]="visualizationService.histogramTickTypes.sixMonths">
+                </mat-button-toggle>
+                <mat-button-toggle [value]="visualizationService.histogramTickTypes.sixMonths">
                   <span>Six Months</span>
-                </md-button-toggle>
-                <md-button-toggle [value]="visualizationService.histogramTickTypes.year">
+                </mat-button-toggle>
+                <mat-button-toggle [value]="visualizationService.histogramTickTypes.year">
                   <span>Year</span>
-                </md-button-toggle>
-              </md-button-toggle-group>
+                </mat-button-toggle>
+              </mat-button-toggle-group>
             </div>
 
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.scatterPlot">
-              <md-slider
+              <mat-slider
                 [(ngModel)]="selectedPointRadius"
                 (change)="visualizationService.setPointRadius(selectedPointRadius)"
-                min="3" max="10" step="1" value="3"></md-slider>
+                min="3" max="10" step="1" value="3"></mat-slider>
             </div>
           </div>
 
           <div class="col-sm-4 text-right">
-            <md-button-toggle-group
+            <mat-button-toggle-group
               [(ngModel)]="selectedChart"
               (change)="visualizationService.setCurrentChart(selectedChart)">
-              <md-button-toggle
+              <mat-button-toggle
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.correlation"
                 [value]="visualizationService.charts.scatterPlot"
-                mdTooltip="Scatter plot" [mdTooltipShowDelay]="500">
-                <md-icon>grain</md-icon>
-              </md-button-toggle>
+                matTooltip="Scatter plot" [matTooltipShowDelay]="500">
+                <mat-icon>grain</mat-icon>
+              </mat-button-toggle>
 
-              <md-button-toggle
+              <mat-button-toggle
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.timeSeries"
                 [value]="visualizationService.charts.lineChart"
-                mdTooltip="Point and Line" [mdTooltipShowDelay]="500">
-                <md-icon>multiline_chart</md-icon>
-              </md-button-toggle>
+                matTooltip="Point and Line" [matTooltipShowDelay]="500">
+                <mat-icon>multiline_chart</mat-icon>
+              </mat-button-toggle>
 
-              <md-button-toggle
+              <mat-button-toggle
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.timeSeries"
                 [value]="visualizationService.charts.histogram"
-                mdTooltip="Histogram" [mdTooltipShowDelay]="500">
-                <md-icon>equalizer</md-icon>
-              </md-button-toggle>
+                matTooltip="Histogram" [matTooltipShowDelay]="500">
+                <mat-icon>equalizer</mat-icon>
+              </mat-button-toggle>
 
-              <md-button-toggle
+              <mat-button-toggle
                 *ngIf="visualizationService.getPlotType() == visualizationService.plotTypes.timeSeries || visualizationService.getPlotType() == visualizationService.plotTypes.location"
                 [value]="visualizationService.charts.boxPlot"
-                mdTooltip="Box and Whisker" [mdTooltipShowDelay]="500">
-                <md-icon>view_week</md-icon>
-              </md-button-toggle>
-            </md-button-toggle-group>
+                matTooltip="Box and Whisker" [matTooltipShowDelay]="500">
+                <mat-icon>view_week</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
         </div>
-      </md-card-header>
+      </mat-card-header>
 
-      <md-card-content>
+      <mat-card-content>
         <app-line-chart
           *ngIf="selectedChart==visualizationService.charts.lineChart">
         </app-line-chart>
@@ -119,8 +119,8 @@
         <app-box-plot
           *ngIf="selectedChart==visualizationService.charts.boxPlot">
         </app-box-plot>
-      </md-card-content>
-    </md-card>
+      </mat-card-content>
+    </mat-card>
   </div>
   <div class="col-sm-12 col-md-4">
     <div class="row">

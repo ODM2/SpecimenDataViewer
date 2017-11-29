@@ -21,6 +21,6 @@ app-map, app-visualization, app-line-chart {
   margin: 15px 0;
 }
 
-md-icon {
+mat-icon {
   vertical-align: middle;
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {VisualizationService} from "../../../visualization.service";
 import {SummaryStatisticsComponent} from "../summary-statistics/summary-statistics.component";
-import {MdDialog} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import * as d3 from "d3";
 
 @Component({
@@ -36,7 +36,7 @@ export class PlotOptionsComponent implements OnInit {
     },
   ];
 
-  constructor(private visualizationService: VisualizationService, public dialog: MdDialog) { }
+  constructor(private visualizationService: VisualizationService, public dialog: MatDialog) { }
 
   openDialog(dataset: {variableName: string, siteName:string, visible:boolean}) {
     this.dialog.open(SummaryStatisticsComponent,

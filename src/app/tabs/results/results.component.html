@@ -5,21 +5,21 @@
 </div>
 
 <div class="col-sm-12">
-  <md-card>
-    <md-card-content>
+  <mat-card>
+    <mat-card-content>
       <div class="row">
         <!--SEARCH CONTROLS-->
         <div class="col-12 col-sm-5">
           <div><label>Search</label></div>
-          <md-icon>search</md-icon>
-          <md-input-container style="width: calc(100% - 71px);">
-            <input #filter mdInput placeholder="Search" [(ngModel)]="searchString">
-          </md-input-container>
+          <mat-icon>search</mat-icon>
+          <mat-input-container style="width: calc(100% - 71px);">
+            <input #filter matInput placeholder="Search" [(ngModel)]="searchString">
+          </mat-input-container>
 
-          <button md-icon-button (click)="clearSearch()"
-                  mdTooltip="Clear"
-                  [mdTooltipShowDelay]="500">
-            <md-icon>highlight_off</md-icon>
+          <button mat-icon-button (click)="clearSearch()"
+                  matTooltip="Clear"
+                  [matTooltipShowDelay]="500">
+            <mat-icon>highlight_off</mat-icon>
           </button>
         </div>
 
@@ -32,39 +32,39 @@
                   <label>Date Range</label>
                 </div>
                 <div class="col-6">
-                  <md-input-container>
-                    <input mdInput
-                           [mdDatepicker]="beginDate"
+                  <mat-input-container>
+                    <input matInput
+                           [matDatepicker]="beginDate"
                            [(ngModel)]="__beginDate"
                            (dateChange)="onDateRangeChange()"
                            placeholder="Start Date">
-                    <md-datepicker-toggle mdSuffix [for]="beginDate"></md-datepicker-toggle>
-                  </md-input-container>
-                  <md-datepicker #beginDate></md-datepicker>
-                  <button md-icon-button class="custom-input-addon"
+                    <mat-datepicker-toggle matSuffix [for]="beginDate"></mat-datepicker-toggle>
+                  </mat-input-container>
+                  <mat-datepicker #beginDate></mat-datepicker>
+                  <button mat-icon-button class="custom-input-addon"
                           (click)="__beginDate = null;;onDateRangeChange()"
-                          mdTooltip="Clear"
-                          [mdTooltipShowDelay]="500">
-                    <md-icon>highlight_off</md-icon>
+                          matTooltip="Clear"
+                          [matTooltipShowDelay]="500">
+                    <mat-icon>highlight_off</mat-icon>
                   </button>
                 </div>
 
                 <div class="col-6">
-                  <md-input-container>
-                    <input mdInput
-                           [mdDatepicker]="endDate"
+                  <mat-input-container>
+                    <input matInput
+                           [matDatepicker]="endDate"
                            (dateChange)="onDateRangeChange()"
                            [(ngModel)]="__endDate"
                            placeholder="End Date">
-                    <md-datepicker-toggle mdSuffix [for]="endDate"></md-datepicker-toggle>
-                  </md-input-container>
-                  <md-datepicker #endDate></md-datepicker>
-                  <button md-icon-button
+                    <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+                  </mat-input-container>
+                  <mat-datepicker #endDate></mat-datepicker>
+                  <button mat-icon-button
                           (click)="__endDate = null;onDateRangeChange()"
                           class="custom-input-addon"
-                          mdTooltip="Clear"
-                          [mdTooltipShowDelay]="500">
-                    <md-icon>highlight_off</md-icon>
+                          matTooltip="Clear"
+                          [matTooltipShowDelay]="500">
+                    <mat-icon>highlight_off</mat-icon>
                   </button>
                 </div>
               </div>
@@ -74,46 +74,46 @@
 
         <!--ACTIONS CONTROLS-->
         <div class="col-sm-9">
-          <md-menu #appMenu="mdMenu" [overlapTrigger]="false">
-            <button md-menu-item (click)="onDisplayChange('All')">
-              <md-icon style="margin-right: 0;">{{ optionDisplay == 'All' ? 'check' : ''}}</md-icon>
+          <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+            <button mat-menu-item (click)="onDisplayChange('All')">
+              <mat-icon style="margin-right: 0;">{{ optionDisplay == 'All' ? 'check' : ''}}</mat-icon>
               All
             </button>
-            <button md-menu-item (click)="onDisplayChange('Selected')">
-              <md-icon style="margin-right: 0;">{{ optionDisplay == 'Selected' ? 'check' : ''}}</md-icon>
+            <button mat-menu-item (click)="onDisplayChange('Selected')">
+              <mat-icon style="margin-right: 0;">{{ optionDisplay == 'Selected' ? 'check' : ''}}</mat-icon>
               Selected
             </button>
-            <button md-menu-item (click)="onDisplayChange('Plotted')">
-              <md-icon style="margin-right: 0;">{{ optionDisplay == 'Plotted' ? 'check' : ''}}</md-icon>
+            <button mat-menu-item (click)="onDisplayChange('Plotted')">
+              <mat-icon style="margin-right: 0;">{{ optionDisplay == 'Plotted' ? 'check' : ''}}</mat-icon>
               Plotted
             </button>
-          </md-menu>
+          </mat-menu>
 
           <label style="margin-right: 8px;">Display:</label>
-          <button id="btnSelectView" md-button md-raised-button [mdMenuTriggerFor]="appMenu">
+          <button id="btnSelectView" mat-button mat-raised-button [matMenuTriggerFor]="appMenu">
             <span>{{ optionDisplay }}</span> <span class="caret"></span>
           </button>
-          <button md-raised-button color="accent"
+          <button mat-raised-button color="accent"
                   (click)="plotSelected()"
                   [disabled]="selectedCount == 0">
-            <md-icon>assessment</md-icon>
+            <mat-icon>assessment</mat-icon>
             Plot
           </button>
 
-          <button md-raised-button color="primary"
+          <button mat-raised-button color="primary"
                   [disabled]="selectedCount == 0">
-            <md-icon>file_download</md-icon>
+            <mat-icon>file_download</mat-icon>
             Export
           </button>
         </div>
 
         <div class="col-sm-3 text-right">
-          <div class="btn-group md-shadow-1">
+          <div class="btn-group mat-shadow-1">
             <span class="input-group-addon" id="btnGroupAddon">
-              <md-icon>assessment</md-icon>
+              <mat-icon>assessment</mat-icon>
               Plotting ({{this.plotCount}}/5)
             </span>
-            <button id="btnClearPlots" type="button" md-raised-button color="primary"
+            <button id="btnClearPlots" type="button" mat-raised-button color="primary"
                     (click)="clearPlots()"
                     [disabled]="plotCount == 0"
             >Clear Plot
@@ -122,111 +122,111 @@
         </div>
       </div>
 
-      <div id="specimen-table-container" class="md-shadow-1">
-        <md-table #table [dataSource]="dataSource" mdSort>
+      <div id="specimen-table-container" class="mat-shadow-1">
+        <mat-table #table [dataSource]="dataSource" matSort>
           <!-- Selection Column -->
           <ng-container cdkColumnDef="selection">
-            <md-header-cell *cdkHeaderCellDef>
-              <md-checkbox
+            <mat-header-cell *cdkHeaderCellDef>
+              <mat-checkbox
                 (change)="toggleSelectedAll()"
                 [(ngModel)]="allSelected"
                 [indeterminate]="selectedCount >= 1">
-              </md-checkbox>
+              </mat-checkbox>
               <!--{{ selectedCount}},{{allSelected}}-->
-            </md-header-cell>
+            </mat-header-cell>
 
-            <md-cell *cdkCellDef="let row">
-              <md-checkbox [(ngModel)]="row.selected" (change)="updateSelectedCount()"></md-checkbox>
+            <mat-cell *cdkCellDef="let row">
+              <mat-checkbox [(ngModel)]="row.selected" (change)="updateSelectedCount()"></mat-checkbox>
               <!--{{ row.selected }}-->
-            </md-cell>
+            </mat-cell>
           </ng-container>
 
           <!-- Actions Column -->
           <ng-container cdkColumnDef="actions">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Actions</md-header-cell>
-            <md-cell *cdkCellDef="let row">
-              <ng-container mdTooltip="Plot">
-                <button md-icon-button
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Actions</mat-header-cell>
+            <mat-cell *cdkCellDef="let row">
+              <ng-container mat-tooltip="Plot">
+                <button mat-icon-button
                         [color]="row.plotted ? 'accent' : 'primary'"
                         (click)="row.plotted = !row.plotted; updatePlotCount()">
-                  <md-icon>assessment</md-icon>
+                  <mat-icon>assessment</mat-icon>
                 </button>
                 <!--{{row.plotted}}-->
               </ng-container>
 
-              <button md-icon-button
-                      mdTooltip="Export"
+              <button mat-icon-button
+                      matTooltip="Export"
                       color="primary">
-                <md-icon>file_download</md-icon>
+                <mat-icon>file_download</mat-icon>
               </button>
 
-              <button md-icon-button
+              <button mat-icon-button
                       (click)="openDetailsDialog('Some data')"
-                      mdTooltip="View Details"
+                      matTooltip="View Details"
                       color="primary">
-                <md-icon>more</md-icon>
+                <mat-icon>more</mat-icon>
               </button>
-            </md-cell>
+            </mat-cell>
           </ng-container>
 
           <!-- StartDate Column -->
           <ng-container cdkColumnDef="endDate">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> End Date</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.endDate.toLocaleString()|date:'dd/MM/yyyy'}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> End Date</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.endDate.toLocaleString()|date:'dd/MM/yyyy'}}</mat-cell>
           </ng-container>
 
           <!-- StartDate Column -->
           <ng-container cdkColumnDef="startDate">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Start Date</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.startDate.toLocaleString()|date:'dd/MM/yyyy'}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Start Date</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.startDate.toLocaleString()|date:'dd/MM/yyyy'}}</mat-cell>
           </ng-container>
 
           <!-- VariableName Column -->
           <ng-container cdkColumnDef="variableName">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Variable Name</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.variableName}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Variable Name</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.variableName}}</mat-cell>
           </ng-container>
 
           <!-- Site Name Column -->
           <ng-container cdkColumnDef="siteName">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Site Name</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.siteName}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Site Name</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.siteName}}</mat-cell>
           </ng-container>
 
           <!-- Site Code Column -->
           <ng-container cdkColumnDef="siteCode">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Site Code</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.siteCode}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Site Code</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.siteCode}}</mat-cell>
           </ng-container>
 
           <!-- Network Column -->
           <ng-container cdkColumnDef="network">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Network</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.network}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Network</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.network}}</mat-cell>
           </ng-container>
 
           <!-- Variable Code Column -->
           <ng-container cdkColumnDef="variableCode">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Variable Code</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.variableCode}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Variable Code</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.variableCode}}</mat-cell>
           </ng-container>
 
           <!-- Medium Column -->
           <ng-container cdkColumnDef="medium">
-            <md-header-cell *cdkHeaderCellDef md-sort-header> Medium</md-header-cell>
-            <md-cell *cdkCellDef="let row"> {{row.medium}}</md-cell>
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Medium</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.medium}}</mat-cell>
           </ng-container>
 
-          <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
-          <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
-        </md-table>
+          <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
       </div>
-      <md-paginator #paginator
+      <mat-paginator #paginator
                     [length]="exampleDatabase.data.length"
                     [pageIndex]="0"
                     [pageSize]="5"
                     [pageSizeOptions]="[5, 10, 25, 50, 100]">
-      </md-paginator>
-    </md-card-content>
-  </md-card>
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
 </div>

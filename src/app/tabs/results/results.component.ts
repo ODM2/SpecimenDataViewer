@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy, ElementRef, ViewChild} from '@angular/core';
 import {DataService} from "../../data.service";
 import {DetailsComponent} from "../details/details.component";
-import {MdDialog, MdPaginator, MdSort} from "@angular/material";
+import {MatDialog, MatPaginator, MatSort, MatDatepicker} from "@angular/material";
 import {DataSource} from '@angular/cdk/table';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
@@ -43,11 +43,11 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   @ViewChild('chkSelectAll') selectAll: ElementRef;
   @ViewChild('filter') filter: ElementRef;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
-  @ViewChild(MdSort) sort: MdSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   @ViewChild('table') myTable;
 
-  constructor(private dataService: DataService, public dialog: MdDialog) {
+  constructor(private dataService: DataService, public dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -316,7 +316,7 @@ export class ExampleDataSource extends DataSource<any> {
     this._dateRangeChange.next(filter);
   }
 
-  constructor(private _exampleDatabase: ExampleDatabase, private _paginator: MdPaginator, private _sort: MdSort) {
+  constructor(private _exampleDatabase: ExampleDatabase, private _paginator: MatPaginator, private _sort: MatSort) {
     super();
   }
 
@@ -328,7 +328,7 @@ export class ExampleDataSource extends DataSource<any> {
       this._displayChange,
       this._paginator.page,
       this._dateRangeChange,
-      this._sort.mdSortChange,
+      this._sort.sortChange,
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
