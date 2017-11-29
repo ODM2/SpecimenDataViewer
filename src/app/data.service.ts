@@ -1,12 +1,24 @@
 import {Filter} from "./filters/filter.model";
 import {FilterItem} from "./filters/filter-item.model";
+import {Injectable} from "@angular/core";
+import {Http, Response} from "@angular/http";
+import 'rxjs/Rx';
 
+@Injectable()
 export class DataService {
+  constructor(private http: Http) {
+  }
+
   private filters: Filter[];
   private dataseries = [];
   private sites = [];
 
   initialize() {
+
+    this.getData().subscribe(function (data) {
+
+    }.bind(this));
+
     this.dataseries = [
       {
         type: "Sample Result",
@@ -91,7 +103,7 @@ export class DataService {
         var p = (classifier || String)(item);
         counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1;
         return counter;
-      }, {})
+      }, {});
     };
 
     networks = count(networks, function (item) {
@@ -140,13 +152,23 @@ export class DataService {
       new Filter("Site", siteItems, "location_on"),
       new Filter("Medium", mediumItems, "landscape"),
       new Filter("Variable", variableItems, "settings_remote"),
-      new Filter("Result Type", resultTypeItems,
-        "class"),
+      new Filter("Result Type", resultTypeItems,"class"),
     ];
+
+    console.log("Data loaded")
+  }
+
+  getData() {
+    return this.http.get("http://odm2wofpy1.uwrl.usu.edu/api/v1/samplingfeatureinfo/?type=Specimen").map(
+      (response: Response) => {
+        return response.json();
+      }
+    );
   }
 
   getFilters() {
-    return this.filters.slice();
+    return this.filters;
+    // return this.filters.slice();
   }
 
   getDataseries() {
@@ -156,6 +178,4 @@ export class DataService {
   getSites() {
     return this.sites.slice();
   }
-
-
 }

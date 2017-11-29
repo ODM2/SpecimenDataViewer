@@ -176,6 +176,16 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("class", "line")
       .attr("d", this.focus.components.line);
 
+    let div;
+    if (document.getElementsByClassName("graph-tooltip").length == 0) {
+      div = d3.select("body").append("div")
+        .attr("class", "graph-tooltip")
+        .style("opacity", 0);
+    }else {
+      div = d3.select(".graph-tooltip");
+    }
+
+
     // Add circle points to the focus graph
     this.focus.g.selectAll("dot")
       .data(data)
@@ -183,6 +193,19 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("r", 3)
       .attr("class", "point")
       .attr("fill", "steelblue")
+      .on("mouseover", (d) => {
+        div.transition()
+          .duration(200)
+          .style("opacity", 0.9);
+        div.html("<h2>Test</h2>")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", (d) => {
+        div.transition()
+          .duration(500)
+          .style("opacity", 0)
+      })
       .attr("cx", function (d) {
         return this.focus.scales.x(d.date);
       }.bind(this))
