@@ -14,9 +14,9 @@ export class DataService {
   private sites = [];
 
   initialize() {
-
+    console.log("Initializing data service");
     this.getData().subscribe(function (data) {
-
+      console.log(data);
     }.bind(this));
 
     this.dataseries = [
@@ -98,28 +98,28 @@ export class DataService {
       resultTypes.push(item.type);
     }
 
-    let count = function (ary, classifier) {
+    const count = function (ary, classifier) {
       return ary.reduce(function (counter, item) {
-        var p = (classifier || String)(item);
+        const p = (classifier || String)(item);
         counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1;
         return counter;
       }, {});
     };
 
     networks = count(networks, function (item) {
-      return item
+      return item;
     });
     sites = count(sites, function (item) {
-      return item
+      return item;
     });
     variables = count(variables, function (item) {
-      return item
+      return item;
     });
     mediums = count(mediums, function (item) {
-      return item
+      return item;
     });
     resultTypes = count(resultTypes, function (item) {
-      return item
+      return item;
     });
 
     let networkItems = [];
@@ -155,11 +155,11 @@ export class DataService {
       new Filter("Result Type", resultTypeItems,"class"),
     ];
 
-    console.log("Data loaded")
+    console.log("Data loaded");
   }
 
   getData() {
-    return this.http.get("http://odm2wofpy1.uwrl.usu.edu/api/v1/samplingfeatureinfo/?type=Specimen").map(
+    return this.http.get("http://54.186.36.247:8001/v1/samplingfeatures?samplingFeatureType=Specimen").map(
       (response: Response) => {
         return response.json();
       }

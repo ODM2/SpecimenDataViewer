@@ -176,3 +176,19 @@ mat-checkbox > label {
 button:focus {
   outline: 0;
 }
+
+div.graph-tooltip {
+    position: absolute;
+    padding: 4px;
+    border: 1px solid #1d1d1d;
+    pointer-events: none;
+    background: #4c4c4c;
+    color: #FFF;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+div.graph-tooltip table th {
+  text-align: right;
+  padding-right: 6px;
+}

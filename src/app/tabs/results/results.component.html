@@ -5,12 +5,11 @@
 </div>
 
 <div class="col-sm-12">
-  <mat-card>
+  <!--SEARCH CONTROLS-->
+  <mat-card style="margin-bottom: 20px;">
     <mat-card-content>
       <div class="row">
-        <!--SEARCH CONTROLS-->
-        <div class="col-12 col-sm-5">
-          <div><label>Search</label></div>
+        <div class="col-lg-5 col-sm-12">
           <mat-icon>search</mat-icon>
           <mat-input-container style="width: calc(100% - 71px);">
             <input #filter matInput placeholder="Search" [(ngModel)]="searchString">
@@ -24,14 +23,11 @@
         </div>
 
         <!--DATE FILTERING CONTROLS-->
-        <div class="col-12 col-sm-7">
+        <div class="col-lg-7 col-sm-12">
           <div class="row">
             <div class="col-sm-12 col-sm-9">
               <div class="row">
                 <div class="col-12">
-                  <label>Date Range</label>
-                </div>
-                <div class="col-6">
                   <mat-input-container>
                     <input matInput
                            [matDatepicker]="beginDate"
@@ -42,14 +38,12 @@
                   </mat-input-container>
                   <mat-datepicker #beginDate></mat-datepicker>
                   <button mat-icon-button class="custom-input-addon"
-                          (click)="__beginDate = null;;onDateRangeChange()"
+                          (click)="__beginDate = null; onDateRangeChange()"
                           matTooltip="Clear"
                           [matTooltipShowDelay]="500">
                     <mat-icon>highlight_off</mat-icon>
                   </button>
-                </div>
 
-                <div class="col-6">
                   <mat-input-container>
                     <input matInput
                            [matDatepicker]="endDate"
@@ -67,11 +61,20 @@
                     <mat-icon>highlight_off</mat-icon>
                   </button>
                 </div>
+
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
 
+<div class="col-sm-12">
+  <mat-card>
+    <mat-card-content>
+      <div class="row">
         <!--ACTIONS CONTROLS-->
         <div class="col-sm-9">
           <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
