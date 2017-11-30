@@ -19,6 +19,7 @@ mat-checkbox {
 
 .mat-expansion-panel-body {
   padding: 0;
+  overflow: hidden;
 }
 
 mat-expansion-panel-header {

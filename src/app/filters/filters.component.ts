@@ -14,8 +14,11 @@ export class FiltersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.filters = this.dataService.getFilters();
-    console.log("Filters loaded")
+    this.dataService.initialized.subscribe(() => {
+      this.filters = this.dataService.getFilters();
+      console.log("Filters loaded");
+    });
+
   }
 
 }
