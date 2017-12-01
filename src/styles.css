@@ -7,6 +7,16 @@ mat-tab-group {
   height: 100%;
 }
 
+mat-tab-header {
+  background: #FFF;
+}
+
+
+mat-tab-header .mat-tab-label {
+  height: 50px;
+}
+
+
 .mat-tab-body-wrapper {
   height: calc(100% - 49px);
 }
@@ -203,11 +213,13 @@ div.graph-tooltip table th {
 
 ::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
+  cursor: pointer;
   background-color: #F5F5F5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #F90;
+  background-color: #3f51b5;
   background-image: -webkit-linear-gradient(45deg,
   rgba(255, 255, 255, .2) 25%,
   transparent 25%,
