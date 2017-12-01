@@ -19,8 +19,6 @@ export class DataService {
   initialize() {
     console.log('Initializing data service');
     this.getData().subscribe(function (data) {
-      console.log(data);
-
       this.dataseries = [
         {
           type: 'Sample Result',
@@ -92,11 +90,19 @@ export class DataService {
       let variables = [];
       let resultTypes = [];
 
-      for (const item of data) {
+
+      for (const samplingFeature of data) {
         networks.push("Some Network");
         sites.push("Some Site");
-        variables.push("Some Variable");
-        mediums.push(item.SpecimenMediumCV);
+
+        for (const dataset of samplingFeature.Datasets) {
+          for (const result of dataset.Results) {
+            variables.push(result.Variable.VariableNameCV);
+            break; // Because all results in one dataset share the same variable
+          }
+        }
+
+        mediums.push(samplingFeature.SpecimenMediumCV);
         resultTypes.push("Some Result Type");
       }
 
@@ -112,15 +118,21 @@ export class DataService {
       networks = count(networks, function (item) {
         return item;
       });
+
       sites = count(sites, function (item) {
         return item;
       });
+
+      console.log(variables)
+
       variables = count(variables, function (item) {
         return item;
       });
+
       mediums = count(mediums, function (item) {
         return item;
       });
+
       resultTypes = count(resultTypes, function (item) {
         return item;
       });
@@ -158,14 +170,16 @@ export class DataService {
         new Filter('Result Type', resultTypeItems, 'class'),
       ];
 
-      this.initialized.next('');
+      this.initialized.next('Data loaded');
     }.bind(this));
   }
 
   getData() {
-    return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeatures?samplingFeatureType=Specimen').map(
+    return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeaturedatasets?samplingFeatureID=1001%2C1002').map(
       (response: Response) => {
-        return response.json();
+        const data = response.json();
+        console.log(data);
+        return data;
       },
       (error) => {
         console.log(error);
