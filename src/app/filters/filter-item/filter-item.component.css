@@ -1,5 +1,6 @@
 .sidenav-filter-name {
   text-transform: uppercase;
+  line-height: 24px;
 }
 
 .filter-item {
@@ -31,3 +32,4 @@ mat-expansion-panel-header {
 mat-expansion-panel {
   margin: 10px;
 }
+

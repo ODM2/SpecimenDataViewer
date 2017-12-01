@@ -217,3 +217,20 @@ div.graph-tooltip table th {
   transparent 75%,
   transparent)
 }
+
+app-filter-item .mat-checkbox-layout {
+  width:100%;
+}
+
+app-filter-item .mat-checkbox-label {
+  width: calc(100% - 30px);
+}
+
+app-filter-item .item-name {
+  display: inline-block;
+  width: 100%;
+  white-space: normal;
+  line-height: initial;
+  font-size: 14px;
+}
+
