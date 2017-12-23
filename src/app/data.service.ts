@@ -8,7 +8,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 @Injectable()
 export class DataService {
   private filters: Filter[];
-  private dataseries = [];
+  private datasets = [];
   private sites = [];
   public pageChanged;
   public initialized = new BehaviorSubject('');
@@ -19,70 +19,6 @@ export class DataService {
   initialize() {
     console.log('Initializing data service');
     this.getData().subscribe(function (data) {
-      this.dataseries = [
-        {
-          type: 'Sample Result',
-          network: 'Some Network',
-          siteCode: 'ABCDE',
-          siteName: 'Red Butte Creek',
-          medium: 'Aquatic',
-          variableCode: 'ODO',
-          variableName: 'Oxygen, dissolved',
-          variableDate: new Date('February 4, 2016 10:13:00'),
-          startDate: new Date('February 2, 2016 10:13:00'),
-          endDate: new Date('February 5, 2016 10:13:00'),
-          numberOfValues: 12,
-        },
-        {
-          type: 'Sensor Result',
-          network: 'Logan River',
-          siteCode: 'RB_ARBR_A',
-          siteName: 'Water Lab',
-          medium: 'Aquatic',
-          variableCode: 'ODO_Local',
-          variableName: 'Oxygen, dissolved',
-          variableDate: new Date('February 22, 2016 10:13:00'),
-          startDate: new Date('February 1, 2016 10:13:00'),
-          endDate: new Date('February 8, 2016 10:13:00'),
-          numberOfValues: 23,
-        },
-        {
-          type: 'Sample Result',
-          network: 'Red Butte Creek',
-          siteCode: 'ZZZ',
-          siteName: 'Some Site Name',
-          medium: 'Aquatic',
-          variableCode: 'AAA',
-          variableName: 'Oxygen',
-          variableDate: new Date('January 1, 2016 10:13:00'),
-          startDate: new Date('February 22, 2016 10:13:00'),
-          endDate: new Date('February 29, 2016 10:13:00'),
-          numberOfValues: 100,
-        }
-      ];
-
-      this.sites = [
-        {
-          siteName: 'Logan River near Franklin Basin',
-          siteCode: 'LR_FB_BA',
-          network: 'Logan River',
-          state: 'Utah',
-          siteType: 'Stream',
-          county: 'Cache',
-          latitude: 41.9502,
-          longitude: -111.580553
-        },
-        {
-          siteName: 'Some other site',
-          siteCode: 'SOS',
-          network: 'Logan River',
-          state: 'Utah',
-          siteType: 'Stream',
-          county: 'Cache',
-          latitude: 40.9502,
-          longitude: -113.580553
-        },
-      ];
 
       let networks = [];
       let sites = [];
@@ -90,20 +26,33 @@ export class DataService {
       let variables = [];
       let resultTypes = [];
 
-
       for (const samplingFeature of data) {
         networks.push("Some Network");
-        sites.push("Some Site");
+        // sites.push("Some Site");
 
         for (const dataset of samplingFeature.Datasets) {
-          for (const result of dataset.Results) {
-            variables.push(result.Variable.VariableNameCV);
-            break; // Because all results in one dataset share the same variable
-          }
+          // All results in a dataset share the same variable, medium and result type
+          variables.push(dataset.Results[0].Variable.VariableNameCV);
+          mediums.push(dataset.Results[0].SampledMediumCV);
+          resultTypes.push(dataset.Results[0].ResultTypeCV);
+
+          this.datasets.push({
+            type: dataset.Results[0].ResultTypeCV,
+            network: 'Some Network',
+            siteCode: samplingFeature.related_features.SamplingFeatureCode,
+            siteName: samplingFeature.related_features.SamplingFeatureName,
+            medium: dataset.Results[0].SampledMediumCV,
+            variableCode: dataset.Results[0].Variable.VariableCode,
+            variableName: dataset.Results[0].Variable.VariableNameCV,
+            startDate: new Date('February 2, 2016 10:13:00'),
+            endDate: new Date('February 5, 2016 10:13:00'),
+            numberOfValues: 12,
+            selected: false,
+            plotted: false
+          })
         }
 
-        mediums.push(samplingFeature.SpecimenMediumCV);
-        resultTypes.push("Some Result Type");
+        sites.push(samplingFeature.related_features.SamplingFeatureName);
       }
 
       // Classifier definition
@@ -122,8 +71,6 @@ export class DataService {
       sites = count(sites, function (item) {
         return item;
       });
-
-      console.log(variables)
 
       variables = count(variables, function (item) {
         return item;
@@ -177,9 +124,7 @@ export class DataService {
   getData() {
     return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeaturedatasets?samplingFeatureID=1001%2C1002').map(
       (response: Response) => {
-        const data = response.json();
-        console.log(data);
-        return data;
+        return response.json();
       },
       (error) => {
         console.log(error);
@@ -192,8 +137,8 @@ export class DataService {
     // return this.filters.slice();
   }
 
-  getDataseries() {
-    return this.dataseries.slice();
+  getDatasets() {
+    return this.datasets.slice();
   }
 
   getSites() {

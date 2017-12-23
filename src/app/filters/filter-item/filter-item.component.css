@@ -26,7 +26,7 @@ mat-checkbox {
 mat-expansion-panel-header {
   border: 1px solid #ddd;
   border-right: 0;
-  background: #f3f3f3 !important;
+  background: #eaecf7 !important
 }
 
 mat-expansion-panel {

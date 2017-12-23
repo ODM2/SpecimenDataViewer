@@ -27,6 +27,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   dataSource: ExampleDataSource | null;
   searchString = '';
   pageChanged = new Subscription;
+  dataLoaded = new Subscription;
 
   displayedColumns = [
     'selection',
@@ -51,92 +52,98 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataseries = this.dataService.getDataseries();
-    this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator, this.sort);
+    this.dataseries = this.dataService.getDatasets();
 
-    this.pageChanged = this.paginator.page.subscribe((d) => {
-      let data = this.exampleDatabase.data.slice()
-        .sort((a, b) => {
-          let propertyA: number | string = '';
-          let propertyB: number | string = '';
-          let DateA: Date;
-          let DateB: Date;
+    this.dataLoaded = this.dataService.initialized.subscribe(() => {
+      this.exampleDatabase.loadDatasets(this.dataService.getDatasets());
 
-          switch (this.sort.active) {
-            case 'variableCode':
-              [propertyA, propertyB] = [a.variableCode, b.variableCode];
-              break;
-            case 'network':
-              [propertyA, propertyB] = [a.network, b.network];
-              break;
-            case 'siteCode':
-              [propertyA, propertyB] = [a.siteCode, b.siteCode];
-              break;
-            case 'siteName':
-              [propertyA, propertyB] = [a.siteName, b.siteName];
-              break;
-            case 'variableName':
-              [propertyA, propertyB] = [a.variableName, b.variableName];
-              break;
-            case 'startDate':
-              [DateA, DateB] = [a.startDate, b.startDate];
-              break;
-            case 'endDate':
-              [DateA, DateB] = [a.endDate, b.endDate];
-              break;
-            case 'medium':
-              [propertyA, propertyB] = [a.medium, b.medium];
-              break;
+      this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator, this.sort);
+
+      this.pageChanged = this.paginator.page.subscribe((d) => {
+        let data = this.exampleDatabase.data.slice()
+          .sort((a, b) => {
+            let propertyA: number | string = '';
+            let propertyB: number | string = '';
+            let DateA: Date;
+            let DateB: Date;
+
+            switch (this.sort.active) {
+              case 'variableCode':
+                [propertyA, propertyB] = [a.variableCode, b.variableCode];
+                break;
+              case 'network':
+                [propertyA, propertyB] = [a.network, b.network];
+                break;
+              case 'siteCode':
+                [propertyA, propertyB] = [a.siteCode, b.siteCode];
+                break;
+              case 'siteName':
+                [propertyA, propertyB] = [a.siteName, b.siteName];
+                break;
+              case 'variableName':
+                [propertyA, propertyB] = [a.variableName, b.variableName];
+                break;
+              case 'startDate':
+                [DateA, DateB] = [a.startDate, b.startDate];
+                break;
+              case 'endDate':
+                [DateA, DateB] = [a.endDate, b.endDate];
+                break;
+              case 'medium':
+                [propertyA, propertyB] = [a.medium, b.medium];
+                break;
+            }
+
+            const valueA = isNaN(+propertyA) ? propertyA : +propertyA;
+            const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
+
+            return (valueA < valueB ? -1 : 1) * (this.sort.direction === 'asc' ? 1 : -1);
+          })
+          .filter((item: Dataset) => {
+            const searchStr =
+              (item.network + item.siteName + item.variableName + item.variableCode
+              + item.siteCode + item.medium).toLowerCase();
+            const flagSearched = searchStr.indexOf(this.searchString.toLowerCase()) !== -1;
+            const flagDisplayed = (item.selected === true && this.optionDisplay === 'Selected')
+              || (item.plotted === true && this.optionDisplay === 'Plotted') || this.optionDisplay === 'All';
+            let withinDateRange = true;
+
+            const start = this.__beginDate;
+            const end = this.__endDate;
+            if ((start && item.startDate < start ) || (end && item.endDate > end)) {
+              withinDateRange = false;
+            }
+
+            return flagDisplayed && flagSearched && withinDateRange;
+          });
+
+        // Grab the page's slice of data.
+        const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+        data = data.splice(startIndex, this.paginator.pageSize);
+
+        let selected = 0;
+        for (const d of data) {
+          if (d.selected) {
+            selected++;
           }
-
-          const valueA = isNaN(+propertyA) ? propertyA : +propertyA;
-          const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
-
-          return (valueA < valueB ? -1 : 1) * (this.sort.direction === 'asc' ? 1 : -1);
-        })
-        .filter((item: Dataset) => {
-          const searchStr =
-            (item.network + item.siteName + item.variableName + item.variableCode
-            + item.siteCode + item.medium).toLowerCase();
-          const flagSearched = searchStr.indexOf(this.searchString.toLowerCase()) !== -1;
-          const flagDisplayed = (item.selected === true && this.optionDisplay === 'Selected')
-            || (item.plotted === true && this.optionDisplay === 'Plotted') || this.optionDisplay === 'All';
-          let withinDateRange = true;
-
-          const start = this.__beginDate;
-          const end = this.__endDate;
-          if ((start && item.startDate < start ) || (end && item.endDate > end)) {
-            withinDateRange = false;
-          }
-
-          return flagDisplayed && flagSearched && withinDateRange;
-        });
-
-      // Grab the page's slice of data.
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      data = data.splice(startIndex, this.paginator.pageSize);
-
-      let selected = 0;
-      for (const d of data) {
-        if (d.selected) {
-          selected++;
         }
-      }
 
-      this.selectedCount = selected;
-      this.allSelected = this.selectedCount == data.length;
-    });
-
-    this.onDisplayChange('All');
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
-      .debounceTime(150)
-      .distinctUntilChanged()
-      .subscribe(() => {
-        if (!this.dataSource) {
-          return;
-        }
-        this.dataSource.filter = this.filter.nativeElement.value;
+        this.selectedCount = selected;
+        this.allSelected = this.selectedCount == data.length;
       });
+
+      this.onDisplayChange('All');
+
+      Observable.fromEvent(this.filter.nativeElement, 'keyup')
+        .debounceTime(150)
+        .distinctUntilChanged()
+        .subscribe(() => {
+          if (!this.dataSource) {
+            return;
+          }
+          this.dataSource.filter = this.filter.nativeElement.value;
+        });
+    });
   }
 
   ngOnDestroy() {
@@ -215,7 +222,6 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.allSelected = this.selectedCount == this.myTable._dataDiffer.collection.length;
   }
 
-
   openDetailsDialog(somedata: string) {
     this.dialog.open(DetailsComponent,
       {
@@ -224,6 +230,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
         width: '1000px',
       });
   }
+
   //
   // clearDateRange() {
   //   this.__beginDate = null;
@@ -245,46 +252,55 @@ export interface Dataset {
 }
 
 /** Constants used to fill up our data base. */
-const VARIABLE_CODES = ['ODO', 'ODO_Local', 'AAA'];
-const SITE_CODES = ['RB_ARBR_A	', 'ASDSASDFW', 'FFFCVBB'];
-const NETWORKS = ['GAMUT	', 'Logan', 'SLC'];
-const SITE_NAMES = ['Logan River', 'Red Butte Creek', 'Utah River'];
-const VARIABLE_NAMES = ['Temperature', 'Water Pressure', 'Wind Speed'];
-const MEDIUMS = ['Air', 'Water', 'Wind'];
+// const VARIABLE_CODES = ['ODO', 'ODO_Local', 'AAA'];
+// const SITE_CODES = ['RB_ARBR_A	', 'ASDSASDFW', 'FFFCVBB'];
+// const NETWORKS = ['GAMUT	', 'Logan', 'SLC'];
+// const SITE_NAMES = ['Logan River', 'Red Butte Creek', 'Utah River'];
+// const VARIABLE_NAMES = ['Temperature', 'Water Pressure', 'Wind Speed'];
+// const MEDIUMS = ['Air', 'Water', 'Wind'];
 
 /** An example database that the data source uses to retrieve data for the table. */
 export class ExampleDatabase {
   /** Stream that emits whenever the data has been modified. */
   dataChange: BehaviorSubject<Dataset[]> = new BehaviorSubject<Dataset[]>([]);
-  get data(): Dataset[] { return this.dataChange.value; }
+
+  get data(): Dataset[] {
+    return this.dataChange.value;
+  }
 
   constructor() {
     // Fill up the database with samples.
-    for (let i = 0; i < 100; i++) { this.addDataset(); }
+    // for (let i = 0; i < 100; i++) {
+    //   this.addDataset();
+    // }
   }
 
-  /** Adds a new user to the database. */
-  addDataset() {
-    const copiedData = this.data.slice();
-    copiedData.push(this.createNewDataset());
-    this.dataChange.next(copiedData);
+  loadDatasets(datasets) {
+    this.dataChange.next(datasets);
   }
+
+  /** Adds a dataset to the database. */
+  // addDataset() {
+  //   const copiedData = this.data.slice();
+  //   copiedData.push(this.createNewDataset());
+  //   this.dataChange.next(copiedData);
+  // }
 
   /** Builds and returns a new User. */
-  private createNewDataset() {
-    return {
-        variableCode: VARIABLE_CODES[Math.round(Math.random() * (VARIABLE_CODES.length - 1))],
-        network: NETWORKS[Math.round(Math.random() * (NETWORKS.length - 1))],
-        siteCode: SITE_CODES[Math.round(Math.random() * (SITE_CODES.length - 1))],
-        siteName: SITE_NAMES[Math.round(Math.random() * (SITE_NAMES.length - 1))],
-        variableName: VARIABLE_NAMES[Math.round(Math.random() * (VARIABLE_NAMES.length - 1))],
-        startDate: new Date(),
-        endDate: new Date(),
-        medium: MEDIUMS[Math.round(Math.random() * (MEDIUMS.length - 1))],
-        selected: false,
-        plotted: false
-    };
-  }
+  // private createNewDataset() {
+  //   return {
+  //     variableCode: VARIABLE_CODES[Math.round(Math.random() * (VARIABLE_CODES.length - 1))],
+  //     network: NETWORKS[Math.round(Math.random() * (NETWORKS.length - 1))],
+  //     siteCode: SITE_CODES[Math.round(Math.random() * (SITE_CODES.length - 1))],
+  //     siteName: SITE_NAMES[Math.round(Math.random() * (SITE_NAMES.length - 1))],
+  //     variableName: VARIABLE_NAMES[Math.round(Math.random() * (VARIABLE_NAMES.length - 1))],
+  //     startDate: new Date(),
+  //     endDate: new Date(),
+  //     medium: MEDIUMS[Math.round(Math.random() * (MEDIUMS.length - 1))],
+  //     selected: false,
+  //     plotted: false
+  //   };
+  // }
 }
 
 export class ExampleDataSource extends DataSource<any> {
@@ -374,7 +390,7 @@ export class ExampleDataSource extends DataSource<any> {
         .filter((item: Dataset) => {
           const searchStr =
             (item.network + item.siteName + item.variableName + item.variableCode
-              + item.siteCode + item.medium).toLowerCase();
+            + item.siteCode + item.medium).toLowerCase();
           const flagSearched = searchStr.indexOf(this.filter.toLowerCase()) !== -1;
           const flagDisplayed = (item.selected === true && this.display === 'Selected')
             || (item.plotted === true && this.display === 'Plotted') || this.display === 'All';
@@ -396,5 +412,6 @@ export class ExampleDataSource extends DataSource<any> {
     });
   }
 
-  disconnect() {}
+  disconnect() {
+  }
 }

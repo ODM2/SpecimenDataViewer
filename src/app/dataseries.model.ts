@@ -6,7 +6,6 @@ export class Dataseries {
   public medium: string;
   public variableCode: string;
   public variableName: string;
-  public variableDate: string;
   public startDate: Date;
   public endDate: Date;
   public numberOfValues: number;
