@@ -245,3 +245,8 @@ app-filter-item .item-name {
   font-size: 14px;
 }
 
+.custom-input-addon .mat-button-wrapper {
+  position: absolute;
+  top: -9px;
+  left: 0;
+}

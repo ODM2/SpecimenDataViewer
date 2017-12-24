@@ -1,83 +1,65 @@
-<div class="col-sm-12" style="margin-bottom: 20px;">
-  <div class="row">
-
-  </div>
-</div>
-
-<div class="col-sm-12">
-  <!--SEARCH CONTROLS-->
-  <mat-card style="margin-bottom: 20px;">
-    <mat-card-content>
-      <div class="row">
-        <div class="col-lg-5 col-sm-12">
-          <mat-icon>search</mat-icon>
-          <mat-input-container style="width: calc(100% - 71px);">
-            <input #filter matInput placeholder="Search" [(ngModel)]="searchString">
-          </mat-input-container>
-
-          <button mat-icon-button (click)="clearSearch()"
-                  matTooltip="Clear"
-                  [matTooltipShowDelay]="500">
-            <mat-icon>highlight_off</mat-icon>
-          </button>
-        </div>
-
-        <!--DATE FILTERING CONTROLS-->
-        <div class="col-lg-7 col-sm-12">
-          <div class="row">
-            <div class="col-sm-12 col-sm-9">
-              <div class="row">
-                <div class="col-12">
-                  <mat-input-container>
-                    <input matInput
-                           [matDatepicker]="beginDate"
-                           [(ngModel)]="__beginDate"
-                           (dateChange)="onDateRangeChange()"
-                           placeholder="Start Date">
-                    <mat-datepicker-toggle matSuffix [for]="beginDate"></mat-datepicker-toggle>
-                  </mat-input-container>
-                  <mat-datepicker #beginDate></mat-datepicker>
-                  <button mat-icon-button class="custom-input-addon"
-                          (click)="__beginDate = null; onDateRangeChange()"
-                          matTooltip="Clear"
-                          [matTooltipShowDelay]="500">
-                    <mat-icon>highlight_off</mat-icon>
-                  </button>
-
-                  <mat-input-container>
-                    <input matInput
-                           [matDatepicker]="endDate"
-                           (dateChange)="onDateRangeChange()"
-                           [(ngModel)]="__endDate"
-                           placeholder="End Date">
-                    <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
-                  </mat-input-container>
-                  <mat-datepicker #endDate></mat-datepicker>
-                  <button mat-icon-button
-                          (click)="__endDate = null;onDateRangeChange()"
-                          class="custom-input-addon"
-                          matTooltip="Clear"
-                          [matTooltipShowDelay]="500">
-                    <mat-icon>highlight_off</mat-icon>
-                  </button>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
-
-<div class="col-sm-12">
+<div class="col-sm-12" style="margin-top: 15px; margin-bottom: 15px;">
   <mat-card>
+
+    <!--SEARCH CONTROLS-->
+    <div class="row" style="width: 100%;">
+      <div class="col-7">
+        <!--<mat-icon>search</mat-icon>-->
+        <mat-input-container style="width: calc(100% - 71px);">
+          <input #filter matInput placeholder="Search" [(ngModel)]="searchString" style="padding-right: 30px;">
+        </mat-input-container>
+
+        <button mat-icon-button (click)="clearSearch()"
+                [disabled]="!searchString"
+                class="btn-input-clear"
+                matTooltip="Clear"
+                [matTooltipShowDelay]="500">
+          <mat-icon>highlight_off</mat-icon>
+        </button>
+      </div>
+
+      <!--DATE FILTERING CONTROLS-->
+      <div class="col-5">
+        <mat-input-container>
+          <input matInput
+                 [matDatepicker]="beginDate"
+                 [(ngModel)]="__beginDate"
+                 (dateChange)="onDateRangeChange()"
+                 placeholder="Start Date">
+          <mat-datepicker-toggle matSuffix [for]="beginDate"></mat-datepicker-toggle>
+        </mat-input-container>
+        <mat-datepicker #beginDate></mat-datepicker>
+        <button mat-icon-button [disabled]="!__beginDate" class="custom-input-addon"
+                (click)="__beginDate = null; onDateRangeChange()"
+                matTooltip="Clear"
+                [matTooltipShowDelay]="500">
+          <mat-icon>highlight_off</mat-icon>
+        </button>
+
+        <span style="width: 15px; display: inline-block"> </span>
+        <mat-input-container>
+          <input matInput
+                 [matDatepicker]="endDate"
+                 (dateChange)="onDateRangeChange()"
+                 [(ngModel)]="__endDate"
+                 placeholder="End Date">
+          <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+        </mat-input-container>
+        <mat-datepicker #endDate></mat-datepicker>
+        <button mat-icon-button [disabled]="!__endDate" class="custom-input-addon"
+                (click)="__endDate = null; onDateRangeChange()"
+                matTooltip="Clear"
+                [matTooltipShowDelay]="500">
+          <mat-icon>highlight_off</mat-icon>
+        </button>
+      </div>
+    </div>
+
     <mat-card-content>
       <div class="row">
         <!--ACTIONS CONTROLS-->
         <div class="col-sm-8">
-          <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+          <mat-menu #displayMenu="matMenu" [overlapTrigger]="false">
             <button mat-menu-item (click)="onDisplayChange('All')">
               <mat-icon style="margin-right: 0;">{{ optionDisplay == 'All' ? 'check' : ''}}</mat-icon>
               All
@@ -93,11 +75,11 @@
           </mat-menu>
 
           <label style="margin-right: 8px;">Display:</label>
-          <button id="btnSelectView" mat-button mat-raised-button [matMenuTriggerFor]="appMenu">
+          <button id="btnSelectView" mat-button mat-raised-button [matMenuTriggerFor]="displayMenu">
             <span>{{ optionDisplay }}</span> <span class="caret"></span>
           </button>
 
-          <mat-menu #appMenu="matMenu" (click)="stopClickPropagate($event)">
+          <mat-menu #columnsMenu="matMenu" (click)="stopClickPropagate($event)" [overlapTrigger]="false">
             <div *ngFor="let col of columns; let i = index" (click)="stopClickPropagate($event)">
               <mat-checkbox class="columns-menu-item" [(ngModel)]="col.shown" (change)="updateShownColumns()">
                 {{ col.label }}
@@ -105,7 +87,7 @@
             </div>
           </mat-menu>
 
-          <button mat-button mat-raised-button [matMenuTriggerFor]="appMenu">
+          <button style="margin-left: 20px;" mat-button mat-raised-button [matMenuTriggerFor]="columnsMenu">
             <mat-icon>view_column</mat-icon> Columns
           </button>
 

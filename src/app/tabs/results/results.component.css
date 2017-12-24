@@ -32,12 +32,27 @@
 }
 
 .custom-input-addon {
-  top: -3px;
-  left: -7px;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  margin-top: 18px;
+  margin-left: -50px;
+}
+
+.custom-input-addon mat-icon {
+  font-size: 18px;
+}
+
+.btn-input-clear:not([disabled]) mat-icon, .custom-input-addon:not([disabled]) mat-icon {
+  color: #fd7e14;
 }
 
 .mat-table {
   overflow: auto;
+}
+
+.mat-table .mat-row {
+  padding: 10px 24px;
 }
 
 .cdk-column-selection {
@@ -74,6 +89,10 @@ label {
 
 #btnClearPlots {
   border-radius: 0 4px 4px 0;
+}
+
+.btn-input-clear {
+  margin-left: -38px;
 }
 
 .columns-menu-item {
