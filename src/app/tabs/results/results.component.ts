@@ -9,7 +9,6 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import {Subscription} from "rxjs";
-import {falseIfMissing} from "protractor/built/util";
 
 @Component({
   selector: 'app-results',
@@ -236,6 +235,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   clearSearch() {
     this.searchString = '';
+    this.dataSource._filterChange.next(this.searchString);
   }
 
   updateSelectedCount() {
@@ -279,14 +279,6 @@ export interface Dataset {
   plotted: boolean;
 }
 
-/** Constants used to fill up our data base. */
-// const VARIABLE_CODES = ['ODO', 'ODO_Local', 'AAA'];
-// const SITE_CODES = ['RB_ARBR_A	', 'ASDSASDFW', 'FFFCVBB'];
-// const NETWORKS = ['GAMUT	', 'Logan', 'SLC'];
-// const SITE_NAMES = ['Logan River', 'Red Butte Creek', 'Utah River'];
-// const VARIABLE_NAMES = ['Temperature', 'Water Pressure', 'Wind Speed'];
-// const MEDIUMS = ['Air', 'Water', 'Wind'];
-
 /** An example database that the data source uses to retrieve data for the table. */
 export class ExampleDatabase {
   /** Stream that emits whenever the data has been modified. */
@@ -296,39 +288,11 @@ export class ExampleDatabase {
     return this.dataChange.value;
   }
 
-  constructor() {
-    // Fill up the database with samples.
-    // for (let i = 0; i < 100; i++) {
-    //   this.addDataset();
-    // }
-  }
+  constructor() {  }
 
   loadDatasets(datasets) {
     this.dataChange.next(datasets);
   }
-
-  /** Adds a dataset to the database. */
-  // addDataset() {
-  //   const copiedData = this.data.slice();
-  //   copiedData.push(this.createNewDataset());
-  //   this.dataChange.next(copiedData);
-  // }
-
-  /** Builds and returns a new User. */
-  // private createNewDataset() {
-  //   return {
-  //     variableCode: VARIABLE_CODES[Math.round(Math.random() * (VARIABLE_CODES.length - 1))],
-  //     network: NETWORKS[Math.round(Math.random() * (NETWORKS.length - 1))],
-  //     siteCode: SITE_CODES[Math.round(Math.random() * (SITE_CODES.length - 1))],
-  //     siteName: SITE_NAMES[Math.round(Math.random() * (SITE_NAMES.length - 1))],
-  //     variableName: VARIABLE_NAMES[Math.round(Math.random() * (VARIABLE_NAMES.length - 1))],
-  //     startDate: new Date(),
-  //     endDate: new Date(),
-  //     medium: MEDIUMS[Math.round(Math.random() * (MEDIUMS.length - 1))],
-  //     selected: false,
-  //     plotted: false
-  //   };
-  // }
 }
 
 export class ExampleDataSource extends DataSource<any> {
