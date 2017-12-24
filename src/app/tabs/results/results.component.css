@@ -15,7 +15,7 @@
 }
 
 #specimen-table-container mat-table {
-  min-width: 1290px;
+  /*min-width: 1290px;*/
   overflow-y: hidden;
 }
 
@@ -74,4 +74,10 @@ label {
 
 #btnClearPlots {
   border-radius: 0 4px 4px 0;
+}
+
+.columns-menu-item {
+    padding: 5px 20px;
+    width: 100%;
+    display: block;
 }

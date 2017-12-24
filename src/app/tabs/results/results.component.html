@@ -76,7 +76,7 @@
     <mat-card-content>
       <div class="row">
         <!--ACTIONS CONTROLS-->
-        <div class="col-sm-9">
+        <div class="col-sm-8">
           <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
             <button mat-menu-item (click)="onDisplayChange('All')">
               <mat-icon style="margin-right: 0;">{{ optionDisplay == 'All' ? 'check' : ''}}</mat-icon>
@@ -96,6 +96,19 @@
           <button id="btnSelectView" mat-button mat-raised-button [matMenuTriggerFor]="appMenu">
             <span>{{ optionDisplay }}</span> <span class="caret"></span>
           </button>
+
+          <mat-menu #appMenu="matMenu" (click)="stopClickPropagate($event)">
+            <div *ngFor="let col of columns; let i = index" (click)="stopClickPropagate($event)">
+              <mat-checkbox class="columns-menu-item" [(ngModel)]="col.shown" (change)="updateShownColumns()">
+                {{ col.label }}
+              </mat-checkbox>
+            </div>
+          </mat-menu>
+
+          <button mat-button mat-raised-button [matMenuTriggerFor]="appMenu">
+            <mat-icon>view_column</mat-icon> Columns
+          </button>
+
           <button mat-raised-button color="accent"
                   (click)="plotSelected()"
                   [disabled]="selectedCount == 0">
@@ -110,12 +123,13 @@
           </button>
         </div>
 
-        <div class="col-sm-3 text-right">
+        <div class="col-sm-4 text-right">
           <div class="btn-group mat-shadow-1">
             <span class="input-group-addon" id="btnGroupAddon">
               <mat-icon>assessment</mat-icon>
               Plotting ({{this.plotCount}}/5)
             </span>
+
             <button id="btnClearPlots" type="button" mat-raised-button color="primary"
                     (click)="clearPlots()"
                     [disabled]="plotCount == 0"

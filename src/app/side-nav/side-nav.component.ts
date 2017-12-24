@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {DataService} from "../data.service";
 
 @Component({
   selector: 'app-side-nav',
@@ -8,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class SideNavComponent implements OnInit {
   private sideNavVisible = true;
 
-  constructor() { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
   }
@@ -19,10 +20,6 @@ export class SideNavComponent implements OnInit {
 
   onNavBarOpen() {
     this.sideNavVisible = true;
-  }
-
-  clearAllFilters() {
-
   }
 
 }

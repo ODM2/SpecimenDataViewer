@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 body, html {
   height: 100%;
+  min-width: 1100px;
 }
 
 mat-tab-group {
@@ -11,11 +12,9 @@ mat-tab-header {
   background: #FFF;
 }
 
-
 mat-tab-header .mat-tab-label {
   height: 50px;
 }
-
 
 .mat-tab-body-wrapper {
   height: calc(100% - 49px);

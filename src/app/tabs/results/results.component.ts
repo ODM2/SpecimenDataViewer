@@ -9,6 +9,7 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import {Subscription} from "rxjs";
+import {falseIfMissing} from "protractor/built/util";
 
 @Component({
   selector: 'app-results',
@@ -29,18 +30,18 @@ export class ResultsComponent implements OnInit, OnDestroy {
   pageChanged = new Subscription;
   dataLoaded = new Subscription;
 
-  displayedColumns = [
-    'selection',
-    'variableCode',
-    'network',
-    'siteCode',
-    'siteName',
-    'variableName',
-    'startDate',
-    'endDate',
-    'medium',
-    'actions',
+  private columns = [
+    {key: 'siteCode', label: "Site Code", shown: true},
+    {key: 'siteName', label: "Site Name", shown: true},
+    {key: 'network', label: "Network", shown: true},
+    {key: 'variableCode', label: "Variable Code", shown: true},
+    {key: 'variableName', label: "Variable Name", shown: true},
+    {key: 'medium', label: "Medium", shown: true},
+    {key: 'startDate', label: "Start Date", shown: true},
+    {key: 'endDate', label: "End Date", shown: true},
   ];
+
+  private displayedColumns = [];
 
   @ViewChild('chkSelectAll') selectAll: ElementRef;
   @ViewChild('filter') filter: ElementRef;
@@ -49,10 +50,18 @@ export class ResultsComponent implements OnInit, OnDestroy {
   @ViewChild('table') myTable;
 
   constructor(private dataService: DataService, public dialog: MatDialog) {
+
   }
 
   ngOnInit() {
     this.dataseries = this.dataService.getDatasets();
+
+    let definitions = localStorage.getItem('column_settings');
+    if (definitions) {
+      this.columns = JSON.parse(definitions);
+    }
+
+    this.updateShownColumns();
 
     this.dataLoaded = this.dataService.initialized.subscribe(() => {
       this.exampleDatabase.loadDatasets(this.dataService.getDatasets());
@@ -175,6 +184,25 @@ export class ResultsComponent implements OnInit, OnDestroy {
       dataset.plotted = false;
       this.plotCount = 0;
     }
+  }
+
+  updateShownColumns() {
+    this.displayedColumns = ['selection'];
+
+    for (let column of this.columns) {
+      if (column.shown) {
+        this.displayedColumns.push(column.key)
+      }
+    }
+
+    this.displayedColumns.push('actions');
+
+    localStorage.setItem('column_settings', JSON.stringify(this.columns));
+  }
+
+  stopClickPropagate(event: any) {
+    console.log(event);
+    event.stopPropagation();
   }
 
   updatePlotCount() {

@@ -23,11 +23,11 @@
         </tr>
         <tr>
           <th>Latitude:</th>
-          <td>{{ site.latitude }}</td>
+          <td>{{ site.latitude|number:'1.1-4' }}</td>
         </tr>
         <tr>
           <th>Longitude:</th>
-          <td>{{ site.longitude }}</td>
+          <td>{{ site.longitude|number:'1.1-4' }}</td>
         </tr>
       </table>
 

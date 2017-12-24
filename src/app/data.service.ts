@@ -23,6 +23,7 @@ export class DataService {
       let mediums = [];
       let variables = [];
       let resultTypes = [];
+      let siteCodes = {};
 
       for (const samplingFeature of data) {
         networks.push("Some Network");
@@ -63,16 +64,20 @@ export class DataService {
             plotted: false
           });
 
-          this.sites.push({
-            siteName: samplingFeature.related_features.SamplingFeatureName,
-            siteCode: samplingFeature.related_features.SamplingFeatureCode,
-            network: " - ",
-            state: " - ",
-            siteType: samplingFeature.related_features.SiteTypeCV,
-            county: " - ",
-            latitude: samplingFeature.related_features.Latitude,
-            longitude: samplingFeature.related_features.Longitude,
-          })
+          if (!siteCodes[samplingFeature.related_features.SamplingFeatureCode]) {
+            this.sites.push({
+              siteName: samplingFeature.related_features.SamplingFeatureName,
+              siteCode: samplingFeature.related_features.SamplingFeatureCode,
+              network: " - ",
+              state: " - ",
+              siteType: samplingFeature.related_features.SiteTypeCV,
+              county: " - ",
+              latitude: samplingFeature.related_features.Latitude,
+              longitude: samplingFeature.related_features.Longitude,
+            });
+
+            siteCodes[samplingFeature.related_features.SamplingFeatureCode] = true;
+          }
         }
       }
 
@@ -143,7 +148,7 @@ export class DataService {
   }
 
   getData() {
-    return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeaturedatasets?samplingFeatureID=1001%2C1002').map(
+    return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeaturedatasets?samplingFeatureID=1001%2C%201002%2C%201003%2C%201004').map(
       (response: Response) => {
         return response.json();
       },
@@ -163,5 +168,13 @@ export class DataService {
 
   getSites() {
     return this.sites.slice();
+  }
+
+  clearAllFilters() {
+    for(let filter of this.filters) {
+      for (let item of filter.items) {
+        item.selected = false;
+      }
+    }
   }
 }
