@@ -21,4 +21,8 @@ export class SideNavComponent implements OnInit {
     this.sideNavVisible = true;
   }
 
+  clearAllFilters() {
+
+  }
+
 }

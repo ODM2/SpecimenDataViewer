@@ -18,12 +18,10 @@ export class FiltersComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataLoaded = this.dataService.initialized.subscribe(() => {
       this.filters = this.dataService.getFilters();
-      console.log("Filters loaded", this.filters);
     });
   }
 
   ngOnDestroy() {
     this.dataLoaded.unsubscribe();
   }
-
 }
