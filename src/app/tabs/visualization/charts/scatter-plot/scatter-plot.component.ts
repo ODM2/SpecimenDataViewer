@@ -94,6 +94,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
     }.bind(this));
   }
 
+  // Combines values of entries matching in datetime
   combineDatasets(d1, d2) {
     let data = d1.concat(d2);
     let result = [];
@@ -126,7 +127,7 @@ export class ScatterPlotComponent implements AfterViewInit, OnInit, OnDestroy {
       return d.price1;
     });
 
-    // Make the extent a little bigger to show the data points within spaced from the edge
+    // Make the extent a little bigger to show data close to the edges more clearly
     let deltaX = (extentX[1] - extentX[0]) / 10;
     extentX[0] = extentX[0] - deltaX;
     extentX[1] = extentX[1] + deltaX;

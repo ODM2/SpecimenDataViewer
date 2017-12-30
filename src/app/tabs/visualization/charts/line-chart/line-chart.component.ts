@@ -146,9 +146,20 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.scales.x.domain(d3.extent(data, (d) => {
       return d.date;
     }));
-    this.focus.scales.y.domain([0, d3.max(data, (d) => {
+
+    // this.focus.scales.y.domain([0, d3.max(data, (d) => {
+    //   return d.price;
+    // })]);
+
+    let extentY = d3.extent(data, (d) => {
       return d.price;
-    })]);
+    });
+
+    let deltaY = (extentY[1] - extentY[0]) / 20;
+    extentY[0] = extentY[0] - deltaY;
+    extentY[1] = extentY[1] + deltaY;
+    this.focus.scales.y.domain(extentY);
+
     this.context.scales.x.domain(this.focus.scales.x.domain());
     this.context.scales.y.domain(this.focus.scales.y.domain());
 

@@ -136,6 +136,7 @@ export class HistogramComponent implements OnInit, OnDestroy, AfterViewInit {
     let maxY = d3.max(bins, (d) => {
       return d.length;
     });
+
     this.y.domain([0, maxY]);
 
     this.gridY = d3.axisLeft(this.y)

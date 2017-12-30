@@ -6,7 +6,8 @@
       <div class="col-7">
         <!--<mat-icon>search</mat-icon>-->
         <mat-input-container style="width: calc(100% - 71px);">
-          <input #filter matInput placeholder="Search" [(ngModel)]="searchString" style="padding-right: 30px;">
+          <input #filter matInput placeholder="Search"
+                 [(ngModel)]="searchString" style="padding-right: 30px;">
         </mat-input-container>
 
         <button mat-icon-button (click)="clearSearch()"
@@ -79,6 +80,7 @@
             <span>{{ optionDisplay }}</span> <span class="caret"></span>
           </button>
 
+
           <mat-menu #columnsMenu="matMenu" (click)="stopClickPropagate($event)" [overlapTrigger]="false">
             <div *ngFor="let col of columns; let i = index" (click)="stopClickPropagate($event)">
               <mat-checkbox class="columns-menu-item" [(ngModel)]="col.shown" (change)="updateShownColumns()">
@@ -86,6 +88,7 @@
               </mat-checkbox>
             </div>
           </mat-menu>
+
 
           <button style="margin-left: 20px;" mat-button mat-raised-button [matMenuTriggerFor]="columnsMenu">
             <mat-icon>view_column</mat-icon> Columns
@@ -108,14 +111,13 @@
         <div class="col-sm-4 text-right">
           <div class="btn-group mat-shadow-1">
             <span class="input-group-addon" id="btnGroupAddon">
-              <mat-icon>assessment</mat-icon>
+              <mat-icon color="accent">assessment</mat-icon>
               Plotting ({{this.plotCount}}/5)
             </span>
 
-            <button id="btnClearPlots" type="button" mat-raised-button color="primary"
+            <button id="btnClearPlots" type="button" mat-raised-button
                     (click)="clearPlots()"
-                    [disabled]="plotCount == 0"
-            >Clear Plot
+                    [disabled]="plotCount == 0">Clear Plot
             </button>
           </div>
         </div>

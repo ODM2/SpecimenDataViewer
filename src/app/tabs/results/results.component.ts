@@ -42,6 +42,12 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
   private displayedColumns = [];
 
+  foods = [
+    {value: 'steak-0', viewValue: 'Steak'},
+    {value: 'pizza-1', viewValue: 'Pizza'},
+    {value: 'tacos-2', viewValue: 'Tacos'}
+  ];
+
   @ViewChild('chkSelectAll') selectAll: ElementRef;
   @ViewChild('filter') filter: ElementRef;
   @ViewChild(MatPaginator) paginator: MatPaginator;
