@@ -1,7 +1,9 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {DataService} from "../../data.service";
 import {Subscription} from "rxjs";
-import {MarkerManager, LatLng, MapTypeStyle, AgmMap, GoogleMapsAPIWrapper} from '@agm/core';
+import {
+  AgmMap,
+} from '@agm/core';
 
 @Component({
   selector: 'app-map',
@@ -14,23 +16,18 @@ export class MapComponent implements OnInit {
   zoom: number = 4;
   dataLoaded = new Subscription;
   map: AgmMap;
-  @ViewChild("sites-map") sitesMap: ElementRef;
+  @ViewChild('m') sitesMap: ElementRef;
 
   sites = [];
 
-  constructor(private dataService: DataService, private wrapper: GoogleMapsAPIWrapper ) {
+  constructor(private dataService: DataService) {
   }
 
   ngOnInit() {
     this.dataLoaded = this.dataService.initialized.subscribe(() => {
       this.sites = this.dataService.getSites();
-      // console.log("Loaded map sites", this.sites)
     });
 
-    this.map = new AgmMap(this.sitesMap, this.wrapper );
-  }
-
-  onInfoWindowOpen() {
-    console.log("Opened")
+    console.log(this.sitesMap);
   }
 }

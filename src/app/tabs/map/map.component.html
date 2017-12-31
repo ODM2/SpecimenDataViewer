@@ -1,42 +1,38 @@
-<agm-map id="sites-map" [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+<agm-map #m [latitude]="lat" [longitude]="lng" [zoom]="zoom">
   <agm-marker *ngFor="let site of sites" [latitude]="site.latitude"
               [longitude]="site.longitude" [label]="''" [title]="site.siteName"
               [visible]="true"
-              (markerClick)="onInfoWindowOpen()">
-    <agm-info-window [disableAutoPan]="true" [maxWidth]="300">
+              (markerClick)="m.lastOpen?.close(); m.lastOpen = infoWindow">
+    <agm-info-window #infoWindow [disableAutoPan]="true" [maxWidth]="250">
       <div><strong>{{ site.siteName }}</strong></div>
       <div>{{ site.siteCode }}</div>
-      <hr>
-      <md-card>
-        <table>
-          <tr>
-            <th>Network:</th>
-            <td>{{ site.network }}</td>
-          </tr>
-          <tr>
-            <th>Site Type:</th>
-            <td>{{ site.siteType }}</td>
-          </tr>
-          <tr>
-            <th>State:</th>
-            <td>{{ site.state }}</td>
-          </tr>
-          <tr>
-            <th>County:</th>
-            <td>{{ site.county }}</td>
-          </tr>
-          <tr>
-            <th>Latitude:</th>
-            <td>{{ site.latitude|number:'1.1-4' }}</td>
-          </tr>
-          <tr>
-            <th>Longitude:</th>
-            <td>{{ site.longitude|number:'1.1-4' }}</td>
-          </tr>
-        </table>
-      </md-card>
 
-      <hr>
+      <table>
+        <tr>
+          <th>Network:</th>
+          <td>{{ site.network }}</td>
+        </tr>
+        <tr>
+          <th>Site Type:</th>
+          <td>{{ site.siteType }}</td>
+        </tr>
+        <tr>
+          <th>State:</th>
+          <td>{{ site.state }}</td>
+        </tr>
+        <tr>
+          <th>County:</th>
+          <td>{{ site.county }}</td>
+        </tr>
+        <tr>
+          <th>Latitude:</th>
+          <td>{{ site.latitude|number:'1.1-4' }}</td>
+        </tr>
+        <tr>
+          <th>Longitude:</th>
+          <td>{{ site.longitude|number:'1.1-4' }}</td>
+        </tr>
+      </table>
 
       <button mat-button>View Dataseries</button>
 

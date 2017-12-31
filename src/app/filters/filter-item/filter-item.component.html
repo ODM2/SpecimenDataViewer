@@ -2,12 +2,12 @@
   <mat-expansion-panel-header>
     <mat-panel-title>
       <mat-icon>{{ filter.icon }}</mat-icon>
-      <span class="sidenav-filter-name">{{ filter.name }}</span>
+      <span class="sidenav-filter-name">{{ filter.label }}</span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
   <div *ngFor="let item of filter.items" class="filter-item">
-    <mat-checkbox [(ngModel)]="item.selected">
+    <mat-checkbox [(ngModel)]="item.selected" (change)="filterFacets()">
       <span class="item-name">{{ item.name }}</span>
     </mat-checkbox>
     <span class="badge badge-primary">{{ item.count }}</span>

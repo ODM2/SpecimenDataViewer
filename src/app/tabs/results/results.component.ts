@@ -30,7 +30,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   dataLoaded = new Subscription;
 
   private columns = [
-    {key: 'siteCode', label: "Site Code", shown: true},
+    {key: 'siteCode', label: "Site Codess", shown: true},
     {key: 'siteName', label: "Site Name", shown: true},
     {key: 'network', label: "Network", shown: true},
     {key: 'variableCode', label: "Variable Code", shown: true},
@@ -38,15 +38,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
     {key: 'medium', label: "Medium", shown: true},
     {key: 'startDate', label: "Start Date", shown: true},
     {key: 'endDate', label: "End Date", shown: true},
+    {key: 'resultType', label: "Result Type", shown: true},
   ];
 
   private displayedColumns = [];
-
-  foods = [
-    {value: 'steak-0', viewValue: 'Steak'},
-    {value: 'pizza-1', viewValue: 'Pizza'},
-    {value: 'tacos-2', viewValue: 'Tacos'}
-  ];
 
   @ViewChild('chkSelectAll') selectAll: ElementRef;
   @ViewChild('filter') filter: ElementRef;
@@ -61,10 +56,11 @@ export class ResultsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.dataseries = this.dataService.getDatasets();
 
-    let definitions = localStorage.getItem('column_settings');
-    if (definitions) {
-      this.columns = JSON.parse(definitions);
-    }
+    // Comment out for development
+    // let definitions = localStorage.getItem('column_settings');
+    // if (definitions) {
+    //   this.columns = JSON.parse(definitions);
+    // }
 
     this.updateShownColumns();
 
@@ -202,7 +198,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
     this.displayedColumns.push('actions');
 
-    localStorage.setItem('column_settings', JSON.stringify(this.columns));
+    // localStorage.setItem('column_settings', JSON.stringify(this.columns));
   }
 
   stopClickPropagate(event: any) {
@@ -264,12 +260,6 @@ export class ResultsComponent implements OnInit, OnDestroy {
         width: '1000px',
       });
   }
-
-  //
-  // clearDateRange() {
-  //   this.__beginDate = null;
-  //   this.__endDate = null;
-  // }
 }
 
 export interface Dataset {
@@ -281,6 +271,7 @@ export interface Dataset {
   startDate: Date;
   endDate: Date;
   medium: string;
+  resultType: string;
   selected: boolean;
   plotted: boolean;
 }
@@ -377,6 +368,9 @@ export class ExampleDataSource extends DataSource<any> {
               break;
             case 'medium':
               [propertyA, propertyB] = [a.medium, b.medium];
+              break;
+            case 'resultType':
+              [propertyA, propertyB] = [a.resultType, b.resultType];
               break;
           }
 

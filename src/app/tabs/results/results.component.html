@@ -1,6 +1,5 @@
 <div class="col-sm-12" style="margin-top: 15px; margin-bottom: 15px;">
   <mat-card>
-
     <!--SEARCH CONTROLS-->
     <div class="row" style="width: 100%;">
       <div class="col-7">
@@ -65,11 +64,13 @@
               <mat-icon style="margin-right: 0;">{{ optionDisplay == 'All' ? 'check' : ''}}</mat-icon>
               All
             </button>
-            <button mat-menu-item (click)="onDisplayChange('Selected')">
+
+            <button mat-menu-item [disabled]="!this.selectedCount" (click)="onDisplayChange('Selected')">
               <mat-icon style="margin-right: 0;">{{ optionDisplay == 'Selected' ? 'check' : ''}}</mat-icon>
               Selected
             </button>
-            <button mat-menu-item (click)="onDisplayChange('Plotted')">
+
+            <button mat-menu-item [disabled]="!this.plotCount" (click)="onDisplayChange('Plotted')">
               <mat-icon style="margin-right: 0;">{{ optionDisplay == 'Plotted' ? 'check' : ''}}</mat-icon>
               Plotted
             </button>
@@ -80,7 +81,6 @@
             <span>{{ optionDisplay }}</span> <span class="caret"></span>
           </button>
 
-
           <mat-menu #columnsMenu="matMenu" (click)="stopClickPropagate($event)" [overlapTrigger]="false">
             <div *ngFor="let col of columns; let i = index" (click)="stopClickPropagate($event)">
               <mat-checkbox class="columns-menu-item" [(ngModel)]="col.shown" (change)="updateShownColumns()">
@@ -88,7 +88,6 @@
               </mat-checkbox>
             </div>
           </mat-menu>
-
 
           <button style="margin-left: 20px;" mat-button mat-raised-button [matMenuTriggerFor]="columnsMenu">
             <mat-icon>view_column</mat-icon> Columns
@@ -218,10 +217,17 @@
             <mat-cell *cdkCellDef="let row"> {{row.medium}}</mat-cell>
           </ng-container>
 
+          <!-- Result Type Column -->
+          <ng-container cdkColumnDef="resultType">
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header> Result Type</mat-header-cell>
+            <mat-cell *cdkCellDef="let row"> {{row.resultType}}</mat-cell>
+          </ng-container>
+
           <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
       </div>
+
       <mat-paginator #paginator
                     [length]="exampleDatabase.data.length"
                     [pageIndex]="0"

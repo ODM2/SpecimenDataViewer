@@ -1,5 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Filter} from "../filter.model";
+import {DataService} from "../../data.service";
 
 @Component({
   selector: 'app-filter-item',
@@ -9,10 +10,14 @@ import {Filter} from "../filter.model";
 export class FilterItemComponent implements OnInit {
   @Input() filter: Filter;
 
-  constructor() { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
 
+  }
+
+  filterFacets() {
+    console.log("Filtering", this.dataService.getFilters());
   }
 
 }

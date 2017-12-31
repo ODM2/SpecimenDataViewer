@@ -19,20 +19,20 @@ export class DataService {
   initialize() {
     console.log('Initializing data service');
     this.getData().subscribe(function (data) {
-      let networks = [];
-      let mediums = [];
-      let variables = [];
-      let resultTypes = [];
+      // let networks = [];
+      // let mediums = [];
+      // let variables = [];
+      // let resultTypes = [];
       let siteCodes = {};
 
       for (const samplingFeature of data) {
-        networks.push("Some Network");
+        // networks.push("Some Network");
 
         for (const dataset of samplingFeature.Datasets) {
           // All results in a dataset share the same variable, medium and result type
-          variables.push(dataset.Results[0].Variable.VariableNameCV);
-          mediums.push(dataset.Results[0].SampledMediumCV);
-          resultTypes.push(dataset.Results[0].ResultTypeCV);
+          // variables.push(dataset.Results[0].Variable.VariableNameCV);
+          // mediums.push(dataset.Results[0].SampledMediumCV);
+          // resultTypes.push(dataset.Results[0].ResultTypeCV);
 
           // Get date ranges
           let minDate = new Date(dataset.Results[0].ResultDateTime);
@@ -50,7 +50,7 @@ export class DataService {
           }
 
           this.datasets.push({
-            type: dataset.Results[0].ResultTypeCV,
+            resultType: dataset.Results[0].ResultTypeCV,
             network: 'Some Network',
             siteCode: samplingFeature.related_features.SamplingFeatureCode,
             siteName: samplingFeature.related_features.SamplingFeatureName,
@@ -81,66 +81,66 @@ export class DataService {
         }
       }
 
-      // Classifier definition
-      const count = function (ary, classifier) {
-        return ary.reduce(function (counter, item) {
-          const p = (classifier || String)(item);
-          counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1;
-          return counter;
-        }, {});
-      };
-
-      networks = count(networks, function (item) {
-        return item;
-      });
-
-      let sitesCount = count(this.sites, function (item) {
-        return item.siteName;
-      });
-
-      variables = count(variables, function (item) {
-        return item;
-      });
-
-      mediums = count(mediums, function (item) {
-        return item;
-      });
-
-      resultTypes = count(resultTypes, function (item) {
-        return item;
-      });
-
-      const networkItems = [];
-      for (const network in networks) {
-        networkItems.push(new FilterItem(network, networks[network], false));
-      }
-
-      const siteItems = [];
-      for (const site in sitesCount) {
-        siteItems.push(new FilterItem(site, sitesCount[site], false));
-      }
-
-      const variableItems = [];
-      for (const variable in variables) {
-        variableItems.push(new FilterItem(variable, variables[variable], false));
-      }
-
-      const mediumItems = [];
-      for (const medium in mediums) {
-        mediumItems.push(new FilterItem(medium, mediums[medium], false));
-      }
-
-      const resultTypeItems = [];
-      for (const resultType in resultTypes) {
-        resultTypeItems.push(new FilterItem(resultType, resultTypes[resultType], false));
-      }
+      // // Classifier definition
+      // const count = function (ary, classifier) {
+      //   return ary.reduce(function (counter, item) {
+      //     const p = (classifier || String)(item);
+      //     counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1;
+      //     return counter;
+      //   }, {});
+      // };
+      //
+      // networks = count(networks, function (item) {
+      //   return item;
+      // });
+      //
+      // let sitesCount = count(this.sites, function (item) {
+      //   return item.siteName;
+      // });
+      //
+      // variables = count(variables, function (item) {
+      //   return item;
+      // });
+      //
+      // mediums = count(mediums, function (item) {
+      //   return item;
+      // });
+      //
+      // resultTypes = count(resultTypes, function (item) {
+      //   return item;
+      // });
+      //
+      // const networkItems = [];
+      // for (const network in networks) {
+      //   networkItems.push(new FilterItem(network, networks[network], "test"));
+      // }
+      //
+      // const siteItems = [];
+      // for (const site in sitesCount) {
+      //   siteItems.push(new FilterItem(site, sitesCount[site], "test"));
+      // }
+      //
+      // const variableItems = [];
+      // for (const variable in variables) {
+      //   variableItems.push(new FilterItem(variable, variables[variable], "test"));
+      // }
+      //
+      // const mediumItems = [];
+      // for (const medium in mediums) {
+      //   mediumItems.push(new FilterItem(medium, mediums[medium], "test"));
+      // }
+      //
+      // const resultTypeItems = [];
+      // for (const resultType in resultTypes) {
+      //   resultTypeItems.push(new FilterItem(resultType, resultTypes[resultType], "test"));
+      // }
 
       this.filters = [
-        new Filter('Network', networkItems, 'group_work'),
-        new Filter('Site', siteItems, 'location_on'),
-        new Filter('Medium', mediumItems, 'landscape'),
-        new Filter('Variable', variableItems, 'settings_remote'),
-        new Filter('Result Type', resultTypeItems, 'class'),
+        new Filter('Network', networkItems, 'group_work', "network"),
+        new Filter('Site', siteItems, 'location_on', "siteCode"),
+        new Filter('Medium', mediumItems, 'landscape', "medium"),
+        new Filter('Variable', variableItems, 'settings_remote', "variableCode"),
+        new Filter('Result Type', resultTypeItems, 'class', "resultType" ),
       ];
 
       this.initialized.next('Data loaded');
