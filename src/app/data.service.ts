@@ -87,14 +87,7 @@ export class DataService {
     let facets = [
       {name: 'Network', label: 'network', filterKey: 'network', icon: 'group_work', items: [], count: 0},
       {name: 'Site', label: 'siteName', filterKey: 'siteCode', icon: 'location_on', items: [], count: 0},
-      {
-        name: 'Variable',
-        label: 'variableName',
-        filterKey: 'variableCode',
-        icon: 'settings_remote',
-        items: [],
-        count: 0
-      },
+      {name: 'Variable', label: 'variableName', filterKey: 'variableCode', icon: 'settings_remote', items: [], count: 0},
       {name: 'Medium', label: 'medium', filterKey: 'medium', icon: 'landscape', items: [], count: 0},
       {name: 'Result Type', label: 'resultType', filterKey: 'resultType', icon: 'class', items: [], count: 0},
     ];
@@ -152,5 +145,7 @@ export class DataService {
         item.selected = false;
       }
     }
+
+    this.facetFilterChange.next(this.getFilters());
   }
 }
