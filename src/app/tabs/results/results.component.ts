@@ -23,14 +23,15 @@ export class ResultsComponent implements OnInit, OnDestroy {
   optionDisplay = 'All';
   __beginDate: Date;
   __endDate: Date;
-  exampleDatabase = new ExampleDatabase();
-  dataSource: ExampleDataSource | null;
+  specimenDatabase = new SpecimenDatabase();
+  dataSource: SpecimenDataSource | null;
   searchString = '';
   pageChanged = new Subscription;
   dataLoaded = new Subscription;
+  facetFilterChanged = new Subscription;
 
   private columns = [
-    {key: 'siteCode', label: "Site Codess", shown: true},
+    {key: 'siteCode', label: "Site Code", shown: true},
     {key: 'siteName', label: "Site Name", shown: true},
     {key: 'network', label: "Network", shown: true},
     {key: 'variableCode', label: "Variable Code", shown: true},
@@ -41,7 +42,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
     {key: 'resultType', label: "Result Type", shown: true},
   ];
 
-  private displayedColumns = [];
+  private _displayedColumns = [];
 
   @ViewChild('chkSelectAll') selectAll: ElementRef;
   @ViewChild('filter') filter: ElementRef;
@@ -65,12 +66,12 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.updateShownColumns();
 
     this.dataLoaded = this.dataService.initialized.subscribe(() => {
-      this.exampleDatabase.loadDatasets(this.dataService.getDatasets());
+      this.specimenDatabase.loadDatasets(this.dataService.getDatasets());
 
-      this.dataSource = new ExampleDataSource(this.exampleDatabase, this.paginator, this.sort);
+      this.dataSource = new SpecimenDataSource(this.specimenDatabase, this.paginator, this.sort);
 
       this.pageChanged = this.paginator.page.subscribe((d) => {
-        let data = this.exampleDatabase.data.slice()
+        let data = this.specimenDatabase.data.slice()
           .sort((a, b) => {
             let propertyA: number | string = '';
             let propertyB: number | string = '';
@@ -143,6 +144,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
       });
 
       this.onDisplayChange('All');
+      this.onFacetFilterChange(this.dataService.getFilters());
 
       Observable.fromEvent(this.filter.nativeElement, 'keyup')
         .debounceTime(150)
@@ -154,10 +156,15 @@ export class ResultsComponent implements OnInit, OnDestroy {
           this.dataSource.filter = this.filter.nativeElement.value;
         });
     });
+
+    this.facetFilterChanged = this.dataService.facetFilterChange.subscribe((a) => {
+      this.onFacetFilterChange(a);
+    });
   }
 
   ngOnDestroy() {
     this.pageChanged.unsubscribe();
+    this.dataLoaded.unsubscribe();
   }
 
   onDisplayChange(option: string) {
@@ -166,13 +173,17 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.dataSource.display = option;
   }
 
+  onFacetFilterChange(facetFilters) {
+    this.dataSource.facetFilter = facetFilters;
+  }
+
   onDateRangeChange() {
     this.dataSource.dateRange = [this.__beginDate, this.__endDate];
   }
 
   plotSelected() {
     this.plotCount = 0;
-    for (let dataset of this.exampleDatabase.data) {
+    for (let dataset of this.specimenDatabase.data) {
       dataset.plotted = dataset.selected;
       if (dataset.plotted) {
         this.plotCount = this.plotCount + 1;
@@ -181,34 +192,34 @@ export class ResultsComponent implements OnInit, OnDestroy {
   }
 
   clearPlots() {
-    for (let dataset of this.exampleDatabase.data) {
+    for (let dataset of this.specimenDatabase.data) {
       dataset.plotted = false;
       this.plotCount = 0;
     }
   }
 
   updateShownColumns() {
-    this.displayedColumns = ['selection'];
+    this._displayedColumns = ['selection'];
 
     for (let column of this.columns) {
       if (column.shown) {
-        this.displayedColumns.push(column.key)
+        this._displayedColumns.push(column.key)
       }
     }
 
-    this.displayedColumns.push('actions');
+    this._displayedColumns.push('actions');
 
     // localStorage.setItem('column_settings', JSON.stringify(this.columns));
   }
 
   stopClickPropagate(event: any) {
-    console.log(event);
+    // console.log(event);
     event.stopPropagation();
   }
 
   updatePlotCount() {
     let plotted = 0;
-    for (const dataset of this.exampleDatabase.data) {
+    for (const dataset of this.specimenDatabase.data) {
       if (dataset.plotted) {
         plotted++;
       }
@@ -276,8 +287,8 @@ export interface Dataset {
   plotted: boolean;
 }
 
-/** An example database that the data source uses to retrieve data for the table. */
-export class ExampleDatabase {
+/** An database that the data source uses to retrieve data for the table. */
+export class SpecimenDatabase {
   /** Stream that emits whenever the data has been modified. */
   dataChange: BehaviorSubject<Dataset[]> = new BehaviorSubject<Dataset[]>([]);
 
@@ -292,8 +303,9 @@ export class ExampleDatabase {
   }
 }
 
-export class ExampleDataSource extends DataSource<any> {
+export class SpecimenDataSource extends DataSource<any> {
   _filterChange = new BehaviorSubject('');
+  _facetFilterChange = new BehaviorSubject('');
   _displayChange = new BehaviorSubject('');
   _dateRangeChange = new BehaviorSubject([]);
 
@@ -303,6 +315,14 @@ export class ExampleDataSource extends DataSource<any> {
 
   set filter(filter: string) {
     this._filterChange.next(filter);
+  }
+
+  get facetFilter() {
+    return this._facetFilterChange.value;
+  }
+
+  set facetFilter(filter: any) {
+    this._facetFilterChange.next(filter);
   }
 
   get display(): string {
@@ -321,15 +341,16 @@ export class ExampleDataSource extends DataSource<any> {
     this._dateRangeChange.next(filter);
   }
 
-  constructor(private _exampleDatabase: ExampleDatabase, private _paginator: MatPaginator, private _sort: MatSort) {
+  constructor(private _specimenDatabase: SpecimenDatabase, private _paginator: MatPaginator, private _sort: MatSort) {
     super();
   }
 
   /** Connect function called by the table to retrieve one stream containing the data to render. */
   connect(): Observable<Dataset[]> {
     const displayDataChanges = [
-      this._exampleDatabase.dataChange,
+      this._specimenDatabase.dataChange,
       this._filterChange,
+      this._facetFilterChange,
       this._displayChange,
       this._paginator.page,
       this._dateRangeChange,
@@ -337,7 +358,7 @@ export class ExampleDataSource extends DataSource<any> {
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      let data = this._exampleDatabase.data.slice()
+      let data = this._specimenDatabase.data.slice()
         .sort((a, b) => {
           let propertyA: number | string = '';
           let propertyB: number | string = '';
@@ -394,7 +415,22 @@ export class ExampleDataSource extends DataSource<any> {
             withinDateRange = false;
           }
 
-          return flagDisplayed && flagSearched && withinDateRange;
+          let flagFacetFiltered = true;
+
+          for (let filter of this.facetFilter) {
+            let allowed = [];
+            for (let filterItem of filter.items) {
+              if (filterItem.selected ) {
+                allowed.push(filterItem.filterValue)
+              }
+            }
+
+            if (filter.items && allowed.length && allowed.indexOf(item[filter.key]) == -1) {
+              flagFacetFiltered = false;
+            }
+          }
+
+          return flagDisplayed && flagSearched && withinDateRange && flagFacetFiltered;
         });
 
       // Grab the page's slice of data.

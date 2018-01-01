@@ -12,6 +12,7 @@ export class DataService {
   private sites = [];
   // public pageChanged;
   public initialized = new BehaviorSubject('');
+  public facetFilterChange = new BehaviorSubject([]);
 
   constructor(private http: Http) {
   }
@@ -22,7 +23,6 @@ export class DataService {
       let siteCodes = {};
 
       for (const samplingFeature of data) {
-
         for (const dataset of samplingFeature.Datasets) {
           // All results in a dataset share the same variable, medium and result type
 
@@ -43,7 +43,7 @@ export class DataService {
 
           this.datasets.push({
             resultType: dataset.Results[0].ResultTypeCV,
-            network: 'Some Network',
+            network: 'Some Network',  // TODO: discuss on network field
             siteCode: samplingFeature.related_features.SamplingFeatureCode,
             siteName: samplingFeature.related_features.SamplingFeatureName,
             medium: dataset.Results[0].SampledMediumCV,
@@ -73,43 +73,54 @@ export class DataService {
         }
       }
 
-      // ---- FACETS ----
-      // Name: the name used for the facet panel header
-      // label: the key used to render the item label
-      // filterKey: the key used to filter against the table
-      let facets = [
-        {name: 'Network', label: 'network', filterKey: 'network', icon: 'group_work', items: [], count: 0},
-        {name: 'Site', label: 'siteName', filterKey: 'siteCode', icon: 'location_on', items: [], count: 0},
-        {name: 'Variable', label: 'variableName', filterKey: 'variableCode', icon: 'settings_remote', items: [], count: 0},
-        {name: 'Medium', label: 'medium', filterKey: 'medium', icon: 'landscape', items: [], count: 0},
-        {name: 'Result Type', label: 'resultType', filterKey: 'resultType', icon: 'class', items: [], count: 0},
-      ];
-
-      // Fetch the filter data from the datasets
-      for (let dataset of this.datasets) {
-        for (let facet of facets) {
-          if (facet.items[dataset[facet.filterKey]]) {
-            facet.items[dataset[facet.filterKey]].count += 1;
-          }
-          else {
-            facet.items[dataset[facet.filterKey]] = new FilterItem(dataset[facet.label], dataset[facet.filterKey], 1)
-          }
-        }
-      }
-
-      // Build Filter instances using the object data
-      this.filters = [];
-      for (let facet of facets) {
-        let collection = [];
-        for (let item in facet.items) {
-          collection.push(facet.items[item]);
-        }
-
-        this.filters.push(new Filter(facet.name, collection, facet.icon, facet.filterKey))
-      }
+      this.loadFilters();
 
       this.initialized.next('Data loaded');
     }.bind(this));
+  }
+
+  loadFilters() {
+    // ---- FACETS ----
+    // Name: the name used for the facet panel header
+    // label: the key used to render the item label
+    // filterKey: the key used to filter against the table
+    let facets = [
+      {name: 'Network', label: 'network', filterKey: 'network', icon: 'group_work', items: [], count: 0},
+      {name: 'Site', label: 'siteName', filterKey: 'siteCode', icon: 'location_on', items: [], count: 0},
+      {
+        name: 'Variable',
+        label: 'variableName',
+        filterKey: 'variableCode',
+        icon: 'settings_remote',
+        items: [],
+        count: 0
+      },
+      {name: 'Medium', label: 'medium', filterKey: 'medium', icon: 'landscape', items: [], count: 0},
+      {name: 'Result Type', label: 'resultType', filterKey: 'resultType', icon: 'class', items: [], count: 0},
+    ];
+
+    // Fetch the filter data from the datasets
+    for (const dataset of this.datasets) {
+      for (let facet of facets) {
+        if (facet.items[dataset[facet.filterKey]]) {
+          facet.items[dataset[facet.filterKey]].count += 1;
+        }
+        else {
+          facet.items[dataset[facet.filterKey]] = new FilterItem(dataset[facet.label], dataset[facet.filterKey], 1)
+        }
+      }
+    }
+
+    // Build Filter instances using the object data
+    this.filters = [];
+    for (const facet of facets) {
+      let collection = [];
+      for (let item in facet.items) {
+        collection.push(facet.items[item]);
+      }
+
+      this.filters.push(new Filter(facet.name, collection, facet.icon, facet.filterKey))
+    }
   }
 
   getData() {

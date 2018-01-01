@@ -17,7 +17,7 @@ export class FilterItemComponent implements OnInit {
   }
 
   filterFacets() {
-    console.log("Filtering", this.dataService.getFilters());
+    this.dataService.facetFilterChange.next(this.dataService.getFilters());
   }
 
 }
