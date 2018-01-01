@@ -19,20 +19,12 @@ export class DataService {
   initialize() {
     console.log('Initializing data service');
     this.getData().subscribe(function (data) {
-      // let networks = [];
-      // let mediums = [];
-      // let variables = [];
-      // let resultTypes = [];
       let siteCodes = {};
 
       for (const samplingFeature of data) {
-        // networks.push("Some Network");
 
         for (const dataset of samplingFeature.Datasets) {
           // All results in a dataset share the same variable, medium and result type
-          // variables.push(dataset.Results[0].Variable.VariableNameCV);
-          // mediums.push(dataset.Results[0].SampledMediumCV);
-          // resultTypes.push(dataset.Results[0].ResultTypeCV);
 
           // Get date ranges
           let minDate = new Date(dataset.Results[0].ResultDateTime);
@@ -81,67 +73,40 @@ export class DataService {
         }
       }
 
-      // // Classifier definition
-      // const count = function (ary, classifier) {
-      //   return ary.reduce(function (counter, item) {
-      //     const p = (classifier || String)(item);
-      //     counter[p] = counter.hasOwnProperty(p) ? counter[p] + 1 : 1;
-      //     return counter;
-      //   }, {});
-      // };
-      //
-      // networks = count(networks, function (item) {
-      //   return item;
-      // });
-      //
-      // let sitesCount = count(this.sites, function (item) {
-      //   return item.siteName;
-      // });
-      //
-      // variables = count(variables, function (item) {
-      //   return item;
-      // });
-      //
-      // mediums = count(mediums, function (item) {
-      //   return item;
-      // });
-      //
-      // resultTypes = count(resultTypes, function (item) {
-      //   return item;
-      // });
-      //
-      // const networkItems = [];
-      // for (const network in networks) {
-      //   networkItems.push(new FilterItem(network, networks[network], "test"));
-      // }
-      //
-      // const siteItems = [];
-      // for (const site in sitesCount) {
-      //   siteItems.push(new FilterItem(site, sitesCount[site], "test"));
-      // }
-      //
-      // const variableItems = [];
-      // for (const variable in variables) {
-      //   variableItems.push(new FilterItem(variable, variables[variable], "test"));
-      // }
-      //
-      // const mediumItems = [];
-      // for (const medium in mediums) {
-      //   mediumItems.push(new FilterItem(medium, mediums[medium], "test"));
-      // }
-      //
-      // const resultTypeItems = [];
-      // for (const resultType in resultTypes) {
-      //   resultTypeItems.push(new FilterItem(resultType, resultTypes[resultType], "test"));
-      // }
-
-      this.filters = [
-        new Filter('Network', networkItems, 'group_work', "network"),
-        new Filter('Site', siteItems, 'location_on', "siteCode"),
-        new Filter('Medium', mediumItems, 'landscape', "medium"),
-        new Filter('Variable', variableItems, 'settings_remote', "variableCode"),
-        new Filter('Result Type', resultTypeItems, 'class', "resultType" ),
+      // ---- FACETS ----
+      // Name: the name used for the facet panel header
+      // label: the key used to render the item label
+      // filterKey: the key used to filter against the table
+      let facets = [
+        {name: 'Network', label: 'network', filterKey: 'network', icon: 'group_work', items: [], count: 0},
+        {name: 'Site', label: 'siteName', filterKey: 'siteCode', icon: 'location_on', items: [], count: 0},
+        {name: 'Variable', label: 'variableName', filterKey: 'variableCode', icon: 'settings_remote', items: [], count: 0},
+        {name: 'Medium', label: 'medium', filterKey: 'medium', icon: 'landscape', items: [], count: 0},
+        {name: 'Result Type', label: 'resultType', filterKey: 'resultType', icon: 'class', items: [], count: 0},
       ];
+
+      // Fetch the filter data from the datasets
+      for (let dataset of this.datasets) {
+        for (let facet of facets) {
+          if (facet.items[dataset[facet.filterKey]]) {
+            facet.items[dataset[facet.filterKey]].count += 1;
+          }
+          else {
+            facet.items[dataset[facet.filterKey]] = new FilterItem(dataset[facet.label], dataset[facet.filterKey], 1)
+          }
+        }
+      }
+
+      // Build Filter instances using the object data
+      this.filters = [];
+      for (let facet of facets) {
+        let collection = [];
+        for (let item in facet.items) {
+          collection.push(facet.items[item]);
+        }
+
+        this.filters.push(new Filter(facet.name, collection, facet.icon, facet.filterKey))
+      }
 
       this.initialized.next('Data loaded');
     }.bind(this));

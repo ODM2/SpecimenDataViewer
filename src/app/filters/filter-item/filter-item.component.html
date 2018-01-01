@@ -8,7 +8,7 @@
 
   <div *ngFor="let item of filter.items" class="filter-item">
     <mat-checkbox [(ngModel)]="item.selected" (change)="filterFacets()">
-      <span class="item-name">{{ item.name }}</span>
+      <span class="item-name">{{ item.label }}</span>
     </mat-checkbox>
     <span class="badge badge-primary">{{ item.count }}</span>
   </div>
