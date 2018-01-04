@@ -152,6 +152,12 @@ app-scatter-plot .line.hover path {
 
 app-histogram rect.bar { fill: steelblue; }
 
+
+label.mat-button-toggle-label {
+  margin-bottom: 0;
+}
+
+
 /*DETAILS STYLING*/
 app-details .node circle {
   stroke: steelblue;

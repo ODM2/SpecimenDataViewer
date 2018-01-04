@@ -1,8 +1,6 @@
 <div class="row">
   <div class="col-12 col-sm-8">
-    <mat-card id="visualization-card">
-      <mat-card-header>
-        <div class="row" style="width: 100%;">
+        <div class="row">
           <div class="col-sm-8">
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.boxPlot">
               <mat-input-container style="margin-left:12px;">
@@ -63,6 +61,7 @@
             </div>
 
             <div *ngIf="visualizationService.getCurrentChart() == visualizationService.charts.scatterPlot">
+              <label>Radius: </label>
               <mat-slider
                 [(ngModel)]="selectedPointRadius"
                 (change)="visualizationService.setPointRadius(selectedPointRadius)"
@@ -104,8 +103,7 @@
             </mat-button-toggle-group>
           </div>
         </div>
-      </mat-card-header>
-
+    <mat-card style="margin-top: 12px;">
       <mat-card-content>
         <app-line-chart
           *ngIf="selectedChart==visualizationService.charts.lineChart">

@@ -1,27 +1,20 @@
-<mat-card>
-  <mat-card-header>
-    <!--<mat-card-title>Data format</mat-card-title>-->
-  </mat-card-header>
 
-  <mat-card-content>
-    <mat-button-toggle-group
-      [(ngModel)]="plotType"
-      (change)="visualizationService.setPlotType(plotType)"
-    >
-      <mat-button-toggle [value]="visualizationService.plotTypes.timeSeries">
-        Time Series
-      </mat-button-toggle>
-      <mat-button-toggle [value]="visualizationService.plotTypes.location">
-        Location
-      </mat-button-toggle>
-      <mat-button-toggle [value]="visualizationService.plotTypes.correlation">
-        Correlation
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-  </mat-card-content>
+<mat-button-toggle-group
+  [(ngModel)]="plotType"
+  (change)="visualizationService.setPlotType(plotType)"
+>
+  <mat-button-toggle [value]="visualizationService.plotTypes.timeSeries">
+    Time Series
+  </mat-button-toggle>
+  <mat-button-toggle [value]="visualizationService.plotTypes.location">
+    Location
+  </mat-button-toggle>
+  <mat-button-toggle [value]="visualizationService.plotTypes.correlation">
+    Correlation
+  </mat-button-toggle>
+</mat-button-toggle-group>
 
-  <br><br>
-
+<mat-card style="margin-top: 12px;">
   <mat-card-header>
     <mat-card-title>Datasets</mat-card-title>
   </mat-card-header>

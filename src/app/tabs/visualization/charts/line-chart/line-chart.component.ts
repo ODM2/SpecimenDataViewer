@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import {Subscription} from 'rxjs/Subscription';
 import {VisualizationService} from '../../../../visualization.service';
 import {Chart} from '../chart.model';
+import {DataService} from "../../../../data.service";
 
 @Component({
   selector: 'app-line-chart',
@@ -22,7 +23,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
   chartViewSubsc = new Subscription;
 
-  constructor(private visualizationService: VisualizationService) {
+  constructor(private visualizationService: VisualizationService, private dataService: DataService) {
   }
 
   ngOnInit() {
@@ -106,18 +107,18 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
     this.focus.components.line = d3.line()
       .x((d) => {
-        return this.focus.scales.x(d.date);
+        return this.focus.scales.x(d.valuedatetime);
       })
       .y((d) => {
-        return this.focus.scales.y(d.price);
+        return this.focus.scales.y(d.datavalue);
       });
 
     this.context.components.line = d3.line()
       .x((d) => {
-        return this.context.scales.x(d.date);
+        return this.context.scales.x(d.valuedatetime);
       })
       .y((d) => {
-        return this.context.scales.y(d.price);
+        return this.context.scales.y(d.datavalue);
       });
 
     this.svg.append("defs").append("clipPath")
@@ -135,24 +136,43 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("transform", "translate(" + this.context.margin.left + "," + this.context.margin.top + ")");
 
     // Data handling
-    d3.csv("assets/line-chart-data.csv", this.type.bind(this), this.loadData.bind(this));
+    // d3.csv("assets/line-chart-data.csv", this.type.bind(this), this.loadData.bind(this));
+    this.dataService.onPlotDataset.subscribe(function (data) {
+      this.focus.g.selectAll("*").remove();
+      this.context.g.selectAll("*").remove();
+      this.svg.select('.zoom').remove();
+      this.loadData(data);
+    }.bind(this));
   }
 
 
-  loadData(error, data) {
-    if (error) {
-      throw error;
+  loadData(data) {
+    if (!data.length) return;
+
+    // Data pre processing
+    for (let entry in data) {
+      data[entry].valuedatetime = new Date(data[entry].valuedatetime);
     }
+
+    data.sort((a, b) => {
+      if (a.valuedatetime.getTime() > b.valuedatetime.getTime())
+        return 1;
+
+      return -1;
+    });
+
+    console.log("Sorted Data ", data);
+
     this.focus.scales.x.domain(d3.extent(data, (d) => {
-      return d.date;
+      return d.valuedatetime;
     }));
 
     // this.focus.scales.y.domain([0, d3.max(data, (d) => {
-    //   return d.price;
+    //   return d.datavalue;
     // })]);
 
     let extentY = d3.extent(data, (d) => {
-      return d.price;
+      return d.datavalue;
     });
 
     let deltaY = (extentY[1] - extentY[0]) / 20;
@@ -164,12 +184,12 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.context.scales.y.domain(this.focus.scales.y.domain());
 
     this.focus.axis.gridY = d3.axisLeft(this.focus.scales.y)
-        .tickSize(-this.focus.getWidth())
-        .tickFormat("");
+      .tickSize(-this.focus.getWidth())
+      .tickFormat("");
 
     this.focus.axis.gridX = d3.axisBottom(this.focus.scales.x)
-        .tickSize(-this.focus.getHeight())
-        .tickFormat("");
+      .tickSize(-this.focus.getHeight())
+      .tickFormat("");
 
     // add the Y gridlines
     this.focus.g.append("g")
@@ -192,7 +212,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       div = d3.select("body").append("div")
         .attr("class", "graph-tooltip")
         .style("opacity", 0);
-    }else {
+    } else {
       div = d3.select(".graph-tooltip");
     }
 
@@ -218,10 +238,10 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
           .style("opacity", 0)
       })
       .attr("cx", function (d) {
-        return this.focus.scales.x(d.date);
+        return this.focus.scales.x(d.valuedatetime);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scales.y(d.price);
+        return this.focus.scales.y(d.datavalue);
       }.bind(this));
 
     this.focus.g.append("g")
@@ -246,10 +266,10 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("class", "point")
       .attr("fill", "steelblue")
       .attr("cx", function (d) {
-        return this.context.scales.x(d.date);
+        return this.context.scales.x(d.valuedatetime);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.context.scales.y(d.price);
+        return this.context.scales.y(d.datavalue);
       }.bind(this));
 
     this.context.g.append("g")
@@ -273,7 +293,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.g.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - this.focus.margin.left)
-      .attr("x",0 - (this.focus.getHeight() / 2))
+      .attr("x", 0 - (this.focus.getHeight() / 2))
       .attr("dy", "1em")
       .attr("class", "y-axis-label")
       .style("text-anchor", "middle")
@@ -295,10 +315,10 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.g.select(".line").attr("d", this.focus.components.line);
     this.focus.g.selectAll(".point")
       .attr("cx", function (d) {
-        return this.focus.scales.x(d.date);
+        return this.focus.scales.x(d.valuedatetime);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scales.y(d.price);
+        return this.focus.scales.y(d.datavalue);
       }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
     this.focus.g.select(".grid-x").call(this.focus.axis.gridX);
@@ -314,19 +334,19 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.focus.g.select(".line").attr("d", this.focus.components.line);
     this.focus.g.selectAll(".point")
       .attr("cx", function (d) {
-        return this.focus.scales.x(d.date);
+        return this.focus.scales.x(d.valuedatetime);
       }.bind(this))
       .attr("cy", function (d) {
-        return this.focus.scales.y(d.price);
+        return this.focus.scales.y(d.datavalue);
       }.bind(this));
     this.focus.g.select(".axis--x").call(this.focus.axis.x);
     this.focus.g.select(".grid-x").call(this.focus.axis.gridX);
     this.context.g.select(".brush").call(this.brush.move, this.focus.scales.x.range().map(t.invertX, t));
   }
 
-  type(d) {
-    d.date = this.parseDate(d.date);
-    d.price = +d.price;
-    return d;
-  }
+  // type(d) {
+  //   d.date = this.parseDate(d.date);
+  //   d.price = +d.price;
+  //   return d;
+  // }
 }

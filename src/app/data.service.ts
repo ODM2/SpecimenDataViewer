@@ -11,8 +11,11 @@ export class DataService {
   private datasets = [];
   private sites = [];
   // public pageChanged;
+  public currentPlotData;
+  private loadedDatasets = {};
   public initialized = new BehaviorSubject('');
   public facetFilterChange = new BehaviorSubject([]);
+  public onPlotDataset = new BehaviorSubject([]);
 
   constructor(private http: Http) {
   }
@@ -42,6 +45,9 @@ export class DataService {
           }
 
           this.datasets.push({
+            id: dataset.DataSetID,
+            title: dataset.DataSetTitle,
+            abstract: dataset.DataSetAbstract,
             resultType: dataset.Results[0].ResultTypeCV,
             network: 'Some Network',  // TODO: discuss on network field
             siteCode: samplingFeature.related_features.SamplingFeatureCode,
@@ -118,6 +124,26 @@ export class DataService {
 
   getData() {
     return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeaturedatasets?samplingFeatureID=1001%2C%201002%2C%201003%2C%201004').map(
+      (response: Response) => {
+        return response.json();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  plotDataset(datasetID) {
+    this.getDataset(datasetID).subscribe((data) => {
+      this.onPlotDataset.next(data);
+            // if (this.loadedDatasets[datasetID]) {
+      //   this.currentPlotData = this.loadedDatasets[datasetID];
+      //   this.onPlotDataset.next(this.currentPlotData);
+    });
+  }
+
+  getDataset(datasetID) {
+    return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/datasetvalues?datasetID=' + datasetID).map(
       (response: Response) => {
         return response.json();
       },

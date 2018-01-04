@@ -148,7 +148,7 @@
               <ng-container mat-tooltip="Plot">
                 <button mat-icon-button
                         [color]="row.plotted ? 'accent' : 'primary'"
-                        (click)="row.plotted = !row.plotted; updatePlotCount()">
+                        (click)="row.plotted = !row.plotted; updatePlotCount(); plotDataset(row.id)">
                   <mat-icon>assessment</mat-icon>
                 </button>
                 <!--{{row.plotted}}-->

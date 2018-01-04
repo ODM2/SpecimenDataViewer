@@ -191,6 +191,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
     }
   }
 
+  plotDataset(datasetID) {
+    this.dataService.plotDataset(datasetID);
+  }
+
   clearPlots() {
     for (let dataset of this.specimenDatabase.data) {
       dataset.plotted = false;
@@ -274,6 +278,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 }
 
 export interface Dataset {
+  id: number,
   variableCode: string;
   network: string;
   siteCode: string;
