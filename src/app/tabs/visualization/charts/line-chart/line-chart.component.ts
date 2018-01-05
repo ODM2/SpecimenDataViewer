@@ -229,6 +229,13 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       div = d3.select(".graph-tooltip");
     }
 
+    this.focus.g.append("rect")
+      .attr("class", "zoom")
+      .attr("width", this.focus.getWidth())
+      .attr("height", this.focus.getHeight())
+      // .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")")
+      .call(this.zoom);
+
     // Add circle points to the focus graph
     this.focus.g.selectAll("dot")
       .data(data)
@@ -237,10 +244,22 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("class", "point")
       .attr("fill", "steelblue")
       .on("mouseover", (d) => {
+        console.log(d);
         div.transition()
           .duration(200)
           .style("opacity", 0.9);
-        div.html("<h2>Test</h2>")
+        div.html(
+           "<table>" +
+            "<tr>" +
+              "<th>Date: </th>" +
+              "<td>" + new Date(d.valuedatetime).toDateString() + "</td>" +
+            "</tr>" +
+            "<tr>" +
+              "<th>Value1: </th>" +
+              "<td>" + d.datavalue + "</td>" +
+            "</tr>" +
+          "</table>"
+        )
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
@@ -293,13 +312,6 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("class", "brush")
       .call(this.brush)
       .call(this.brush.move, this.focus.scales.x.range());
-
-    this.svg.append("rect")
-      .attr("class", "zoom")
-      .attr("width", this.focus.getWidth())
-      .attr("height", this.focus.getHeight())
-      .attr("transform", "translate(" + this.focus.margin.left + "," + this.focus.margin.top + ")")
-      .call(this.zoom);
 
     // Y-axis label
     this.focus.g.append("text")
