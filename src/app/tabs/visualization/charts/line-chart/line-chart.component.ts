@@ -66,6 +66,20 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    // Data handling
+    this.setupGraphComponents();
+
+    this.dataService.onPlotDataset.subscribe(function (data) {
+      this.focus.g.selectAll("*").remove();
+      this.context.g.selectAll("*").remove();
+      this.setupGraphComponents();
+      this.svg.select('.zoom').remove();
+      this.setupGraphComponents();
+      this.loadData(data);
+    }.bind(this));
+  }
+
+  setupGraphComponents() {
     this.htmlElement = this.element.nativeElement;
     this.host = d3.select(this.htmlElement);
     this.host.html("");
@@ -74,7 +88,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.svg.attr("width", document.querySelector(".mat-tab-body-wrapper").clientWidth - 485);
     this.svg.attr("height", document.querySelector(".mat-tab-body-wrapper").clientHeight - 175);
 
-    this.focus.margin = {top: 20, right: 20, bottom: 180, left: 60};
+    this.focus.margin = {top: 40, right: 20, bottom: 100, left: 60};
     let w = +this.svg.attr("width") - this.focus.margin.left - this.focus.margin.right;
     let h = +this.svg.attr("height") - this.focus.margin.top - this.focus.margin.bottom;
     this.focus.setDimensions(w, h);
@@ -134,15 +148,6 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     this.context.g = this.svg.append("g")
       .attr("class", "context")
       .attr("transform", "translate(" + this.context.margin.left + "," + this.context.margin.top + ")");
-
-    // Data handling
-    // d3.csv("assets/line-chart-data.csv", this.type.bind(this), this.loadData.bind(this));
-    this.dataService.onPlotDataset.subscribe(function (data) {
-      this.focus.g.selectAll("*").remove();
-      this.context.g.selectAll("*").remove();
-      this.svg.select('.zoom').remove();
-      this.loadData(data);
-    }.bind(this));
   }
 
 
@@ -160,8 +165,6 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
       return -1;
     });
-
-    console.log("Sorted Data ", data);
 
     this.focus.scales.x.domain(d3.extent(data, (d) => {
       return d.valuedatetime;
@@ -207,6 +210,16 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("class", "line")
       .attr("d", this.focus.components.line);
 
+    // Add a title
+    if (this.dataService.currentPlotData) {
+      this.svg.append("text")
+        .attr("x", (this.focus.getWidth() / 2))
+        .attr("y", 20)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text(this.dataService.currentPlotData.title);
+    }
+
     let div;
     if (document.getElementsByClassName("graph-tooltip").length == 0) {
       div = d3.select("body").append("div")
@@ -215,7 +228,6 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     } else {
       div = d3.select(".graph-tooltip");
     }
-
 
     // Add circle points to the focus graph
     this.focus.g.selectAll("dot")
@@ -297,15 +309,15 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("dy", "1em")
       .attr("class", "y-axis-label")
       .style("text-anchor", "middle")
-      .text("Y axis label");
+      .text(this.dataService.currentPlotData.variableName);
 
     // X-axis label
-    this.focus.g.append("text")
-      .attr("x", this.focus.getWidth() / 2)
-      .attr("y", this.focus.getHeight() + this.focus.margin.top + 20)
-      .style("text-anchor", "middle")
-      .attr("class", "x-axis-label")
-      .text("Date");
+    // this.focus.g.append("text")
+    //   .attr("x", this.focus.getWidth() / 2)
+    //   .attr("y", this.focus.getHeight() + this.focus.margin.top + 20)
+    //   .style("text-anchor", "middle")
+    //   .attr("class", "x-axis-label")
+    //   .text("Date");
   }
 
   brushed() {

@@ -134,15 +134,12 @@ export class DataService {
   }
 
   plotDataset(datasetID) {
-    this.getDataset(datasetID).subscribe((data) => {
+    this.getDatasetValues(datasetID).subscribe((data) => {
       this.onPlotDataset.next(data);
-            // if (this.loadedDatasets[datasetID]) {
-      //   this.currentPlotData = this.loadedDatasets[datasetID];
-      //   this.onPlotDataset.next(this.currentPlotData);
     });
   }
 
-  getDataset(datasetID) {
+  getDatasetValues(datasetID) {
     return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/datasetvalues?datasetID=' + datasetID).map(
       (response: Response) => {
         return response.json();

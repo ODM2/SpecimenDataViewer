@@ -279,6 +279,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
 export interface Dataset {
   id: number,
+  title: string,
   variableCode: string;
   network: string;
   siteCode: string;
