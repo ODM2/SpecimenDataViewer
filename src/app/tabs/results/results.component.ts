@@ -29,6 +29,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   pageChanged = new Subscription;
   dataLoaded = new Subscription;
   facetFilterChanged = new Subscription;
+  private maxPlotCount = 1;
 
   private columns = [
     {key: 'siteCode', label: "Site Code", shown: true},
