@@ -11,8 +11,9 @@ export class DataService {
   private datasets = [];
   private sites = [];
   // public pageChanged;
-  public currentPlotData;
-  private loadedDatasets = {};
+  public plotMetadata = {};
+  public currentPlotID;
+  private plotList = {};
   public initialized = new BehaviorSubject('');
   public facetFilterChange = new BehaviorSubject([]);
   public onPlotDataset = new BehaviorSubject([]);
@@ -136,7 +137,13 @@ export class DataService {
   plotDataset(datasetID) {
     this.getDatasetValues(datasetID).subscribe((data) => {
       this.onPlotDataset.next(data);
+      this.plotList[datasetID] = true;
     });
+  }
+
+  unplotDataset(datasetID) {
+    delete this.plotList[datasetID];
+    this.onPlotDataset.next(null);
   }
 
   getDatasetValues(datasetID) {

@@ -6,7 +6,7 @@
     <agm-info-window #infoWindow [disableAutoPan]="true" [maxWidth]="250">
       <div><strong>{{ site.siteName }}</strong></div>
       <div>{{ site.siteCode }}</div>
-
+      <hr>
       <table>
         <tr>
           <th>Network:</th>
@@ -33,6 +33,7 @@
           <td>{{ site.longitude|number:'1.1-4' }}</td>
         </tr>
       </table>
+      <hr>
 
       <button mat-button>View Dataseries</button>
 

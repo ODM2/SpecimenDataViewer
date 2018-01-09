@@ -29,7 +29,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   pageChanged = new Subscription;
   dataLoaded = new Subscription;
   facetFilterChanged = new Subscription;
-  private maxPlotCount = 1;
+  private maxPlotCount = 5;
 
   private columns = [
     {key: 'siteCode', label: "Site Code", shown: true},
@@ -168,6 +168,28 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.dataLoaded.unsubscribe();
   }
 
+  onTogglePlot(row: any) {
+    row.plotted = !row.plotted;
+    this.updatePlotCount();
+    if (row.plotted) {
+      this.plotDataset(row);
+    }
+    else {
+      this.unplotDataset(row);
+    }
+  }
+
+  plotDataset(row) {
+    this.dataService.plotDataset(row.id);
+      this.dataService.plotMetadata[row.id] = row;
+      this.dataService.currentPlotID = row.id;
+  }
+
+  unplotDataset(row) {
+    this.dataService.unplotDataset(row.id);
+    this.dataService.currentPlotID = null;
+  }
+
   onDisplayChange(option: string) {
     this.optionDisplay = option;
     this.paginator.pageIndex = 0;
@@ -192,15 +214,12 @@ export class ResultsComponent implements OnInit, OnDestroy {
     }
   }
 
-  plotDataset(datasetID) {
-    this.dataService.plotDataset(datasetID);
-  }
-
   clearPlots() {
     for (let dataset of this.specimenDatabase.data) {
       dataset.plotted = false;
-      this.plotCount = 0;
+      this.unplotDataset(dataset.id);
     }
+    this.plotCount = 0;
   }
 
   updateShownColumns() {

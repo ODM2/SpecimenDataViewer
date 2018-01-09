@@ -152,7 +152,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
   loadData(data) {
-    if (!data.length) return;
+    if (!data || !data.length) return;
 
     // Data pre processing
     for (let entry in data) {
@@ -211,13 +211,13 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("d", this.focus.components.line);
 
     // Add a title
-    if (this.dataService.currentPlotData) {
+    if (this.dataService.currentPlotID) {
       this.svg.append("text")
         .attr("x", (this.focus.getWidth() / 2))
         .attr("y", 20)
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
-        .text(this.dataService.currentPlotData.title);
+        .text(this.dataService.plotMetadata[this.dataService.currentPlotID].title);
     }
 
     let div;
@@ -321,7 +321,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("dy", "1em")
       .attr("class", "y-axis-label")
       .style("text-anchor", "middle")
-      .text(this.dataService.currentPlotData.variableName);
+      .text(this.dataService.plotMetadata[this.dataService.currentPlotID].variableName);
 
     // X-axis label
     // this.focus.g.append("text")

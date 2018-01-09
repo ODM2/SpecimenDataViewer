@@ -111,7 +111,7 @@
           <div class="btn-group mat-shadow-1">
             <span class="input-group-addon" id="btnGroupAddon">
               <mat-icon color="accent">assessment</mat-icon>
-              Plotting ({{this.plotCount}}/5)
+              Plotting ({{this.plotCount}}/{{maxPlotCount}})
             </span>
 
             <button id="btnClearPlots" type="button" mat-raised-button
@@ -149,7 +149,7 @@
                 <button mat-icon-button
                         [color]="row.plotted ? 'accent' : 'primary'"
                         [disabled]="!row.plotted && plotCount >= maxPlotCount"
-                        (click)="row.plotted = !row.plotted; updatePlotCount(); plotDataset(row.id); dataService.currentPlotData = row">
+                        (click)=onTogglePlot(row)>
                   <mat-icon>assessment</mat-icon>
                 </button>
                 <!--{{row.plotted}}-->
@@ -232,7 +232,7 @@
       <mat-paginator #paginator
                     [length]="specimenDatabase.data.length"
                     [pageIndex]="0"
-                    [pageSize]="5"
+                    [pageSize]="10"
                     [pageSizeOptions]="[5, 10, 25, 50, 100]">
       </mat-paginator>
     </mat-card-content>
