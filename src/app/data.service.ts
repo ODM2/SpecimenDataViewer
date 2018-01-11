@@ -10,19 +10,19 @@ export class DataService {
   private filters: Filter[];
   private datasets = [];
   private sites = [];
-  // public pageChanged;
-  public plotMetadata = {};
-  public currentPlotID;
-  private plotList = {};
+  public plotData = {};
+
   public initialized = new BehaviorSubject('');
   public facetFilterChange = new BehaviorSubject([]);
-  public onPlotDataset = new BehaviorSubject([]);
+  public onMakeVisible = new BehaviorSubject({});
+  public onPlotDataset = new BehaviorSubject({});
+  public onUnplotDataset = new BehaviorSubject({});
 
   constructor(private http: Http) {
   }
 
   initialize() {
-    console.log('Initializing data service');
+    console.log('Initializing data service...');
     this.getData().subscribe(function (data) {
       let siteCodes = {};
 
@@ -124,7 +124,8 @@ export class DataService {
   }
 
   getData() {
-    return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeaturedatasets?samplingFeatureID=1001%2C%201002%2C%201003%2C%201004').map(
+    return this.http.get('http://odm2wofpy1.uwrl.usu.edu/v1/samplingfeaturedatasets' +
+      '?samplingFeatureID=1001%2C%201002%2C%201003%2C%201004').map(
       (response: Response) => {
         return response.json();
       },
@@ -134,16 +135,17 @@ export class DataService {
     );
   }
 
-  plotDataset(datasetID) {
-    this.getDatasetValues(datasetID).subscribe((data) => {
-      this.onPlotDataset.next(data);
-      this.plotList[datasetID] = true;
+  plotDataset(row) {
+    this.getDatasetValues(row.id).subscribe((data) => {
+      this.plotData[row.id] = row;
+      this.plotData[row.id].data = data;
+      this.onPlotDataset.next(this.plotData);
     });
   }
 
-  unplotDataset(datasetID) {
-    delete this.plotList[datasetID];
-    this.onPlotDataset.next(null);
+  unplotDataset(row) {
+    delete this.plotData[row.id];
+    this.onUnplotDataset.next(this.plotData);
   }
 
   getDatasetValues(datasetID) {

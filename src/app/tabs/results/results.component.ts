@@ -24,12 +24,14 @@ export class ResultsComponent implements OnInit, OnDestroy {
   __beginDate: Date;
   __endDate: Date;
   specimenDatabase = new SpecimenDatabase();
-  dataSource: SpecimenDataSource | null;
   searchString = '';
+  private maxPlotCount = 5;
+
+  dataSource: SpecimenDataSource | null;
   pageChanged = new Subscription;
   dataLoaded = new Subscription;
   facetFilterChanged = new Subscription;
-  private maxPlotCount = 5;
+
 
   private columns = [
     {key: 'siteCode', label: "Site Code", shown: true},
@@ -59,10 +61,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
     this.dataseries = this.dataService.getDatasets();
 
     // Comment out for development
-    // let definitions = localStorage.getItem('column_settings');
-    // if (definitions) {
-    //   this.columns = JSON.parse(definitions);
-    // }
+    let definitions = localStorage.getItem('column_settings');
+    if (definitions) {
+      this.columns = JSON.parse(definitions);
+    }
 
     this.updateShownColumns();
 
@@ -172,22 +174,11 @@ export class ResultsComponent implements OnInit, OnDestroy {
     row.plotted = !row.plotted;
     this.updatePlotCount();
     if (row.plotted) {
-      this.plotDataset(row);
+      this.dataService.plotDataset(row);
     }
     else {
-      this.unplotDataset(row);
+      this.dataService.unplotDataset(row);
     }
-  }
-
-  plotDataset(row) {
-    this.dataService.plotDataset(row.id);
-      this.dataService.plotMetadata[row.id] = row;
-      this.dataService.currentPlotID = row.id;
-  }
-
-  unplotDataset(row) {
-    this.dataService.unplotDataset(row.id);
-    this.dataService.currentPlotID = null;
   }
 
   onDisplayChange(option: string) {
@@ -217,7 +208,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
   clearPlots() {
     for (let dataset of this.specimenDatabase.data) {
       dataset.plotted = false;
-      this.unplotDataset(dataset.id);
+      this.dataService.unplotDataset(dataset);
     }
     this.plotCount = 0;
   }
@@ -233,11 +224,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
     this._displayedColumns.push('actions');
 
-    // localStorage.setItem('column_settings', JSON.stringify(this.columns));
+    localStorage.setItem('column_settings', JSON.stringify(this.columns));
   }
 
   stopClickPropagate(event: any) {
-    // console.log(event);
     event.stopPropagation();
   }
 

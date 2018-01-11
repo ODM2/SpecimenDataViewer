@@ -24,13 +24,12 @@
       <tr *ngFor="let dataset of datasets; let i = index">
         <td [style.border-left]="'6px solid' + colors(i)">
           <button mat-icon-button
-                  [matTooltip]="dataset.visible || xAxisDataset == i ? 'Shown' : 'Hidden'"
+                  [matTooltip]="dataset.visible ? 'Shown' : 'Hidden'"
                   [matTooltipShowDelay]="500"
-                  [disabled]="xAxisDataset == i"
-                  (click)="toggleVisibility(i)">
-            <mat-icon [style.color]="dataset.visible || xAxisDataset == i? 'steelblue' : '#AAA'"
+                  (click)="makeVisible(dataset.id)">
+            <mat-icon [style.color]="dataset.visible ? 'steelblue' : '#AAA'"
             >
-              {{ dataset.visible || xAxisDataset == i ? "visibility" : "visibility_off" }}
+              {{ dataset.visible ? "visibility" : "visibility_off" }}
             </mat-icon>
           </button>
         </td>

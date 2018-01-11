@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {VisualizationService} from '../../../../visualization.service';
 import {Chart} from '../chart.model';
 import {DataService} from "../../../../data.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-line-chart',
@@ -20,6 +21,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
   private parseDate = d3.timeParse('%b %Y');
   private focus = new Chart();
   private context = new Chart();
+  private plotData;
 
   chartViewSubsc = new Subscription;
 
@@ -69,14 +71,38 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     // Data handling
     this.setupGraphComponents();
 
-    this.dataService.onPlotDataset.subscribe(function (data) {
-      this.focus.g.selectAll("*").remove();
-      this.context.g.selectAll("*").remove();
-      this.setupGraphComponents();
-      this.svg.select('.zoom').remove();
-      this.setupGraphComponents();
-      this.loadData(data);
+    this.dataService.onPlotDataset.subscribe(function (response) {
+      this.plotData = response;
     }.bind(this));
+
+    this.dataService.onUnplotDataset.subscribe(function (response) {
+      this.plotData = response;
+    }.bind(this));
+
+    this.dataService.onMakeVisible.subscribe(function (id) {
+      for (let dataset in this.plotData) {
+        if (parseInt(dataset) == id) {
+          this.resetGraph(this.plotData[dataset]);
+          break;
+        }
+      }
+    }.bind(this));
+  }
+
+  resetGraph(row) {
+    this.focus.g.selectAll("*").remove();
+    this.context.g.selectAll("*").remove();
+    this.svg.select('.zoom').remove();
+
+    for (let dataset in this.plotData) {
+      if (row.id == this.plotData[dataset].id) {
+        const data = this.plotData[dataset].data;
+        if (!data || !data.length) return;
+        this.setupGraphComponents();
+        this.loadData(this.plotData[dataset]);
+        break;
+      }
+    }
   }
 
   setupGraphComponents() {
@@ -150,23 +176,20 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("transform", "translate(" + this.context.margin.left + "," + this.context.margin.top + ")");
   }
 
-
-  loadData(data) {
-    if (!data || !data.length) return;
-
+  loadData(dataset) {
     // Data pre processing
-    for (let entry in data) {
-      data[entry].valuedatetime = new Date(data[entry].valuedatetime);
+    for (let entry in dataset.data) {
+      dataset.data[entry].valuedatetime = new Date(dataset.data[entry].valuedatetime);
     }
 
-    data.sort((a, b) => {
+    dataset.data.sort((a, b) => {
       if (a.valuedatetime.getTime() > b.valuedatetime.getTime())
         return 1;
 
       return -1;
     });
 
-    this.focus.scales.x.domain(d3.extent(data, (d) => {
+    this.focus.scales.x.domain(d3.extent(dataset.data, (d) => {
       return d.valuedatetime;
     }));
 
@@ -174,7 +197,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
     //   return d.datavalue;
     // })]);
 
-    let extentY = d3.extent(data, (d) => {
+    let extentY = d3.extent(dataset.data, (d) => {
       return d.datavalue;
     });
 
@@ -206,19 +229,18 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .call(this.focus.axis.gridX);
 
     this.focus.g.append("path")
-      .datum(data)
+      .datum(dataset.data)
       .attr("class", "line")
       .attr("d", this.focus.components.line);
 
     // Add a title
-    if (this.dataService.currentPlotID) {
-      this.svg.append("text")
-        .attr("x", (this.focus.getWidth() / 2))
-        .attr("y", 20)
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .text(this.dataService.plotMetadata[this.dataService.currentPlotID].title);
-    }
+
+    this.svg.append("text")
+      .attr("x", (this.focus.getWidth() / 2))
+      .attr("y", 20)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .text(dataset.title);
 
     let div;
     if (document.getElementsByClassName("graph-tooltip").length == 0) {
@@ -238,25 +260,24 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
 
     // Add circle points to the focus graph
     this.focus.g.selectAll("dot")
-      .data(data)
+      .data(dataset.data)
       .enter().append("circle")
       .attr("r", 3)
       .attr("class", "point")
       .attr("fill", "steelblue")
       .on("mouseover", (d) => {
-        console.log(d);
         div.transition()
           .duration(200)
           .style("opacity", 0.9);
         div.html(
            "<table>" +
             "<tr>" +
-              "<th>Date: </th>" +
-              "<td>" + new Date(d.valuedatetime).toDateString() + "</td>" +
+              "<th><small>VALUE: </small></th>" +
+              "<td>" + d.datavalue + "</td>" +
             "</tr>" +
             "<tr>" +
-              "<th>Value1: </th>" +
-              "<td>" + d.datavalue + "</td>" +
+              "<th><small>DATE: </small></th>" +
+              "<td>" + new Date(d.valuedatetime).toDateString() + "</td>" +
             "</tr>" +
           "</table>"
         )
@@ -285,13 +306,13 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .call(this.focus.axis.y);
 
     this.context.g.append("path")
-      .datum(data)
+      .datum(dataset.data)
       .attr("class", "line")
       .attr("d", this.context.components.line);
 
     // Add circle points to the context graph
     this.context.g.selectAll("dot")
-      .data(data)
+      .data(dataset.data)
       .enter().append("circle")
       .attr("r", 1.5)
       .attr("class", "point")
@@ -321,7 +342,7 @@ export class LineChartComponent implements AfterViewInit, OnInit, OnDestroy {
       .attr("dy", "1em")
       .attr("class", "y-axis-label")
       .style("text-anchor", "middle")
-      .text(this.dataService.plotMetadata[this.dataService.currentPlotID].variableName);
+      .text(dataset.variableName);
 
     // X-axis label
     // this.focus.g.append("text")

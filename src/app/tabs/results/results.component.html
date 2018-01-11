@@ -10,7 +10,7 @@
         </mat-input-container>
 
         <button mat-icon-button (click)="clearSearch()"
-                [disabled]="!searchString"
+                [hidden]="!searchString"
                 class="btn-input-clear"
                 matTooltip="Clear"
                 [matTooltipShowDelay]="500">
@@ -29,7 +29,7 @@
           <mat-datepicker-toggle matSuffix [for]="beginDate"></mat-datepicker-toggle>
         </mat-input-container>
         <mat-datepicker #beginDate></mat-datepicker>
-        <button mat-icon-button [disabled]="!__beginDate" class="custom-input-addon"
+        <button mat-icon-button [hidden]="!__beginDate" class="custom-input-addon"
                 (click)="__beginDate = null; onDateRangeChange()"
                 matTooltip="Clear"
                 [matTooltipShowDelay]="500">
@@ -46,7 +46,7 @@
           <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
         </mat-input-container>
         <mat-datepicker #endDate></mat-datepicker>
-        <button mat-icon-button [disabled]="!__endDate" class="custom-input-addon"
+        <button mat-icon-button [hidden]="!__endDate" class="custom-input-addon"
                 (click)="__endDate = null; onDateRangeChange()"
                 matTooltip="Clear"
                 [matTooltipShowDelay]="500">
